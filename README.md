@@ -2,6 +2,12 @@
 
 DS ( Data Structure ) AST (Abstract Syntax Tree)
 
+## Definitions
+
+## AST
+
+An **Abstract Syntax Tree** (_AST_) is a data structure used in computer science to represent the structure of a program or code snippet. It is a tree-like representation of the source code, abstracting away the syntax and semantics of the programming language. The AST is designed to preserve essential information such as variable types, the location of each declaration, the order of executable statements, left and right components of binary operations, and identifiers and their assigned values.
+
 ## References
 
 - [[YouTube Channel] Neso Academy](https://www.youtube.com/@nesoacademy)
