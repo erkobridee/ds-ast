@@ -10,14 +10,18 @@ An **Abstract Syntax Tree** (_AST_) is a data structure used in computer science
 
 ## References
 
-- [[YouTube Channel] Neso Academy](https://www.youtube.com/@nesoacademy)
+### Theory
 
-  - Compiler Design
+- [[YouTube Playlist] Compiler Design - Quick Concepts | Neso Academy](https://www.youtube.com/playlist?list=PLBlnK6fEyqRgfOB2fidzM9n11SQIA76_e)
 
-    - [[YouTube Playlist] Compiler Design - Quick Concepts](https://www.youtube.com/playlist?list=PLBlnK6fEyqRgfOB2fidzM9n11SQIA76_e)
+- [[YouTube Playlist] Compiler Design - Chapter 1 - Introduction to Compiler Design | Neso Academy](https://www.youtube.com/playlist?list=PLBlnK6fEyqRgo_ukpWHcHzHptrnCSGteB)
 
-    - [[YouTube Playlist] Chapter 1 - Introduction to Compiler Design](https://www.youtube.com/playlist?list=PLBlnK6fEyqRgo_ukpWHcHzHptrnCSGteB)
+- [[YouTube Playlist] Compiler Design - Chapter 2 - Syntax Analysis | Neso Academy](https://www.youtube.com/playlist?list=PLBlnK6fEyqRhMjOLYfqGdyB7Gt_k5cD6t)
 
-    - [[YouTube Playlist] Chapter 2 - Syntax Analysis](https://www.youtube.com/playlist?list=PLBlnK6fEyqRhMjOLYfqGdyB7Gt_k5cD6t)
+- [[YouTube Playlist] Compiler Design - Chapter 3 - Top-Down Parsers | Neso Academy](https://www.youtube.com/playlist?list=PLBlnK6fEyqRgPLTKYaRhcMt8pVKl4crr6)
 
-    - [[YouTube Playlist] Chapter 3 - Top-Down Parsers](https://www.youtube.com/playlist?list=PLBlnK6fEyqRgPLTKYaRhcMt8pVKl4crr6)
+### Implementation
+
+- [[YouTube Playlist] Build a Custom Scripting Language In Typescript - Introduction to Interpreters & Compilers | tylerlaceby](https://www.youtube.com/playlist?list=PL_2VhOvlMk4UHGqYCLWc6GO8FaPl8fQTh)
+
+  - [[GitHub] tlaceby/guide-to-interpreters-series](https://github.com/tlaceby/guide-to-interpreters-series) - Contains source-code for viewers following along with my Beginners Guide To Building Interpreters series on my Youtube Channel.
