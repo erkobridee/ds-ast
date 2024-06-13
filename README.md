@@ -74,15 +74,23 @@ type LexerFn = (input: string) => Token[];
 
   - [Compilers 102 - Parser](https://dev.to/lefebvre/compilers-102---parser-2gni) (2018/01/22)
 
+#### Compiler
+
+- [Computer Language - (Compiler|Interpreter) - Language translator | DataCadamia](https://datacadamia.com/code/compiler/compiler)
+
 #### Lexer
 
 - [What is a Lexer ? known also as Tokenizer or Scanner - Lexical Analysis | DataCadamia](https://datacadamia.com/code/compiler/lexer)
+
+- [Lexical Analysis - (Token|Lexical unit|Lexeme|Symbol|Word) | DataCadamia](https://datacadamia.com/code/compiler/token)
 
 #### Parser
 
 - [Lexical Analysis - Parser (Syntax analysis|Linter) | DataCadamia](https://datacadamia.com/code/compiler/parser)
 
 #### AST
+
+- [Parser / Compiler - (Abstract) Syntax Tree (AST) | DataCadamia](https://datacadamia.com/code/compiler/ast)
 
 - [Abstract Syntax Tree (AST) - Explained in Plain English | DEV Community](https://dev.to/balapriya/abstract-syntax-tree-ast-explained-in-plain-english-1h38) (2024/06/11) - As a developer, the source code that you write is all so concise and elegant.
 
