@@ -88,6 +88,8 @@ type LexerFn = (input: string) => Token[];
 
 ### Implementation
 
+- [[YouTube] LLVM in 100 Seconds | Fireship](https://www.youtube.com/watch?v=BT2Cv-Tjq7Q) (2022/05/23)
+
 - [Writing Your Own Lexer With Simple Steps | Serhii Chornenkyi](https://serhii.io/posts/writing-your-own-lexer-with-simple-steps) (2023/11/24)
 
 - [[YouTube Playlist] Creating a Compiler | Pixeled](https://www.youtube.com/playlist?list=PLUDlas_Zy_qC7c5tCgTMYq2idyyT241qs)
@@ -103,3 +105,13 @@ type LexerFn = (input: string) => Token[];
   - [Part 7: Abstract Syntax Trees | Ruslan's Blog](https://ruslanspivak.com/lsbasi-part7/) (2015/12/15) - [python](https://github.com/rspivak/lsbasi/blob/master/part7/python/spi.py) and [rust](https://github.com/rspivak/lsbasi/blob/master/part7/rust/spi/src/main.rs) implementations
 
   - [Part 13: Semantic Analysis | Ruslan's Blog](https://ruslanspivak.com/lsbasi-part13/) (2017/04/27)
+
+- [[YouTube Playlist] Building a Parser from scratch | Dmitry Soshnikov](https://www.youtube.com/playlist?list=PLGNbPb3dQJ_5FTPfFIg28UxuMpu7k0eT4)
+
+  - [[Udemy Course] Building a Parser from scratch - by Dmitry Soshnikov](https://www.udemy.com/course/parser-from-scratch/)
+
+  - [[YouTube] Tokenizer / Parser | Dmitry Soshnikov](https://www.youtube.com/watch?v=4m7ubrdbWQU) (2020/11/12)
+
+  - [[YouTube] Numbers / Strings | Dmitry Soshnikov](https://www.youtube.com/watch?v=0ZDPvdp2uFk) (2020/11/14)
+
+  - [[YouTube] From State Machines to Regular Expressions | Dmitry Soshnikov](https://www.youtube.com/watch?v=nexKgX2d7wU) (2020/11/16)
