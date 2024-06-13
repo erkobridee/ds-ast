@@ -6,6 +6,8 @@ DS ( Data Structure ) AST (Abstract Syntax Tree)
 
 ### Lexer
 
+> A **lexer** transforms a sequence of characters into a sequence of tokens.
+>
 > A compiler **lexer** is a crucial component in the compilation process of a programming language. It is responsible for breaking down the source code into smaller, meaningful units called tokens or lexemes. These tokens are then fed into the parser, which constructs the abstract syntax tree (AST) of the program.
 
 ```ts
@@ -13,9 +15,20 @@ enum TokenType {
   ...
 }
 
+interface TokenPosition {
+  /** line */
+  ln: number;
+  /** column */
+  col: number;
+}
+
 interface Token {
+  /** kind */
   type: TokenType;
+  /** Lexeme */
   value: string;
+
+  position?: TokenPosition;
 }
 
 type LexerFn = (input: string) => Token[];
@@ -52,6 +65,18 @@ type LexerFn = (input: string) => Token[];
 - [[YouTube Playlist] Compiler Design - Chapter 2 - Syntax Analysis | Neso Academy](https://www.youtube.com/playlist?list=PLBlnK6fEyqRhMjOLYfqGdyB7Gt_k5cD6t)
 
 - [[YouTube Playlist] Compiler Design - Chapter 3 - Top-Down Parsers | Neso Academy](https://www.youtube.com/playlist?list=PLBlnK6fEyqRgPLTKYaRhcMt8pVKl4crr6)
+
+- [A Guide To Parsing: Algorithms And Terminology | Gabriele Tomassetti](https://tomassetti.me/guide-parsing-algorithms-terminology/) (2023/07/26)
+
+- [Compilers Series' Articles | by Paul Lefebvre - DEV Community](https://dev.to/lefebvre/series/21363)
+
+  - [Compilers 101 - Overview and Lexer](https://dev.to/lefebvre/compilers-101---overview-and-lexer-3i0m) (2018/01/19)
+
+  - [Compilers 102 - Parser](https://dev.to/lefebvre/compilers-102---parser-2gni) (2018/01/22)
+
+#### Lexer
+
+- [What is a Lexer ? known also as Tokenizer or Scanner - Lexical Analysis | DataCadamia](https://datacadamia.com/code/compiler/lexer)
 
 #### AST
 
