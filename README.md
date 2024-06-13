@@ -25,11 +25,10 @@ interface TokenPosition {
 }
 
 interface Token {
-  /** kind */
   type: TokenType;
-  /** Lexeme */
-  value: string;
+  lexeme: string;
 
+  /** it's useful for debugging proprose later one for a given programming language */
   position?: TokenPosition;
 }
 
