@@ -2,6 +2,10 @@
 
 DS ( Data Structure ) AST (Abstract Syntax Tree)
 
+## Implementations
+
+- [TypeScript implementation of: _**Building a Parser from scratch**_](./implementations/ts-parser-from-scratch/README.md)
+
 ## Definitions
 
 ![](assets/anatomy-compiler.png)
@@ -46,6 +50,10 @@ type LexerFn = (input: string) => Token[];
 ### Parser
 
 > A **parser** is a software component that takes input data (typically text) and builds a data structure, often a parse tree or abstract syntax tree (AST), giving a structural representation of the input while checking for correct syntax. It is a crucial part of the compilation process, particularly in compiler design.
+
+#### RDP - Recursive Descent Parser
+
+- [Recursive Descent Parser | GeeksforGeeks](https://www.geeksforgeeks.org/recursive-descent-parser/) (2023/06/09)
 
 ### AST
 
@@ -109,6 +117,8 @@ type LexerFn = (input: string) => Token[];
 
   - [[GitHub] hydrogen-cpp](https://github.com/orosmatthew/hydrogen-cpp)
 
+- [A simple recursive descent parser | DEV Community](https://dev.to/6502/a-recursive-descent-parser-8jp) (2023/10/09)
+
 - [[YouTube Playlist] Build a Custom Scripting Language In Typescript - Introduction to Interpreters & Compilers | tylerlaceby](https://www.youtube.com/playlist?list=PL_2VhOvlMk4UHGqYCLWc6GO8FaPl8fQTh)
 
   - [[GitHub] tlaceby/guide-to-interpreters-series](https://github.com/tlaceby/guide-to-interpreters-series) - Contains source-code for viewers following along with my Beginners Guide To Building Interpreters series on my Youtube Channel.
@@ -118,20 +128,6 @@ type LexerFn = (input: string) => Token[];
   - [Part 7: Abstract Syntax Trees | Ruslan's Blog](https://ruslanspivak.com/lsbasi-part7/) (2015/12/15) - [python](https://github.com/rspivak/lsbasi/blob/master/part7/python/spi.py) and [rust](https://github.com/rspivak/lsbasi/blob/master/part7/rust/spi/src/main.rs) implementations
 
   - [Part 13: Semantic Analysis | Ruslan's Blog](https://ruslanspivak.com/lsbasi-part13/) (2017/04/27)
-
-- [[YouTube Playlist] Building a Parser from scratch | Dmitry Soshnikov](https://www.youtube.com/playlist?list=PLGNbPb3dQJ_5FTPfFIg28UxuMpu7k0eT4)
-
-  - [[Udemy Course] Building a Parser from scratch - by Dmitry Soshnikov](https://www.udemy.com/course/parser-from-scratch/)
-
-  - [[GitHub] letter-rdp-source](https://github.com/DmitrySoshnikov/letter-rdp-source) - Building a Parser from scratch
-
-  - [[YouTube] Tokenizer / Parser | Dmitry Soshnikov](https://www.youtube.com/watch?v=4m7ubrdbWQU) (2020/11/12)
-
-  - [[YouTube] Numbers / Strings | Dmitry Soshnikov](https://www.youtube.com/watch?v=0ZDPvdp2uFk) (2020/11/14)
-
-  - [[YouTube] From State Machines to Regular Expressions | Dmitry Soshnikov](https://www.youtube.com/watch?v=nexKgX2d7wU) (2020/11/16)
-
-  - [[YouTube] Binary Expressions | Dmitry Soshnikov](https://www.youtube.com/watch?v=nexKgX2d7wU) (2020/12/03)
 
 - [[YouTube Playlist] Building a Compiler in JS | benwatkins10xd](https://www.youtube.com/playlist?list=PLKddWTBxzVCLRCltbWZxCyKm3IqkjEsBw)
 
