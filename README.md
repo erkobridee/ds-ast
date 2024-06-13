@@ -4,6 +4,8 @@ DS ( Data Structure ) AST (Abstract Syntax Tree)
 
 ## Definitions
 
+![](assets/anatomy-compiler.png)
+
 ### Lexer
 
 > A **lexer** transforms a sequence of characters into a sequence of tokens.
