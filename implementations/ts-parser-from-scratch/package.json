@@ -13,8 +13,9 @@
     "rdp",
     "parser",
     "lexer",
+    "implementation",
     "typescript",
-    "implementation"
+    "vitest"
   ],
   "author": "Erko Bridee",
   "license": "MIT",
