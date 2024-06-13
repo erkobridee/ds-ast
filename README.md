@@ -110,8 +110,16 @@ type LexerFn = (input: string) => Token[];
 
   - [[Udemy Course] Building a Parser from scratch - by Dmitry Soshnikov](https://www.udemy.com/course/parser-from-scratch/)
 
+  - [[GitHub] letter-rdp-source](https://github.com/DmitrySoshnikov/letter-rdp-source) - Building a Parser from scratch
+
   - [[YouTube] Tokenizer / Parser | Dmitry Soshnikov](https://www.youtube.com/watch?v=4m7ubrdbWQU) (2020/11/12)
 
   - [[YouTube] Numbers / Strings | Dmitry Soshnikov](https://www.youtube.com/watch?v=0ZDPvdp2uFk) (2020/11/14)
 
   - [[YouTube] From State Machines to Regular Expressions | Dmitry Soshnikov](https://www.youtube.com/watch?v=nexKgX2d7wU) (2020/11/16)
+
+  - [[YouTube] Binary Expressions | Dmitry Soshnikov](https://www.youtube.com/watch?v=nexKgX2d7wU) (2020/12/03)
+
+- [[YouTube Playlist] Building a Compiler in JS | benwatkins10xd](https://www.youtube.com/playlist?list=PLKddWTBxzVCLRCltbWZxCyKm3IqkjEsBw)
+
+  - [[GitHub] benwatkins10xd/js-compile](https://github.com/benwatkins10xd/js-compile) - Compiler in vanilla javascript from scratch
