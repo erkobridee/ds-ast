@@ -1,4 +1,4 @@
-import { Lexer } from '~/lexer';
+import { Lexer, TokenTypes } from '~/lexer';
 
 describe('Lexer', () => {
   it('no source', () => {
@@ -7,7 +7,7 @@ describe('Lexer', () => {
   });
 
   it('numbers', () => {
-    const type = 'NUMBER';
+    const type = TokenTypes.NUMBER;
     const lexer = new Lexer();
 
     lexer.init('0');
@@ -33,7 +33,7 @@ describe('Lexer', () => {
   });
 
   it('strings', () => {
-    const type = 'STRING';
+    const type = TokenTypes.STRING;
     const lexer = new Lexer();
 
     lexer.init(`''`);

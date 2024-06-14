@@ -6,7 +6,7 @@ import type {
   INodeStringLiteral,
 } from './AST';
 
-import { Lexer } from '~/lexer';
+import { Lexer, TokenTypes } from '~/lexer';
 import { nodeFactory } from './AST';
 
 /**
@@ -113,9 +113,9 @@ export class Parser {
    */
   private Literal() {
     switch (this.lookahead?.type) {
-      case 'NUMBER':
+      case TokenTypes.NUMBER:
         return this.NumericLiteral();
-      case 'STRING':
+      case TokenTypes.STRING:
         return this.StringLiteral();
     }
 
@@ -128,7 +128,7 @@ export class Parser {
    *   ;
    */
   private NumericLiteral(): INodeNumericLiteral {
-    const token = this.eatToken('NUMBER');
+    const token = this.eatToken(TokenTypes.NUMBER);
 
     return nodeFactory.NumericLiteral(Number(token.lexeme));
   }
@@ -139,7 +139,7 @@ export class Parser {
    *   ;
    */
   private StringLiteral(): INodeStringLiteral {
-    const token = this.eatToken('STRING');
+    const token = this.eatToken(TokenTypes.STRING);
 
     return nodeFactory.StringLiteral(token.lexeme!.slice(1, -1));
   }

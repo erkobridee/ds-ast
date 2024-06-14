@@ -7,9 +7,7 @@ describe('Parser', () => {
 
     expect(() => parser.parse()).toThrow('There is no source code to parse');
 
-    expect(() => parser.parse(`a123abc`)).toThrow(
-      'Literal: unexpected literal production'
-    );
+    expect(() => parser.parse(`a123abc`)).toThrow(/^Unexpected token: "/);
   });
 
   it('number', () => {

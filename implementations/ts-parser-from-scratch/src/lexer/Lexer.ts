@@ -1,5 +1,7 @@
 import type { IToken } from './Token';
-import { buildToken } from './Token';
+import { buildToken, Specs as TokenSpecs } from './Token';
+
+//----------------------------------------------------------------------------//
 
 /**
  * Tokenizer logic.
@@ -24,18 +26,21 @@ export class Lexer {
 
   /**
    *
-   * @returns {boolean} true if the end of the source has been reached
-   */
-  private isEOF() {
-    return this.cursor === this.source.length;
-  }
-
-  /**
-   *
    * @returns {boolean} true if there are more tokens
    */
   private hasMoreTokens() {
     return this.cursor < this.source.length;
+  }
+
+  private matchHelper(regexp: RegExp, strToCheck: string) {
+    const matched = regexp.exec(strToCheck);
+
+    if (matched === null) {
+      return null;
+    }
+
+    this.cursor += matched[0].length;
+    return matched[0];
   }
 
   /**
@@ -51,23 +56,19 @@ export class Lexer {
       return null;
     }
 
-    const string = this.source.slice(this.cursor);
+    const strToCheck = this.source.slice(this.cursor);
 
-    // Numbers:
-    let matched = /^\d+/.exec(string);
-    if (matched !== null) {
-      this.cursor += matched[0].length;
-      return buildToken('NUMBER', matched[0]);
+    for (const [regexp, tokenType] of TokenSpecs) {
+      const tokenLexeme = this.matchHelper(regexp, strToCheck);
+
+      if (tokenLexeme === null) {
+        continue;
+      }
+
+      return buildToken(tokenType, tokenLexeme);
     }
 
-    // Strings:
-    matched = /("[^"]*")|('[^']*')/.exec(string);
-    if (matched !== null) {
-      this.cursor += matched[0].length;
-      return buildToken('STRING', matched[0]);
-    }
-
-    return null;
+    throw new SyntaxError(`Unexpected token: "${strToCheck[0]}"`);
   }
 }
 
