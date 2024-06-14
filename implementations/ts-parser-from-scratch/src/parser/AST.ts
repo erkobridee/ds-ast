@@ -1,40 +1,49 @@
+export enum NodeTypes {
+  Program = 'Program',
+  StringLiteral = 'StringLiteral',
+  NumericLiteral = 'NumericLiteral',
+}
+
 export interface INodeBase {
-  type: string;
+  type: NodeTypes;
 }
 
 //----------------------------------------------------------------------------//
 
 export interface INodeStringLiteral extends INodeBase {
-  type: 'StringLiteral';
+  type: NodeTypes.StringLiteral;
   value: string;
 }
 
 export interface INodeNumericLiteral extends INodeBase {
-  type: 'NumericLiteral';
+  type: NodeTypes.NumericLiteral;
   value: number;
 }
 
 export type TLiteral = INodeNumericLiteral | INodeStringLiteral;
 
 export interface INodeProgram extends INodeBase {
-  type: 'Program';
+  type: NodeTypes.Program;
   body: TLiteral;
 }
 
 //----------------------------------------------------------------------------//
 
-export type TAbstractSyntaxTree = INodeProgram;
-
-//----------------------------------------------------------------------------//
-
 export const nodeFactory = {
-  Program: (body: TLiteral): INodeProgram => ({ type: 'Program', body }),
+  Program: (body: TLiteral): INodeProgram => ({
+    type: NodeTypes.Program,
+    body,
+  }),
   StringLiteral: (value: string): INodeStringLiteral => ({
-    type: 'StringLiteral',
+    type: NodeTypes.StringLiteral,
     value,
   }),
   NumericLiteral: (value: number): INodeNumericLiteral => ({
-    type: 'NumericLiteral',
+    type: NodeTypes.NumericLiteral,
     value,
   }),
 };
+
+//----------------------------------------------------------------------------//
+
+export type TAbstractSyntaxTree = INodeProgram;
