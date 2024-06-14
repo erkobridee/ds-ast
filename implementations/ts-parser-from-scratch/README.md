@@ -8,6 +8,12 @@ TypeScript implementation of: _**Building a Parser from scratch**_
 
 ## Commands
 
+### Setup
+
+```
+npm i
+```
+
 ### Single execution
 
 > to check the output at the terminal
