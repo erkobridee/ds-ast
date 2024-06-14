@@ -95,6 +95,8 @@ export const Specs = [
 
   //----------------------------------------------------------------------------
   // Symbols, delimiters
+  //
+  // since them are single characters, we can use their definition directly
 
   [/^;/, ';'],
 
