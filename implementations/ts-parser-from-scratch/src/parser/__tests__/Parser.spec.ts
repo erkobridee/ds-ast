@@ -19,6 +19,26 @@ describe('Parser', () => {
     expect(parser.parse('0')).toMatchObject(buildExpectedASTOutput(0));
     expect(parser.parse('42')).toMatchObject(buildExpectedASTOutput(42));
     expect(parser.parse('1337')).toMatchObject(buildExpectedASTOutput(1337));
+
+    expect(
+      parser.parse(`
+
+      // single line comment
+
+      /* comment */
+
+      /*
+        multi line comment
+      */
+
+      /**
+       * multi line comment documentation
+       */
+
+      1337
+
+    `)
+    ).toMatchObject(buildExpectedASTOutput(1337));
   });
 
   it('string', () => {
@@ -44,5 +64,24 @@ describe('Parser', () => {
     expect(parser.parse(`"13 37"`)).toMatchObject(
       buildExpectedASTOutput('13 37')
     );
+    expect(
+      parser.parse(`
+      
+      // single line comment
+
+      /* comment */
+
+      /*
+        multi line comment
+      */
+
+      /**
+       * multi line comment documentation
+       */
+
+      "13 37"
+
+    `)
+    ).toMatchObject(buildExpectedASTOutput('13 37'));
   });
 });
