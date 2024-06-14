@@ -1,3 +1,3 @@
-// TODO: define the code
+export { Lexer } from './Lexer';
 
-export const greetings = 'Hello Lexer!';
+export { default } from './Token';

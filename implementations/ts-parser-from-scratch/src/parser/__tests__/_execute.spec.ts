@@ -4,7 +4,11 @@ describe('Parser', () => {
   it('execute', () => {
     const parser = new Parser();
 
-    const program = `42`;
+    // const program = `42`;
+    // const program = `"42"`;
+    // const program = `'42'`;
+    // const program = `"hello"`;
+    const program = `'hello'`;
 
     const ast = parser.parse(program);
 
