@@ -1,4 +1,4 @@
-import { greetings } from '@/parser';
+import { greetings } from '~/parser';
 
 describe('Parser', () => {
   it('greetings', () => {
