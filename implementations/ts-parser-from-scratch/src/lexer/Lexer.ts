@@ -54,33 +54,17 @@ export class Lexer {
     const string = this.source.slice(this.cursor);
 
     // Numbers:
-    if (!Number.isNaN(Number(string[0]))) {
-      let n = '';
-
-      while (!Number.isNaN(Number(string[this.cursor]))) {
-        n += string[this.cursor++];
-      }
-
-      return buildToken('NUMBER', n);
+    let matched = /^\d+/.exec(string);
+    if (matched !== null) {
+      this.cursor += matched[0].length;
+      return buildToken('NUMBER', matched[0]);
     }
 
     // Strings:
-    if (string[0] === `"`) {
-      let s = '';
-      do {
-        s += string[this.cursor++];
-      } while (string[this.cursor] !== `"` && !this.isEOF());
-      s += string[this.cursor++];
-      return buildToken('STRING', s);
-    }
-
-    if (string[0] === `'`) {
-      let s = '';
-      do {
-        s += string[this.cursor++];
-      } while (string[this.cursor] !== `'` && !this.isEOF());
-      s += string[this.cursor++];
-      return buildToken('STRING', s);
+    matched = /("[^"]*")|('[^']*')/.exec(string);
+    if (matched !== null) {
+      this.cursor += matched[0].length;
+      return buildToken('STRING', matched[0]);
     }
 
     return null;
