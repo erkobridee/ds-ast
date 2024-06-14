@@ -1,5 +1,5 @@
 import type { IToken } from './Token';
-import { buildToken, Specs as TokenSpecs } from './Token';
+import { buildToken, Specs as TokenSpecs, Types } from './Token';
 
 //----------------------------------------------------------------------------//
 
@@ -63,6 +63,11 @@ export class Lexer {
 
       if (tokenLexeme === null) {
         continue;
+      }
+
+      // should skip token, e.g. whitespace
+      if (tokenType === Types.SKIP) {
+        return this.getNextToken();
       }
 
       return buildToken(tokenType, tokenLexeme);

@@ -6,6 +6,21 @@ describe('Lexer', () => {
     expect(lexer.getNextToken()).toBeNull();
   });
 
+  it('throw unexpected token', () => {
+    const ErrorRegexp = /^Unexpected token: "/;
+    const lexer = new Lexer();
+
+    lexer.init('test');
+    expect(() => lexer.getNextToken()).toThrow(ErrorRegexp);
+
+    lexer.init('123a');
+    expect(lexer.getNextToken()).toMatchObject({
+      type: TokenTypes.NUMBER,
+      lexeme: '123',
+    });
+    expect(() => lexer.getNextToken()).toThrow(ErrorRegexp);
+  });
+
   it('numbers', () => {
     const type = TokenTypes.NUMBER;
     const lexer = new Lexer();
@@ -30,6 +45,12 @@ describe('Lexer', () => {
       type,
       lexeme: '1337',
     });
+
+    lexer.init('  1337 ');
+    expect(lexer.getNextToken()).toMatchObject({
+      type,
+      lexeme: '1337',
+    });
   });
 
   it('strings', () => {
@@ -46,6 +67,9 @@ describe('Lexer', () => {
     expect(lexer.getNextToken()).toMatchObject({ type, lexeme: `" 42 "` });
 
     lexer.init(`'4 2'`);
+    expect(lexer.getNextToken()).toMatchObject({ type, lexeme: `'4 2'` });
+
+    lexer.init(` '4 2' `);
     expect(lexer.getNextToken()).toMatchObject({ type, lexeme: `'4 2'` });
   });
 });
