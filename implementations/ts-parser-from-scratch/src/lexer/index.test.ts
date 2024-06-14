@@ -1,3 +1,5 @@
+// TODO: remove
+
 import { greetings } from '~/lexer';
 
 describe('Lexer', () => {

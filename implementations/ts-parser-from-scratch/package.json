@@ -6,8 +6,8 @@
   "scripts": {
     "start": "npm run test",
     "test": "vitest watch",
-    "test:lexer": "vitest run src/lexer/index.test.ts",
-    "test:parser": "vitest run src/parser/index.test.ts"
+    "lexer": "vitest run src/lexer/__tests__/_execute.spec.ts --reporter=verbose",
+    "parser": "vitest run src/parser/__tests__/_execute.spec.ts --reporter=verbose"
   },
   "keywords": [
     "rdp",
