@@ -1,3 +1,2 @@
-// TODO: define the code
-
-export const greetings = 'Hello Parser!';
+export { Parser } from './Parser';
+export { default } from './Parser';
