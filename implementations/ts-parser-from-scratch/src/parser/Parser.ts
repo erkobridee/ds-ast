@@ -41,6 +41,10 @@ export class Parser {
     // TODO: review
     // this.source = source;
 
+    if (source.length === 0) {
+      throw new SyntaxError('There is no source code to parse');
+    }
+
     this.lexer.init(source);
 
     /*
