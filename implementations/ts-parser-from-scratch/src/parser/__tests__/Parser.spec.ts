@@ -12,13 +12,15 @@ describe('Parser', () => {
 
   it('number', () => {
     const buildExpectedASTOutput = (value: number) =>
-      nodeFactory.Program(nodeFactory.NumericLiteral(value));
+      nodeFactory.Program([
+        nodeFactory.ExpressionStatement(nodeFactory.NumericLiteral(value)),
+      ]);
 
     const parser = new Parser();
 
-    expect(parser.parse('0')).toMatchObject(buildExpectedASTOutput(0));
-    expect(parser.parse('42')).toMatchObject(buildExpectedASTOutput(42));
-    expect(parser.parse('1337')).toMatchObject(buildExpectedASTOutput(1337));
+    expect(parser.parse('0;')).toMatchObject(buildExpectedASTOutput(0));
+    expect(parser.parse('42;')).toMatchObject(buildExpectedASTOutput(42));
+    expect(parser.parse('1337;')).toMatchObject(buildExpectedASTOutput(1337));
 
     expect(
       parser.parse(`
@@ -35,7 +37,7 @@ describe('Parser', () => {
        * multi line comment documentation
        */
 
-      1337
+      1337;
 
     `)
     ).toMatchObject(buildExpectedASTOutput(1337));
@@ -43,25 +45,27 @@ describe('Parser', () => {
 
   it('string', () => {
     const buildExpectedASTOutput = (value: string) =>
-      nodeFactory.Program(nodeFactory.StringLiteral(value));
+      nodeFactory.Program([
+        nodeFactory.ExpressionStatement(nodeFactory.StringLiteral(value)),
+      ]);
 
     const parser = new Parser();
 
-    expect(parser.parse(`''`)).toMatchObject(buildExpectedASTOutput(''));
-    expect(parser.parse(`'""'`)).toMatchObject(buildExpectedASTOutput('""'));
-    expect(parser.parse(`'   '`)).toMatchObject(buildExpectedASTOutput('   '));
-    expect(parser.parse(`' 42 '`)).toMatchObject(
+    expect(parser.parse(`'';`)).toMatchObject(buildExpectedASTOutput(''));
+    expect(parser.parse(`'""';`)).toMatchObject(buildExpectedASTOutput('""'));
+    expect(parser.parse(`'   ';`)).toMatchObject(buildExpectedASTOutput('   '));
+    expect(parser.parse(`' 42 ';`)).toMatchObject(
       buildExpectedASTOutput(' 42 ')
     );
-    expect(parser.parse(`' 13 37 '`)).toMatchObject(
+    expect(parser.parse(`' 13 37 ';`)).toMatchObject(
       buildExpectedASTOutput(' 13 37 ')
     );
 
-    expect(parser.parse(`""`)).toMatchObject(buildExpectedASTOutput(''));
-    expect(parser.parse(`"''"`)).toMatchObject(buildExpectedASTOutput("''"));
-    expect(parser.parse(`"   "`)).toMatchObject(buildExpectedASTOutput('   '));
-    expect(parser.parse(`"42"`)).toMatchObject(buildExpectedASTOutput('42'));
-    expect(parser.parse(`"13 37"`)).toMatchObject(
+    expect(parser.parse(`"";`)).toMatchObject(buildExpectedASTOutput(''));
+    expect(parser.parse(`"''";`)).toMatchObject(buildExpectedASTOutput("''"));
+    expect(parser.parse(`"   ";`)).toMatchObject(buildExpectedASTOutput('   '));
+    expect(parser.parse(`"42";`)).toMatchObject(buildExpectedASTOutput('42'));
+    expect(parser.parse(`"13 37";`)).toMatchObject(
       buildExpectedASTOutput('13 37')
     );
     expect(
@@ -79,9 +83,48 @@ describe('Parser', () => {
        * multi line comment documentation
        */
 
-      "13 37"
+      "13 37";
 
     `)
     ).toMatchObject(buildExpectedASTOutput('13 37'));
+  });
+
+  it('statement list', () => {
+    const buildExpectedASTOutput = (value: string) =>
+      nodeFactory.Program([
+        nodeFactory.ExpressionStatement(nodeFactory.StringLiteral(value)),
+      ]);
+
+    const parser = new Parser();
+
+    expect(
+      parser.parse(`
+
+      // single line
+
+      'hello';
+
+      /* multi line comment in a line */
+
+      /* 
+        multi line comment 
+      */
+
+      42;
+
+      /**
+       * multi line comment documentation
+       */
+
+      'world!';
+
+    `)
+    ).toMatchObject(
+      nodeFactory.Program([
+        nodeFactory.ExpressionStatement(nodeFactory.StringLiteral('hello')),
+        nodeFactory.ExpressionStatement(nodeFactory.NumericLiteral(42)),
+        nodeFactory.ExpressionStatement(nodeFactory.StringLiteral('world!')),
+      ])
+    );
   });
 });

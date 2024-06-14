@@ -1,5 +1,6 @@
 export enum NodeTypes {
   Program = 'Program',
+  ExpressionStatement = 'ExpressionStatement',
   StringLiteral = 'StringLiteral',
   NumericLiteral = 'NumericLiteral',
 }
@@ -22,17 +23,26 @@ export interface INodeNumericLiteral extends INodeBase {
 
 export type TLiteral = INodeNumericLiteral | INodeStringLiteral;
 
+export interface INodeExpressionStatement extends INodeBase {
+  type: NodeTypes.ExpressionStatement;
+  expression: TLiteral;
+}
+
 export interface INodeProgram extends INodeBase {
   type: NodeTypes.Program;
-  body: TLiteral;
+  body: INodeExpressionStatement[];
 }
 
 //----------------------------------------------------------------------------//
 
 export const nodeFactory = {
-  Program: (body: TLiteral): INodeProgram => ({
+  Program: (body: INodeExpressionStatement[]): INodeProgram => ({
     type: NodeTypes.Program,
     body,
+  }),
+  ExpressionStatement: (expression: TLiteral): INodeExpressionStatement => ({
+    type: NodeTypes.ExpressionStatement,
+    expression,
   }),
   StringLiteral: (value: string): INodeStringLiteral => ({
     type: NodeTypes.StringLiteral,

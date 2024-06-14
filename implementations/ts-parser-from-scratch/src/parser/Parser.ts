@@ -2,6 +2,7 @@ import type { IToken } from '~/lexer/Token';
 import type {
   TAbstractSyntaxTree,
   INodeProgram,
+  INodeExpressionStatement,
   INodeNumericLiteral,
   INodeStringLiteral,
 } from './AST';
@@ -17,9 +18,6 @@ import { nodeFactory } from './AST';
 export class Parser {
   private lexer: Lexer;
 
-  // TODO: review
-  // private source = '';
-
   private lookahead: IToken | null = null;
 
   /**
@@ -27,9 +25,6 @@ export class Parser {
    */
   constructor() {
     this.lexer = new Lexer();
-
-    // TODO: review
-    // this.source = '';
   }
 
   /**
@@ -39,9 +34,6 @@ export class Parser {
    * @returns {ASTNode} - the abstract syntax tree
    */
   public parse(source = ''): TAbstractSyntaxTree {
-    // TODO: review
-    // this.source = source;
-
     if (source.length === 0) {
       throw new SyntaxError('There is no source code to parse');
     }
@@ -93,6 +85,7 @@ export class Parser {
   }
 
   //--------------------------------------------------------------------------//
+  // @begin: states machine
 
   /**
    * Main entry point
@@ -102,7 +95,54 @@ export class Parser {
    *   ;
    */
   private Program(): INodeProgram {
-    return nodeFactory.Program(this.Literal());
+    return nodeFactory.Program(this.StatementList());
+  }
+
+  /**
+   * StatementList
+   *   : Statement
+   *   | StatementList Statement -> Statement Statement Statement Statement
+   *   ;
+   */
+  private StatementList() {
+    const statementList: INodeExpressionStatement[] = [
+      this.ExpressionStatement(),
+    ];
+
+    while (this.lookahead !== null) {
+      statementList.push(this.Statement());
+    }
+
+    return statementList;
+  }
+
+  /**
+   * Statement
+   *   : ExpressionStatement
+   *   ;
+   */
+  private Statement() {
+    return this.ExpressionStatement();
+  }
+
+  /**
+   * ExpressionStatement
+   *   : Expression ';'
+   *   ;
+   */
+  private ExpressionStatement() {
+    const expression = this.Expression();
+    this.eatToken(';');
+    return nodeFactory.ExpressionStatement(expression);
+  }
+
+  /**
+   * Expression
+   *   : Literal
+   *   ;
+   */
+  private Expression() {
+    return this.Literal();
   }
 
   /**
@@ -144,6 +184,7 @@ export class Parser {
     return nodeFactory.StringLiteral(token.lexeme!.slice(1, -1));
   }
 
+  // @end: states machine
   //--------------------------------------------------------------------------//
 }
 
