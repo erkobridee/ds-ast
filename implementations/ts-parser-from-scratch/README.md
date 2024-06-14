@@ -6,6 +6,36 @@ TypeScript implementation of: _**Building a Parser from scratch**_
 
 - Project template: [[GitHub] erkobridee/vitest-ts](https://github.com/erkobridee/vitest-ts)
 
+## Commands
+
+### Single execution
+
+> to check the output at the terminal
+
+#### Lexer
+
+```
+npm run lexer
+```
+
+#### Parser
+
+```
+npm run parser
+```
+
+### Development
+
+> start the vitest environment
+
+```
+npm start
+
+or
+
+npm run test
+```
+
 ## References
 
 - [Building a Parser from scratch | Dmitry Soshnikov](http://dmitrysoshnikov.com/courses/parser-from-scratch/) (2020/12/13) - [Udemy Course](https://www.udemy.com/course/parser-from-scratch/) | [Teachable](https://www.dmitrysoshnikov.education/p/parser-from-scratch/)
