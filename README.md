@@ -132,3 +132,7 @@ type LexerFn = (input: string) => Token[];
 - [[YouTube Playlist] Building a Compiler in JS | benwatkins10xd](https://www.youtube.com/playlist?list=PLKddWTBxzVCLRCltbWZxCyKm3IqkjEsBw)
 
   - [[GitHub] benwatkins10xd/js-compile](https://github.com/benwatkins10xd/js-compile) - Compiler in vanilla javascript from scratch
+
+- [[YouTube] abstract syntax tree's are gonna be IMPORTANT in 2024 | Chris Hay](https://www.youtube.com/watch?v=vgRQREmr0rA) (2023/12/28)
+
+  - [[GitHub] chrishayuk/typescript-parsing](https://github.com/chrishayuk/typescript-parsing)
