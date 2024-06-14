@@ -40,6 +40,43 @@ describe('Lexer', () => {
       lexeme: '42',
     });
 
+    lexer.init(`
+      
+      // Number:
+      42
+
+    `);
+    expect(lexer.getNextToken()).toMatchObject({
+      type,
+      lexeme: '42',
+    });
+
+    lexer.init(`
+      
+      /**
+        Multi line comment
+       */
+      42
+
+    `);
+    expect(lexer.getNextToken()).toMatchObject({
+      type,
+      lexeme: '42',
+    });
+
+    lexer.init(`
+      
+      /**
+       * Multi line comment documentation
+       */
+      42
+
+    `);
+    expect(lexer.getNextToken()).toMatchObject({
+      type,
+      lexeme: '42',
+    });
+
     lexer.init('1337');
     expect(lexer.getNextToken()).toMatchObject({
       type,
@@ -71,5 +108,42 @@ describe('Lexer', () => {
 
     lexer.init(` '4 2' `);
     expect(lexer.getNextToken()).toMatchObject({ type, lexeme: `'4 2'` });
+
+    lexer.init(`
+
+      // String:
+      "Single line comment"
+
+    `);
+    expect(lexer.getNextToken()).toMatchObject({
+      type,
+      lexeme: `"Single line comment"`,
+    });
+
+    lexer.init(`
+
+      /**
+        Multi line comment
+       */
+      "Multi line comment"
+
+    `);
+    expect(lexer.getNextToken()).toMatchObject({
+      type,
+      lexeme: `"Multi line comment"`,
+    });
+
+    lexer.init(`
+
+      /**
+       * Multi line comment documentation
+       */
+      "Multi line comment documentation"
+
+    `);
+    expect(lexer.getNextToken()).toMatchObject({
+      type,
+      lexeme: `"Multi line comment documentation"`,
+    });
   });
 });
