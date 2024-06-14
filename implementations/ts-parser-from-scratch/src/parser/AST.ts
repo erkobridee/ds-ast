@@ -24,3 +24,17 @@ export interface INodeProgram extends INodeBase {
 //----------------------------------------------------------------------------//
 
 export type TAbstractSyntaxTree = INodeProgram;
+
+//----------------------------------------------------------------------------//
+
+export const nodeFactory = {
+  Program: (body: TLiteral): INodeProgram => ({ type: 'Program', body }),
+  StringLiteral: (value: string): INodeStringLiteral => ({
+    type: 'StringLiteral',
+    value,
+  }),
+  NumericLiteral: (value: number): INodeNumericLiteral => ({
+    type: 'NumericLiteral',
+    value,
+  }),
+};

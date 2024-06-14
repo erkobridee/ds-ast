@@ -4,9 +4,10 @@ import type {
   INodeProgram,
   INodeNumericLiteral,
   INodeStringLiteral,
-} from '~/parser/AST';
+} from './AST';
 
 import { Lexer } from '~/lexer';
+import { nodeFactory } from './AST';
 
 /**
  * Recursive descent parser implementation.
@@ -101,10 +102,7 @@ export class Parser {
    *   ;
    */
   private Program(): INodeProgram {
-    return {
-      type: 'Program',
-      body: this.Literal(),
-    };
+    return nodeFactory.Program(this.Literal());
   }
 
   /**
@@ -132,10 +130,7 @@ export class Parser {
   private NumericLiteral(): INodeNumericLiteral {
     const token = this.eatToken('NUMBER');
 
-    return {
-      type: 'NumericLiteral',
-      value: Number(token.lexeme),
-    };
+    return nodeFactory.NumericLiteral(Number(token.lexeme));
   }
 
   /**
@@ -146,10 +141,7 @@ export class Parser {
   private StringLiteral(): INodeStringLiteral {
     const token = this.eatToken('STRING');
 
-    return {
-      type: 'StringLiteral',
-      value: token.lexeme!.slice(1, -1),
-    };
+    return nodeFactory.StringLiteral(token.lexeme!.slice(1, -1));
   }
 
   //--------------------------------------------------------------------------//

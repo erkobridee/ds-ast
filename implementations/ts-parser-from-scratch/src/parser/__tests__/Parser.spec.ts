@@ -1,4 +1,5 @@
 import { Parser } from '~/parser';
+import { nodeFactory } from '~/parser/AST';
 
 describe('Parser', () => {
   it('thow exception on empty source', () => {
@@ -12,13 +13,8 @@ describe('Parser', () => {
   });
 
   it('number', () => {
-    const buildExpectedASTOutput = (value: number) => ({
-      type: 'Program',
-      body: {
-        type: 'NumericLiteral',
-        value,
-      },
-    });
+    const buildExpectedASTOutput = (value: number) =>
+      nodeFactory.Program(nodeFactory.NumericLiteral(value));
 
     const parser = new Parser();
 
@@ -28,13 +24,8 @@ describe('Parser', () => {
   });
 
   it('string', () => {
-    const buildExpectedASTOutput = (value: string) => ({
-      type: 'Program',
-      body: {
-        type: 'StringLiteral',
-        value,
-      },
-    });
+    const buildExpectedASTOutput = (value: string) =>
+      nodeFactory.Program(nodeFactory.StringLiteral(value));
 
     const parser = new Parser();
 
