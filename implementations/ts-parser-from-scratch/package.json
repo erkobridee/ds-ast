@@ -5,7 +5,7 @@
   "description": "TypeScript implementation of Building a Parser from scratch",
   "scripts": {
     "start": "npm run test",
-    "test": "vitest watch",
+    "test": "vitest watch --exclude **/_execute.spec.ts",
     "lexer": "vitest run src/lexer/__tests__/_execute.spec.ts --reporter=verbose",
     "parser": "vitest run src/parser/__tests__/_execute.spec.ts --reporter=verbose"
   },
