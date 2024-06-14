@@ -4,6 +4,8 @@
 
 TypeScript implementation of: _**Building a Parser from scratch**_
 
+- Project template: [[GitHub] erkobridee/vitest-ts](https://github.com/erkobridee/vitest-ts)
+
 ## References
 
 - [Building a Parser from scratch | Dmitry Soshnikov](http://dmitrysoshnikov.com/courses/parser-from-scratch/) (2020/12/13) - [Udemy Course](https://www.udemy.com/course/parser-from-scratch/) | [Teachable](https://www.dmitrysoshnikov.education/p/parser-from-scratch/)
@@ -21,25 +23,3 @@ TypeScript implementation of: _**Building a Parser from scratch**_
   - [[YouTube] From State Machines to Regular Expressions | Dmitry Soshnikov](https://www.youtube.com/watch?v=nexKgX2d7wU) (2020/11/16)
 
   - [[YouTube] Binary Expressions | Dmitry Soshnikov](https://www.youtube.com/watch?v=nexKgX2d7wU) (2020/12/03)
-
-## dev dependencies
-
-```
-npm i -D \
-  @types/jest \
-  @types/node \
-  esbuild \
-  typescript \
-  vitest \
-  vite-tsconfig-paths
-```
-
-- [esbuild](https://esbuild.github.io/) - An extremely fast bundler for the web
-
-- [TypeScript](https://www.typescriptlang.org/)
-
-- [Vitest](https://vitest.dev/) - Next Generation testing framework
-
-  - [How to test with relative import · vitest-dev/vitest · Discussion #1285](https://github.com/vitest-dev/vitest/discussions/1285)
-
-    - [[GitHub] aleclarson/vite-tsconfig-paths](https://github.com/aleclarson/vite-tsconfig-paths) - Support for TypeScript's path mapping in Vite
