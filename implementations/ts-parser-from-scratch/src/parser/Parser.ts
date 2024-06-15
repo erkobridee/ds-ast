@@ -2,7 +2,7 @@ import type { IToken } from '~/lexer/Token';
 import type {
   TAbstractSyntaxTree,
   INodeProgram,
-  INodeExpressionStatement,
+  TStatement,
   INodeNumericLiteral,
   INodeStringLiteral,
 } from './AST';
@@ -84,6 +84,10 @@ export class Parser {
     return token;
   }
 
+  private getLookaheadTokenType() {
+    return this.lookahead?.type;
+  }
+
   //--------------------------------------------------------------------------//
   // @begin: states machine
 
@@ -104,12 +108,13 @@ export class Parser {
    *   | StatementList Statement -> Statement Statement Statement Statement
    *   ;
    */
-  private StatementList() {
-    const statementList: INodeExpressionStatement[] = [
-      this.ExpressionStatement(),
-    ];
+  private StatementList(stopLookahedTokenType?: string) {
+    const statementList: TStatement[] = [this.Statement()];
 
-    while (this.lookahead !== null) {
+    while (
+      this.lookahead !== null &&
+      this.getLookaheadTokenType() !== stopLookahedTokenType
+    ) {
       statementList.push(this.Statement());
     }
 
@@ -118,11 +123,46 @@ export class Parser {
 
   /**
    * Statement
-   *   : ExpressionStatement
+   *   : EmptyStatement
+   *   | BlockStatement
+   *   | ExpressionStatement
    *   ;
    */
   private Statement() {
-    return this.ExpressionStatement();
+    switch (this.getLookaheadTokenType()) {
+      case ';':
+        return this.EmptyStatement();
+      case '{':
+        return this.BlockStatement();
+      default:
+        return this.ExpressionStatement();
+    }
+  }
+
+  /**
+   * EmptyStatement
+   *   : ';'
+   *   ;
+   */
+  private EmptyStatement() {
+    this.eatToken(';');
+    return nodeFactory.EmptyStatement();
+  }
+
+  /**
+   * BlockStatement
+   *   : '{' OptStatementList '}'
+   *   ;
+   */
+  private BlockStatement() {
+    this.eatToken('{');
+
+    const body =
+      this.getLookaheadTokenType() !== '}' ? this.StatementList('}') : [];
+
+    this.eatToken('}');
+
+    return nodeFactory.BlockStatement(body);
   }
 
   /**
@@ -132,7 +172,9 @@ export class Parser {
    */
   private ExpressionStatement() {
     const expression = this.Expression();
+
     this.eatToken(';');
+
     return nodeFactory.ExpressionStatement(expression);
   }
 
@@ -152,7 +194,7 @@ export class Parser {
    *   ;
    */
   private Literal() {
-    switch (this.lookahead?.type) {
+    switch (this.getLookaheadTokenType()) {
       case TokenTypes.NUMBER:
         return this.NumericLiteral();
       case TokenTypes.STRING:

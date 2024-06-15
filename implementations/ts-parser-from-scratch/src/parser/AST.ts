@@ -1,6 +1,10 @@
 export enum NodeTypes {
   Program = 'Program',
+
+  BlockStatement = 'BlockStatement',
   ExpressionStatement = 'ExpressionStatement',
+  EmptyStatement = 'EmptyStatement',
+
   StringLiteral = 'StringLiteral',
   NumericLiteral = 'NumericLiteral',
 }
@@ -28,22 +32,47 @@ export interface INodeExpressionStatement extends INodeBase {
   expression: TLiteral;
 }
 
+export interface INodeBlockStatement extends INodeBase {
+  type: NodeTypes.BlockStatement;
+  body: TStatement[];
+}
+
+export interface INodeEmptyStatement extends INodeBase {
+  type: NodeTypes.EmptyStatement;
+}
+
+export type TStatement =
+  | INodeBlockStatement
+  | INodeExpressionStatement
+  | INodeEmptyStatement;
+
 export interface INodeProgram extends INodeBase {
   type: NodeTypes.Program;
-  body: INodeExpressionStatement[];
+  body: TStatement[];
 }
 
 //----------------------------------------------------------------------------//
 
 export const nodeFactory = {
-  Program: (body: INodeExpressionStatement[]): INodeProgram => ({
+  Program: (body: TStatement[]): INodeProgram => ({
     type: NodeTypes.Program,
     body,
   }),
+
+  BlockStatement: (body: TStatement[]): INodeBlockStatement => ({
+    type: NodeTypes.BlockStatement,
+    body,
+  }),
+
   ExpressionStatement: (expression: TLiteral): INodeExpressionStatement => ({
     type: NodeTypes.ExpressionStatement,
     expression,
   }),
+
+  EmptyStatement: (): INodeEmptyStatement => ({
+    type: NodeTypes.EmptyStatement,
+  }),
+
   StringLiteral: (value: string): INodeStringLiteral => ({
     type: NodeTypes.StringLiteral,
     value,
