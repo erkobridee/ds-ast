@@ -27,9 +27,10 @@ export interface INodeNumericLiteral extends INodeBase {
 
 export type TLiteral = INodeNumericLiteral | INodeStringLiteral;
 
-export interface INodeExpressionStatement extends INodeBase {
-  type: NodeTypes.ExpressionStatement;
-  expression: TLiteral;
+export type TExpression = TLiteral;
+
+export interface INodeEmptyStatement extends INodeBase {
+  type: NodeTypes.EmptyStatement;
 }
 
 export interface INodeBlockStatement extends INodeBase {
@@ -37,14 +38,15 @@ export interface INodeBlockStatement extends INodeBase {
   body: TStatement[];
 }
 
-export interface INodeEmptyStatement extends INodeBase {
-  type: NodeTypes.EmptyStatement;
+export interface INodeExpressionStatement extends INodeBase {
+  type: NodeTypes.ExpressionStatement;
+  expression: TExpression;
 }
 
 export type TStatement =
+  | INodeEmptyStatement
   | INodeBlockStatement
-  | INodeExpressionStatement
-  | INodeEmptyStatement;
+  | INodeExpressionStatement;
 
 export interface INodeProgram extends INodeBase {
   type: NodeTypes.Program;
@@ -64,7 +66,7 @@ export const nodeFactory = {
     body,
   }),
 
-  ExpressionStatement: (expression: TLiteral): INodeExpressionStatement => ({
+  ExpressionStatement: (expression: TExpression): INodeExpressionStatement => ({
     type: NodeTypes.ExpressionStatement,
     expression,
   }),
