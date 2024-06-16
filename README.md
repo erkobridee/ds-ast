@@ -83,6 +83,12 @@ type LexerFn = (input: string) => Token[];
 
   - [Compilers 102 - Parser](https://dev.to/lefebvre/compilers-102---parser-2gni) (2018/01/22)
 
+- [Grammar: The language of languages (BNF, EBNF, ABNF and more)](https://matt.might.net/articles/grammars-bnf-ebnf/)
+
+  - [BNF Playground](https://bnfplayground.pauliankline.com/)
+
+  - [Backus–Naur Form | Ada Computer Science](https://adacomputerscience.org/concepts/trans_bnf)
+
 #### Compiler
 
 - [Computer Language - (Compiler|Interpreter) - Language translator | DataCadamia](https://datacadamia.com/code/compiler/compiler)
