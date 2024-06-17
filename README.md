@@ -103,8 +103,6 @@ type LexerFn = (input: string) => Token[];
 
 - [EBNF: How to describe the grammar of a language](https://tomassetti.me/ebnf/)
 
-- [Examples of EBNF Grammars](https://github.com/antlr/grammars-v4) - list available on github
-
 #### Compiler
 
 - [Computer Language - (Compiler|Interpreter) - Language translator | DataCadamia](https://datacadamia.com/code/compiler/compiler)
@@ -158,3 +156,15 @@ type LexerFn = (input: string) => Token[];
 - [[YouTube] abstract syntax tree's are gonna be IMPORTANT in 2024 | Chris Hay](https://www.youtube.com/watch?v=vgRQREmr0rA) (2023/12/28)
 
   - [[GitHub] chrishayuk/typescript-parsing](https://github.com/chrishayuk/typescript-parsing)
+
+#### ANTLR - ANother Tool for Language Recognition
+
+- [ANTLR](https://www.antlr.org/)
+
+  - [Playground](http://lab.antlr.org/)
+
+- [[GitHub] antlr/antlr4](https://github.com/antlr/antlr4) - is a powerful parser generator for reading, processing, executing, or translating structured text or binary files.
+
+- [[GitHub] antlr/grammars-v4](https://github.com/antlr/grammars-v4) - Grammars written for ANTLR v4; expectation that the grammars are free of actions.
+
+- [The ANTLR Mega Tutorial | strumenta](https://tomassetti.me/antlr-mega-tutorial/)
