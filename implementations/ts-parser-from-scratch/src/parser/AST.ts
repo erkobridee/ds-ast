@@ -1,9 +1,13 @@
 export enum NodeTypes {
   Program = 'Program',
 
+  EmptyStatement = 'EmptyStatement',
   BlockStatement = 'BlockStatement',
   ExpressionStatement = 'ExpressionStatement',
-  EmptyStatement = 'EmptyStatement',
+
+  BinaryExpression = 'BinaryExpression',
+  // TODO: review
+  AdditiveExpression = 'AdditiveExpression',
 
   StringLiteral = 'StringLiteral',
   NumericLiteral = 'NumericLiteral',
@@ -27,7 +31,17 @@ export interface INodeNumericLiteral extends INodeBase {
 
 export type TLiteral = INodeNumericLiteral | INodeStringLiteral;
 
-export type TExpression = TLiteral;
+export type TExpression = TLiteral | INodeBinaryExpression;
+
+export interface INodeBinaryExpression extends INodeBase {
+  type: NodeTypes.BinaryExpression;
+
+  // TODO: review
+  operator: string;
+
+  left: TExpression;
+  right: TExpression;
+}
 
 export interface INodeEmptyStatement extends INodeBase {
   type: NodeTypes.EmptyStatement;
@@ -61,6 +75,10 @@ export const nodeFactory = {
     body,
   }),
 
+  EmptyStatement: (): INodeEmptyStatement => ({
+    type: NodeTypes.EmptyStatement,
+  }),
+
   BlockStatement: (body: TStatement[]): INodeBlockStatement => ({
     type: NodeTypes.BlockStatement,
     body,
@@ -71,8 +89,17 @@ export const nodeFactory = {
     expression,
   }),
 
-  EmptyStatement: (): INodeEmptyStatement => ({
-    type: NodeTypes.EmptyStatement,
+  BinaryExpression: (
+    // TODO: review
+    operator: string,
+
+    left: TExpression,
+    right: TExpression
+  ): INodeBinaryExpression => ({
+    type: NodeTypes.BinaryExpression,
+    operator,
+    left,
+    right,
   }),
 
   StringLiteral: (value: string): INodeStringLiteral => ({

@@ -72,6 +72,8 @@ export const buildToken = (...args: unknown[]) => {
 export const Types = {
   SKIP: null,
 
+  ADDITIVE_OPERATOR: 'ADDITIVE_OPERATOR',
+
   NUMBER: 'NUMBER',
   STRING: 'STRING',
 } as const;
@@ -101,6 +103,11 @@ export const Specs = [
   [/^;/, ';'],
   [/^{/, '{'],
   [/^}/, '}'],
+
+  //----------------------------------------------------------------------------
+  // Math operators: +, -
+
+  [/^[+\-]/, Types.ADDITIVE_OPERATOR],
 
   //----------------------------------------------------------------------------
   // Numbers

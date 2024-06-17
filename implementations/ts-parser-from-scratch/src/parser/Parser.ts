@@ -3,6 +3,7 @@ import type {
   TAbstractSyntaxTree,
   INodeProgram,
   TStatement,
+  TExpression,
   INodeNumericLiteral,
   INodeStringLiteral,
 } from './AST';
@@ -180,11 +181,32 @@ export class Parser {
 
   /**
    * Expression
-   *   : Literal
+   *   : AdditiveExpression
    *   ;
    */
   private Expression() {
-    return this.Literal();
+    return this.AdditiveExpression();
+  }
+
+  /**
+   * AdditiveExpression
+   *  : Literal
+   *  | AdditiveExpression ADDITIVE_OPERATOR Literal -> Literal ADDITIVE_OPERATOR Literal ADDITIVE_OPERATOR Literal
+   *  ;
+   */
+  private AdditiveExpression() {
+    let left: TExpression = this.Literal();
+
+    while (this.getLookaheadTokenType() === 'ADDITIVE_OPERATOR') {
+      // Operator: +, -
+      const operator = this.eatToken('ADDITIVE_OPERATOR').lexeme!;
+
+      const right = this.Literal();
+
+      left = nodeFactory.BinaryExpression(operator, left, right);
+    }
+
+    return left;
   }
 
   /**
