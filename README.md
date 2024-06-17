@@ -83,11 +83,27 @@ type LexerFn = (input: string) => Token[];
 
   - [Compilers 102 - Parser](https://dev.to/lefebvre/compilers-102---parser-2gni) (2018/01/22)
 
+### The Language of languages
+
 - [Grammar: The language of languages (BNF, EBNF, ABNF and more)](https://matt.might.net/articles/grammars-bnf-ebnf/)
 
-  - [BNF Playground](https://bnfplayground.pauliankline.com/)
+#### BNF - Backus-Naur Form
 
-  - [Backus–Naur Form | Ada Computer Science](https://adacomputerscience.org/concepts/trans_bnf)
+- [BNF Playground](https://bnfplayground.pauliankline.com/)
+
+- [Backus–Naur Form | Ada Computer Science](https://adacomputerscience.org/concepts/trans_bnf)
+
+- [Backus–Naur form | Wikipedia](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form)
+
+- [BNF Notation: Dive Deeper Into Python's Grammar | Real Python](https://realpython.com/python-bnf-notation/)
+
+- [4.2: Application - BNF | Engineering LibreTexts](<https://eng.libretexts.org/Bookshelves/Computer_Science/Programming_and_Computation_Fundamentals/Foundations_of_Computation_(Critchlow_and_Eck)/04%3A_Grammars/4.02%3A_Application_-_BNF>)
+
+#### EBNF - Extended Backus-Naur Form
+
+- [EBNF: How to describe the grammar of a language](https://tomassetti.me/ebnf/)
+
+- [Examples of EBNF Grammars](https://github.com/antlr/grammars-v4) - list available on github
 
 #### Compiler
 
