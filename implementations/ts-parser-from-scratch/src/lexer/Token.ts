@@ -73,6 +73,7 @@ export const Types = {
   SKIP: null,
 
   ADDITIVE_OPERATOR: 'ADDITIVE_OPERATOR',
+  MULTIPLICATIVE_OPERATOR: 'MULTIPLICATIVE_OPERATOR',
 
   NUMBER: 'NUMBER',
   STRING: 'STRING',
@@ -105,9 +106,10 @@ export const Specs = [
   [/^}/, '}'],
 
   //----------------------------------------------------------------------------
-  // Math operators: +, -
+  // Math operators: +, -, *, /
 
   [/^[+\-]/, Types.ADDITIVE_OPERATOR],
+  [/^[*\/]/, Types.MULTIPLICATIVE_OPERATOR],
 
   //----------------------------------------------------------------------------
   // Numbers

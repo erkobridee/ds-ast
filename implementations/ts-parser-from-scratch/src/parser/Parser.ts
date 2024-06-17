@@ -190,23 +190,57 @@ export class Parser {
 
   /**
    * AdditiveExpression
-   *  : Literal
-   *  | AdditiveExpression ADDITIVE_OPERATOR Literal -> Literal ADDITIVE_OPERATOR Literal ADDITIVE_OPERATOR Literal
+   *  : MultiplicativeExpression
+   *  | AdditiveExpression ADDITIVE_OPERATOR MultiplicativeExpression -> MultiplicativeExpression ADDITIVE_OPERATOR MultiplicativeExpression ADDITIVE_OPERATOR MultiplicativeExpression
    *  ;
    */
   private AdditiveExpression() {
-    let left: TExpression = this.Literal();
+    let left: TExpression = this.MultiplicativeExpression();
 
-    while (this.getLookaheadTokenType() === 'ADDITIVE_OPERATOR') {
+    while (this.getLookaheadTokenType() === TokenTypes.ADDITIVE_OPERATOR) {
       // Operator: +, -
-      const operator = this.eatToken('ADDITIVE_OPERATOR').lexeme!;
+      const operator = this.eatToken(TokenTypes.ADDITIVE_OPERATOR).lexeme!;
 
-      const right = this.Literal();
+      const right = this.MultiplicativeExpression();
 
       left = nodeFactory.BinaryExpression(operator, left, right);
     }
 
     return left;
+  }
+
+  /**
+   * MultiplicativeExpression
+   *  : PrimaryExpression
+   *  | MultiplicativeExpression MULTIPLICATIVE_OPERATOR PrimaryExpression -> PrimaryExpression MULTIPLICATIVE_OPERATOR PrimaryExpression MULTIPLICATIVE_OPERATOR PrimaryExpression
+   */
+  MultiplicativeExpression() {
+    let left: TExpression = this.PrimaryExpression();
+
+    while (
+      this.getLookaheadTokenType() === TokenTypes.MULTIPLICATIVE_OPERATOR
+    ) {
+      // Operator: *, /
+      const operator = this.eatToken(TokenTypes.MULTIPLICATIVE_OPERATOR)
+        .lexeme!;
+
+      const right = this.PrimaryExpression();
+
+      left = nodeFactory.BinaryExpression(operator, left, right);
+    }
+
+    return left;
+  }
+
+  /**
+   * PrimaryExpression
+   *   : Literal
+   *   ;
+   */
+  PrimaryExpression() {
+    // TODO: define the code
+
+    return this.Literal();
   }
 
   /**
