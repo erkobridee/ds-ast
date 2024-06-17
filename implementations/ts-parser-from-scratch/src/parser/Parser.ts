@@ -11,6 +11,13 @@ import type {
 import { Lexer, TokenTypes } from '~/lexer';
 import { nodeFactory } from './AST';
 
+//----------------------------------------------------------------------------//
+
+enum BinaryBuilderName {
+  PrimaryExpression = 'PrimaryExpression',
+  MultiplicativeExpression = 'MultiplicativeExpression',
+}
+
 /**
  * Recursive descent parser implementation.
  *
@@ -196,7 +203,7 @@ export class Parser {
    */
   private AdditiveExpression() {
     return this.BinaryExpression(
-      'MultiplicativeExpression',
+      BinaryBuilderName.MultiplicativeExpression,
       TokenTypes.ADDITIVE_OPERATOR
     );
   }
@@ -208,7 +215,7 @@ export class Parser {
    */
   MultiplicativeExpression() {
     return this.BinaryExpression(
-      'PrimaryExpression',
+      BinaryBuilderName.PrimaryExpression,
       TokenTypes.MULTIPLICATIVE_OPERATOR
     );
   }
@@ -216,14 +223,14 @@ export class Parser {
   /**
    * Generic binary expression
    */
-  BinaryExpression(builderName: string, operatorTokenType: string) {
-    let left: TExpression = (<any>this)[builderName](); // ugly way...
+  BinaryExpression(builderName: BinaryBuilderName, operatorTokenType: string) {
+    let left: TExpression = this[builderName]() as TExpression;
 
     while (this.getLookaheadTokenType() === operatorTokenType) {
       // Operator: *, /
       const operator = this.eatToken(operatorTokenType).lexeme!;
 
-      const right = (<any>this)[builderName](); // ugly way...
+      const right = this[builderName]() as TExpression;
 
       left = nodeFactory.BinaryExpression(operator, left, right);
     }
