@@ -10,24 +10,30 @@ describe('Parser', () => {
     // const program = `"hello";`;
     // const program = `'hello';`;
 
+    // const program = `
+    //   // single line
+
+    //   'hello';
+
+    //   /* multi line comment in a line */
+
+    //   /*
+    //     multi line comment
+    //   */
+
+    //   42;
+
+    //   /**
+    //    * multi line comment documentation
+    //    */
+
+    //   'world!';
+    // `;
     const program = `
-      // single line
+    
+    (42);
+    // ( 2 + 2 ) * 2;
 
-      'hello';
-
-      /* multi line comment in a line */
-
-      /* 
-        multi line comment 
-      */
-
-      42;
-
-      /**
-       * multi line comment documentation
-       */
-
-      'world!';
     `;
 
     const ast = parser.parse(program);

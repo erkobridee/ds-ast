@@ -6,8 +6,6 @@ export enum NodeTypes {
   ExpressionStatement = 'ExpressionStatement',
 
   BinaryExpression = 'BinaryExpression',
-  // TODO: review
-  AdditiveExpression = 'AdditiveExpression',
 
   StringLiteral = 'StringLiteral',
   NumericLiteral = 'NumericLiteral',
@@ -35,10 +33,7 @@ export type TExpression = TLiteral | INodeBinaryExpression;
 
 export interface INodeBinaryExpression extends INodeBase {
   type: NodeTypes.BinaryExpression;
-
-  // TODO: review
   operator: string;
-
   left: TExpression;
   right: TExpression;
 }

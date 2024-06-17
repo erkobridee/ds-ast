@@ -233,14 +233,32 @@ export class Parser {
   }
 
   /**
+   * This will enforce the correct precedence inside of the AST
+   *
    * PrimaryExpression
-   *   : Literal
+   *   : ParenthesizedExpression
+   *   | Literal
    *   ;
    */
   PrimaryExpression() {
-    // TODO: define the code
+    switch (this.getLookaheadTokenType()) {
+      case '(':
+        return this.ParenthesizedExpression();
+      default:
+        return this.Literal();
+    }
+  }
 
-    return this.Literal();
+  /**
+   * ParenthesizedExpression
+   *   : '(' Expression ')'
+   *   ;
+   */
+  ParenthesizedExpression(): TExpression {
+    this.eatToken('(');
+    const expression = this.Expression();
+    this.eatToken(')');
+    return expression;
   }
 
   /**

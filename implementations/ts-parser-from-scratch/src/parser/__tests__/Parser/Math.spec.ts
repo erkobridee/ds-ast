@@ -77,7 +77,9 @@ describe('Math Expression', () => {
         ),
       ])
     );
+  });
 
+  describe('Mixed Aditive and Multiplicative Operations', () => {
     test(
       '2 + 2 * 2;',
       nodeFactory.Program([
@@ -90,6 +92,32 @@ describe('Math Expression', () => {
               nodeFactory.NumericLiteral(2),
               nodeFactory.NumericLiteral(2)
             )
+          )
+        ),
+      ])
+    );
+  });
+
+  describe('Parenthesized Expression', () => {
+    test(
+      '(42);',
+      nodeFactory.Program([
+        nodeFactory.ExpressionStatement(nodeFactory.NumericLiteral(42)),
+      ])
+    );
+
+    test(
+      '( 2 + 2 ) * 2;',
+      nodeFactory.Program([
+        nodeFactory.ExpressionStatement(
+          nodeFactory.BinaryExpression(
+            '*',
+            nodeFactory.BinaryExpression(
+              '+',
+              nodeFactory.NumericLiteral(2),
+              nodeFactory.NumericLiteral(2)
+            ),
+            nodeFactory.NumericLiteral(2)
           )
         ),
       ])
