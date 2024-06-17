@@ -195,18 +195,10 @@ export class Parser {
    *  ;
    */
   private AdditiveExpression() {
-    let left: TExpression = this.MultiplicativeExpression();
-
-    while (this.getLookaheadTokenType() === TokenTypes.ADDITIVE_OPERATOR) {
-      // Operator: +, -
-      const operator = this.eatToken(TokenTypes.ADDITIVE_OPERATOR).lexeme!;
-
-      const right = this.MultiplicativeExpression();
-
-      left = nodeFactory.BinaryExpression(operator, left, right);
-    }
-
-    return left;
+    return this.BinaryExpression(
+      'MultiplicativeExpression',
+      TokenTypes.ADDITIVE_OPERATOR
+    );
   }
 
   /**
@@ -215,16 +207,23 @@ export class Parser {
    *  | MultiplicativeExpression MULTIPLICATIVE_OPERATOR PrimaryExpression -> PrimaryExpression MULTIPLICATIVE_OPERATOR PrimaryExpression MULTIPLICATIVE_OPERATOR PrimaryExpression
    */
   MultiplicativeExpression() {
-    let left: TExpression = this.PrimaryExpression();
+    return this.BinaryExpression(
+      'PrimaryExpression',
+      TokenTypes.MULTIPLICATIVE_OPERATOR
+    );
+  }
 
-    while (
-      this.getLookaheadTokenType() === TokenTypes.MULTIPLICATIVE_OPERATOR
-    ) {
+  /**
+   * Generic binary expression
+   */
+  BinaryExpression(builderName: string, operatorTokenType: string) {
+    let left: TExpression = (<any>this)[builderName](); // ugly way...
+
+    while (this.getLookaheadTokenType() === operatorTokenType) {
       // Operator: *, /
-      const operator = this.eatToken(TokenTypes.MULTIPLICATIVE_OPERATOR)
-        .lexeme!;
+      const operator = this.eatToken(operatorTokenType).lexeme!;
 
-      const right = this.PrimaryExpression();
+      const right = (<any>this)[builderName](); // ugly way...
 
       left = nodeFactory.BinaryExpression(operator, left, right);
     }
