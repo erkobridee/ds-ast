@@ -42,7 +42,27 @@ or
 npm run test
 ```
 
+## Documentation
+
+## Token
+
+- [Token.ts](src/lexer/Token.ts) - defines the token data structure and the token identification rules (specs, which uses regexp)
+
+## Lexer
+
+- [Lexer.ts](src/lexer/Lexer.ts) - produce tokens
+
+## Parser
+
+- [AST.ts](src/parser/AST.ts) - define the AST nodes and its factory helpers
+
+- [Parser.ts](src/parser/Parser.ts) - from a given source, produces the AST
+
 ## References
+
+- [Regular expression syntax cheatsheet - JavaScript | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Cheatsheet)
+
+- [EBNF: How to describe the grammar of a language](https://tomassetti.me/ebnf/)
 
 - [Building a Parser from scratch | Dmitry Soshnikov](http://dmitrysoshnikov.com/courses/parser-from-scratch/) (2020/12/13) - [Udemy Course](https://www.udemy.com/course/parser-from-scratch/) | [Teachable](https://www.dmitrysoshnikov.education/p/parser-from-scratch/)
 
