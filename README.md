@@ -95,8 +95,6 @@ type LexerFn = (input: string) => Token[];
 
 - [Backus–Naur form | Wikipedia](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form)
 
-- [BNF Notation: Dive Deeper Into Python's Grammar | Real Python](https://realpython.com/python-bnf-notation/)
-
 - [4.2: Application - BNF | Engineering LibreTexts](<https://eng.libretexts.org/Bookshelves/Computer_Science/Programming_and_Computation_Fundamentals/Foundations_of_Computation_(Critchlow_and_Eck)/04%3A_Grammars/4.02%3A_Application_-_BNF>)
 
 #### EBNF - Extended Backus-Naur Form
@@ -128,6 +126,8 @@ type LexerFn = (input: string) => Token[];
 - [[GitHub] cowchimp/awesome-ast](https://github.com/cowchimp/awesome-ast) - A curated list of awesome AST resources
 
 ### Implementation
+
+- [BNF Notation: Dive Deeper Into Python's Grammar | Real Python](https://realpython.com/python-bnf-notation/)
 
 - [[YouTube] LLVM in 100 Seconds | Fireship](https://www.youtube.com/watch?v=BT2Cv-Tjq7Q) (2022/05/23)
 
