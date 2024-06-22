@@ -33,7 +33,7 @@ export class StateMachine {
   }
 
   //--------------------------------------------------------------------------//
-  // @begin: helpers
+  // @begin: lexer helpers
 
   /**
    * Expects a token of a given type
@@ -49,28 +49,7 @@ export class StateMachine {
     return this.lexer.getLookaheadTokenType();
   }
 
-  /**
-   * Generic binary expression
-   */
-  private binaryExpressionHelper(
-    builderName: BinaryBuilderName,
-    operatorTokenType: string
-  ) {
-    let left: TExpression = this[builderName]() as TExpression;
-
-    while (this.getLookaheadTokenType() === operatorTokenType) {
-      // Operator: *, /, +, -
-      const operator = this.eatToken(operatorTokenType).lexeme!;
-
-      const right = this[builderName]() as TExpression;
-
-      left = nodeFactory.BinaryExpression(operator, left, right);
-    }
-
-    return left;
-  }
-
-  // @end: helpers
+  // @end: lexer helpers
   //--------------------------------------------------------------------------//
   // @begin states definitions
 
@@ -87,18 +66,15 @@ export class StateMachine {
 
   /**
    * StatementList
-   *   : Statement
-   *   | StatementList Statement -> Statement Statement Statement Statement
+   *   : Statement+
    *   ;
    */
   private StatementList(stopLookahedTokenType?: string) {
     const statementList: TStatement[] = [this.Statement()];
 
-    while (
-      ![TokenTypes.EOF, stopLookahedTokenType].includes(
-        this.getLookaheadTokenType()
-      )
-    ) {
+    const typesToCheck = [TokenTypes.EOF, stopLookahedTokenType];
+
+    while (!typesToCheck.includes(this.getLookaheadTokenType())) {
       statementList.push(this.Statement());
     }
 
@@ -135,7 +111,7 @@ export class StateMachine {
 
   /**
    * BlockStatement
-   *   : '{' OptStatementList '}'
+   *   : '{' StatementList? '}'
    *   ;
    */
   private BlockStatement() {
@@ -172,9 +148,34 @@ export class StateMachine {
   }
 
   /**
+   * Generic binary expression
+   *
+   * binaryExpressionHelper
+   *  : ( MultiplicativeExpression ADDITIVE_OPERATOR )+ MultiplicativeExpression
+   *  | ( PrimaryExpression MULTIPLICATIVE_OPERATOR )+ PrimaryExpression
+   *  ;
+   */
+  private binaryExpressionHelper(
+    builderName: BinaryBuilderName,
+    operatorTokenType: string
+  ) {
+    let left: TExpression = this[builderName]() as TExpression;
+
+    while (this.getLookaheadTokenType() === operatorTokenType) {
+      // Operator: *, /, +, -
+      const operator = this.eatToken(operatorTokenType).lexeme!;
+
+      const right = this[builderName]() as TExpression;
+
+      left = nodeFactory.BinaryExpression(operator, left, right);
+    }
+
+    return left;
+  }
+
+  /**
    * AdditiveExpression
-   *  : MultiplicativeExpression
-   *  | AdditiveExpression ADDITIVE_OPERATOR MultiplicativeExpression -> MultiplicativeExpression ADDITIVE_OPERATOR MultiplicativeExpression ADDITIVE_OPERATOR MultiplicativeExpression
+   *  : binaryExpressionHelper( MultiplicativeExpression, ADDITIVE_OPERATOR )
    *  ;
    */
   private AdditiveExpression() {
@@ -186,8 +187,8 @@ export class StateMachine {
 
   /**
    * MultiplicativeExpression
-   *  : PrimaryExpression
-   *  | MultiplicativeExpression MULTIPLICATIVE_OPERATOR PrimaryExpression -> PrimaryExpression MULTIPLICATIVE_OPERATOR PrimaryExpression MULTIPLICATIVE_OPERATOR PrimaryExpression
+   *  : binaryExpressionHelper( PrimaryExpression, MULTIPLICATIVE_OPERATOR )
+   *  ;
    */
   private MultiplicativeExpression() {
     return this.binaryExpressionHelper(
