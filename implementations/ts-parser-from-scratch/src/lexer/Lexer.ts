@@ -1,5 +1,5 @@
 import type { IToken } from './Token';
-import { buildToken, Specs as TokenSpecs, Types } from './Token';
+import { buildToken, Specs as TokenSpecs, Types, buildEOFToken } from './Token';
 
 //----------------------------------------------------------------------------//
 
@@ -11,13 +11,24 @@ import { buildToken, Specs as TokenSpecs, Types } from './Token';
 export class Lexer {
   private source = '';
   private cursor = 0;
+  private lookahead: IToken = buildEOFToken();
 
   /**
    * Initializes the lexer
    */
-  public init(source = '') {
+  public init(source = '', shouldLookahead = true) {
     this.source = source;
     this.cursor = 0;
+
+    /*
+      Prime the tokenizer to obtain the first token
+      which is our lookahead.
+
+      The lookahead is used for predictive parsing.
+    */
+    if (shouldLookahead) this.lookahead = this.getNextToken();
+
+    return this.lookahead;
   }
 
   constructor(source = '') {
@@ -51,9 +62,9 @@ export class Lexer {
    *
    * supports: Numbers and Strings
    */
-  public getNextToken(): IToken | null {
+  public getNextToken(): IToken {
     if (!this.hasMoreTokens()) {
-      return null;
+      return buildEOFToken();
     }
 
     const strToCheck = this.source.slice(this.cursor);
@@ -74,6 +85,42 @@ export class Lexer {
     }
 
     throw new SyntaxError(`Unexpected token: "${strToCheck[0]}"`);
+  }
+
+  /**
+   * Retrieve the lookahed token type
+   *
+   * @returns {string} the type of the next token
+   */
+  public getLookaheadTokenType() {
+    return this.lookahead?.type;
+  }
+
+  /**
+   * Expects a token of a given type
+   *
+   * @param {string} tokenType
+   * @returns {IToken} the expected token
+   */
+  public eatToken(tokenType: string) {
+    const token = this.lookahead;
+
+    if (token === null) {
+      throw new SyntaxError(
+        `Unexpected end of input, expected: "${tokenType}"`
+      );
+    }
+
+    if (token.type !== tokenType) {
+      throw new SyntaxError(
+        `Unexpected "${token.type}", expected: "${tokenType}"`
+      );
+    }
+
+    // Advance to the next token
+    this.lookahead = this.getNextToken();
+
+    return token;
   }
 }
 

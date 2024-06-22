@@ -70,6 +70,8 @@ export const buildToken = (...args: unknown[]) => {
 //----------------------------------------------------------------------------//
 
 export const Types = {
+  EOF: 'EOF',
+
   SKIP: null,
 
   ADDITIVE_OPERATOR: 'ADDITIVE_OPERATOR',
@@ -78,6 +80,9 @@ export const Types = {
   NUMBER: 'NUMBER',
   STRING: 'STRING',
 } as const;
+
+// EOF - End of File
+export const buildEOFToken = () => new Token(Types.EOF);
 
 //----------------------------------------------------------------------------//
 

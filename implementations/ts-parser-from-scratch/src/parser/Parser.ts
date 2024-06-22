@@ -1,4 +1,3 @@
-import type { IToken } from '~/lexer/Token';
 import type {
   TAbstractSyntaxTree,
   INodeProgram,
@@ -26,8 +25,6 @@ enum BinaryBuilderName {
 export class Parser {
   private lexer: Lexer;
 
-  private lookahead: IToken | null = null;
-
   /**
    * Initializes the parser
    */
@@ -48,22 +45,11 @@ export class Parser {
 
     this.lexer.init(source);
 
-    /*
-      Prime the tokenizer to obtain the first token
-      which is our lookahead.
-
-      The lookahead is used for predictive parsing.
-    */
-    this.lookahead = this.lexer.getNextToken();
-
-    /*
-      Parse recursively, starting from the main entry point
-      the Program
-    */
-    return this.Program();
+    return this.startStateMachine();
   }
 
   //--------------------------------------------------------------------------//
+  // TODO: review
 
   /**
    * Expects a token of a given type
@@ -72,32 +58,28 @@ export class Parser {
    * @returns {IToken} the expected token
    */
   private eatToken(tokenType: string) {
-    const token = this.lookahead;
-
-    if (token === null) {
-      throw new SyntaxError(
-        `Unexpected end of input, expected: "${tokenType}"`
-      );
-    }
-
-    if (token.type !== tokenType) {
-      throw new SyntaxError(
-        `Unexpected "${token.type}", expected: "${tokenType}"`
-      );
-    }
-
-    // Advance to the next token
-    this.lookahead = this.lexer.getNextToken();
-
-    return token;
+    return this.lexer.eatToken(tokenType);
   }
 
   private getLookaheadTokenType() {
-    return this.lookahead?.type;
+    return this.lexer.getLookaheadTokenType();
   }
 
   //--------------------------------------------------------------------------//
   // @begin: states machine
+
+  /**
+   * Start the State Machine that will generate the AST
+   *
+   * @returns {ASTNode} - the abstract syntax tree
+   */
+  private startStateMachine() {
+    /*
+      Parse recursively, starting from the main entry point
+      the Program
+    */
+    return this.Program();
+  }
 
   /**
    * Main entry point
@@ -120,8 +102,9 @@ export class Parser {
     const statementList: TStatement[] = [this.Statement()];
 
     while (
-      this.lookahead !== null &&
-      this.getLookaheadTokenType() !== stopLookahedTokenType
+      ![TokenTypes.EOF, stopLookahedTokenType].includes(
+        this.getLookaheadTokenType()
+      )
     ) {
       statementList.push(this.Statement());
     }
@@ -202,7 +185,7 @@ export class Parser {
    *  ;
    */
   private AdditiveExpression() {
-    return this.BinaryExpression(
+    return this.binaryExpressionHelper(
       BinaryBuilderName.MultiplicativeExpression,
       TokenTypes.ADDITIVE_OPERATOR
     );
@@ -213,8 +196,8 @@ export class Parser {
    *  : PrimaryExpression
    *  | MultiplicativeExpression MULTIPLICATIVE_OPERATOR PrimaryExpression -> PrimaryExpression MULTIPLICATIVE_OPERATOR PrimaryExpression MULTIPLICATIVE_OPERATOR PrimaryExpression
    */
-  MultiplicativeExpression() {
-    return this.BinaryExpression(
+  private MultiplicativeExpression() {
+    return this.binaryExpressionHelper(
       BinaryBuilderName.PrimaryExpression,
       TokenTypes.MULTIPLICATIVE_OPERATOR
     );
@@ -223,7 +206,10 @@ export class Parser {
   /**
    * Generic binary expression
    */
-  BinaryExpression(builderName: BinaryBuilderName, operatorTokenType: string) {
+  private binaryExpressionHelper(
+    builderName: BinaryBuilderName,
+    operatorTokenType: string
+  ) {
     let left: TExpression = this[builderName]() as TExpression;
 
     while (this.getLookaheadTokenType() === operatorTokenType) {
@@ -246,7 +232,7 @@ export class Parser {
    *   | Literal
    *   ;
    */
-  PrimaryExpression() {
+  private PrimaryExpression() {
     switch (this.getLookaheadTokenType()) {
       case '(':
         return this.ParenthesizedExpression();
@@ -260,7 +246,7 @@ export class Parser {
    *   : '(' Expression ')'
    *   ;
    */
-  ParenthesizedExpression(): TExpression {
+  private ParenthesizedExpression(): TExpression {
     this.eatToken('(');
     const expression = this.Expression();
     this.eatToken(')');
