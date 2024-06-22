@@ -175,8 +175,11 @@ export class StateMachine {
 
   /**
    * AdditiveExpression
-   *  : binaryExpressionHelper( MultiplicativeExpression, ADDITIVE_OPERATOR )
+   *  : ( MultiplicativeExpression ADDITIVE_OPERATOR )+ MultiplicativeExpression
    *  ;
+   *
+   *
+   * it calls binaryExpressionHelper( MultiplicativeExpression, ADDITIVE_OPERATOR )
    */
   private AdditiveExpression() {
     return this.binaryExpressionHelper(
@@ -187,8 +190,11 @@ export class StateMachine {
 
   /**
    * MultiplicativeExpression
-   *  : binaryExpressionHelper( PrimaryExpression, MULTIPLICATIVE_OPERATOR )
+   *  : ( PrimaryExpression MULTIPLICATIVE_OPERATOR )+ PrimaryExpression
    *  ;
+   *
+   *
+   * it calls binaryExpressionHelper( PrimaryExpression, MULTIPLICATIVE_OPERATOR )
    */
   private MultiplicativeExpression() {
     return this.binaryExpressionHelper(
@@ -268,7 +274,5 @@ export class StateMachine {
   // @end states definitions
   //--------------------------------------------------------------------------//
 }
-
-//----------------------------------------------------------------------------//
 
 export default StateMachine;
