@@ -41,10 +41,12 @@ export const Types = {
 
   SKIP: null,
 
-  // TODO: update the types
+  XML_DECL_START: 'XML_DECL_START',
+  SPECIAL_CLOSE: 'SPECIAL_CLOSE',
 
-  // TODO: review this definition
   STRING: 'STRING',
+  NAME: 'NAME',
+  Text: 'TEXT',
 } as const;
 
 // EOF - End of File
@@ -54,39 +56,59 @@ export const buildEOFToken = () => new Token(Types.EOF);
 
 export const Specs = [
   //----------------------------------------------------------------------------
-  // Whitespace
+  // Ignore
 
-  [/^\s+/, Types.SKIP],
-
-  //----------------------------------------------------------------------------
-  // Comments
-
-  // single line comment
-  [/^\/\/.*/, Types.SKIP],
+  // Empty Spaces
+  [/^[\s\S]/, Types.SKIP],
 
   // multi line comment
-  [/^\/\*[\s\S]*?\*\//, Types.SKIP],
+  [/^<!--[\s\S]*?-->/, Types.SKIP],
 
-  // TODO: define the xml comment type
+  // CDATA - allows characters with markup
+  [/^<!\[CDATA\[([\s\S]*)?\]\]\s?>/, Types.SKIP],
+
+  // DTD
+  // https://www.xmlfiles.com/dtd/
+  // https://tutorialreference.com/xml/dtd/dtd-tutorial
+  // https://en.wikipedia.org/wiki/Document_type_definition
+  [/^<!DOCTYPE[\s\S]*?>/, Types.SKIP],
+
+  // external style sheets
+  // https://www.w3.org/Style/styling-XML.en.html
+  [/^<\?xml\-stylesheet[\s\S]*?\?>/, Types.SKIP],
+
+  //----------------------------------------------------------------------------
+  // xml named tokens
+
+  // XML Declaration begin
+  [/^<\?xml/, Types.XML_DECL_START],
+
+  // XML special close
+  [/^\?>/, Types.SPECIAL_CLOSE],
+
+  // Strings
+  // "" or ''
+  [/^("[^"]*")|('[^']*')/, Types.STRING],
+
+  // Name
+  [/^^\w+:[\w-]+/, Types.NAME],
+
+  // Text
+  [/^[^<&]+/, Types.Text],
+
+  /*
+    TODO: check how to handle, script, and the style tags
+   */
 
   //----------------------------------------------------------------------------
   // Symbols, delimiters
   //
   // since them are single characters, we can use their definition directly
 
-  // TODO: review
-
-  [/^;/, ';'],
-  [/^{/, '{'],
-  [/^}/, '}'],
-  [/^\(/, '('],
-  [/^\)/, ')'],
-
-  //----------------------------------------------------------------------------
-  // Strings
-
-  // "" or ''
-  [/^("[^"]*")|('[^']*')/, Types.STRING],
+  [/^</, '<'],
+  [/^>/, '>'],
+  [/^\//, '/'],
+  [/^=/, '='],
 ] as const;
 
 //----------------------------------------------------------------------------//

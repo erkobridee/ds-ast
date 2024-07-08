@@ -1,0 +1,27 @@
+@startebnf
+title EBNF - XML Parser
+
+
+Document = [ Prolog ] , Element , EOF (* end of file *) ;
+
+Prolog = XML_DECL_START (* <?xml *) , { Attributes } (* version optional? *) , SPECIAL_CLOSE (* ?> *) ;
+
+EBNFlement = (
+    OPEN_TAG (* < *) , NAME , { Attribute } , CLOSE_TAG (* > *) , Content , OPEN_TAG (* < *) , SLASH (* / *) , NAME , CLOSE_TAG (* > *) | 
+    OPEN_TAG (* < *) , NAME , { Attribute } , SLASH (* / *) , CLOSE_TAG (* > *)
+  ) 
+  ;
+
+Attribute = NAME , EQUALS (* = *) , STRING ;
+
+Content = ( 
+    TextContent |
+    {Element}-
+  ) 
+  ;
+
+TextContent =  { SpecialElement } , { TEXT , { SpecialElement }- }- ;
+
+SpecialElement = ? define ? ;
+
+@endebnf

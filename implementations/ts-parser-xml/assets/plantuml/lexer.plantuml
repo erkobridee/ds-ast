@@ -1,0 +1,56 @@
+@startebnf
+title EBNF - XML Lexer
+
+(* special tokens definitions *)
+
+EOF = ? end of the file = no more charecteres to process ? ;
+
+
+(* regexp *)
+
+ANY_SINGLE_CHARACTER = ? regexp ? (* . *) ;
+
+
+(* Skip *)
+
+EMPTY_SPACE = ? [ \t\r\n] ? ;
+
+COMMENT = "<!--" , { ANY_SINGLE_CHARACTER } , "-->"  |
+  ? regexp ? (* <!- -[\s\S]*?- -> *)
+  ;
+
+XML_STYLESHEET = "<?xml-stylesheet" , { ANY_SINGLE_CHARACTER } , "?>" ;
+
+DTD = "<!DOCTYPE" , { ANY_SINGLE_CHARACTER } , ">" |
+  ? regext ? (* <!DOCTYPE[\s\S]*?> *)
+  ;
+
+CDATA = "<![CDATA[" , { ANY_SINGLE_CHARACTER } , "]]>" |
+  ? regexp ? (* <![CDATA[[\s\S]*?]]> - allow characters with markup *)
+  ;
+
+
+(* symbols *)
+
+OPEN_TAG = "<" ;
+
+CLOSE_TAG = ">" ;
+
+SLASH = "/" ;
+
+EQUALS = "=" ;
+
+
+(* xml tokens *)
+
+XML_DECL_START = "<?xml" ;
+
+SPECIAL_CLOSE = "?>" ;
+
+STRING = ? regexp ? (* ^("[^"]*")|('[^']*') - anything in between "" or '' *) ;
+
+NAME = ? regexp ? (* ^\w+:[\w-]+ *) ;
+
+TEXT = ? regexp ? (* ^[^<&]+ *) ;
+
+@endebnf

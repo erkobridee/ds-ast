@@ -107,6 +107,8 @@ type LexerFn = (input: string) => Token[];
 
 - [EBNF: How to describe the grammar of a language](https://tomassetti.me/ebnf/)
 
+- [Extended Backus–Naur Form diagram | PlantUML.com](https://plantuml.com/ebnf) - EBNF is a code that expresses the syntax of a formal language. An EBNF consists of terminal symbols and non-terminal production rules.
+
 #### Compiler
 
 - [Computer Language - (Compiler|Interpreter) - Language translator | DataCadamia](https://datacadamia.com/code/compiler/compiler)

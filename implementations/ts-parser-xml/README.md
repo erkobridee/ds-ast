@@ -8,11 +8,15 @@
 >
 > The goal here is to acquire the knowledge that might help me to whenever I need to process a givem XML string.
 
-- Project template: [[GitHub] erkobridee/vitest-ts](https://github.com/erkobridee/vitest-ts)
+> [!WARNING]
+>
+> there are no support for tags with namespaces, for example: `ns:tag-name`
 
 ## Commands
 
 ### Setup
+
+- Project template: [[GitHub] erkobridee/vitest-ts](https://github.com/erkobridee/vitest-ts)
 
 ```
 npm i
@@ -96,8 +100,28 @@ npm run dev
 
 ### Utils
 
+- [Unicode Explorer](https://unicode-explorer.com/)
+
+  - [Unicode blocks | Unicode Explorer](https://unicode-explorer.com/blocks)
+
+- [UnicodePlus](https://unicodeplus.com/)
+
+  - [Unicode Blocks | UnicodePlus](https://unicodeplus.com/block)
+
 #### RegExp
 
 - [Regex Vis](https://regex-vis.com/)
 
 - [Regular Expressions 101](https://regex101.com/)
+
+- [Regular expressions | javascript.info](https://javascript.info/regular-expressions)
+
+- [Regular Expressions > JavaScript | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions)
+
+  - [Character classes > Regular Expressions > JavaScript | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions/Character_classes)
+
+##### Unicode
+
+- [Regexp - Unicode: flag "u" and class \p{...} | javascript.info](https://javascript.info/regexp-unicode)
+
+- [Unicode | Understanding JavaScript RegExp](https://learnbyexample.github.io/learn_js_regexp/unicode.html)
