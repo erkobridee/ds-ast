@@ -1,9 +1,9 @@
-import { Token, buildTokenString, buildToken } from '~/lexer/Token';
+import { Token, tokenToString, buildToken } from '~/lexer/Token';
 
 describe('Token', () => {
   it('buildTokenString', () => {
-    expect(buildTokenString(new Token('type'))).toBe('Token( type )');
-    expect(buildTokenString(new Token('type', 'lexeme'))).toBe(
+    expect(tokenToString(new Token('type'))).toBe('Token( type )');
+    expect(tokenToString(new Token('type', 'lexeme'))).toBe(
       'Token( type, lexeme )'
     );
   });
@@ -12,12 +12,12 @@ describe('Token', () => {
     let token = new Token('type');
     expect(token.type).toBe('type');
     expect(token.lexeme).toBeUndefined();
-    expect(token.toString()).toBe(buildTokenString(token));
+    expect(token.toString()).toBe(tokenToString(token));
 
     token = new Token('type', 'lexeme');
     expect(token.type).toBe('type');
     expect(token.lexeme).toBe('lexeme');
-    expect(token.toString()).toBe(buildTokenString(token));
+    expect(token.toString()).toBe(tokenToString(token));
   });
 
   describe('buildToken', () => {
@@ -25,28 +25,28 @@ describe('Token', () => {
       const token = buildToken('type');
       expect(token.type).toBe('type');
       expect(token.lexeme).toBeUndefined();
-      expect(token.toString()).toBe(buildTokenString(token));
+      expect(token.toString()).toBe(tokenToString(token));
     });
 
     it('two arguments', () => {
       const token = buildToken('type', 'lexeme');
       expect(token.type).toBe('type');
       expect(token.lexeme).toBe('lexeme');
-      expect(token.toString()).toBe(buildTokenString(token));
+      expect(token.toString()).toBe(tokenToString(token));
     });
 
     it('object argument with type attribute', () => {
       const token = buildToken({ type: 'type' });
       expect(token.type).toBe('type');
       expect(token.lexeme).toBeUndefined();
-      expect(token.toString()).toBe(buildTokenString(token));
+      expect(token.toString()).toBe(tokenToString(token));
     });
 
     it('object argument with type and lexeme attributes', () => {
       const token = buildToken({ type: 'type', lexeme: 'lexeme' });
       expect(token.type).toBe('type');
       expect(token.lexeme).toBe('lexeme');
-      expect(token.toString()).toBe(buildTokenString(token));
+      expect(token.toString()).toBe(tokenToString(token));
     });
 
     it('throw error once called with no arguments', () => {

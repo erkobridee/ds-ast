@@ -7,7 +7,7 @@ export interface IToken {
 
 //----------------------------------------------------------------------------//
 
-export const buildTokenString = (token: IToken): string => {
+export const tokenToString = (token: IToken): string => {
   const { type, lexeme } = token;
 
   return `Token( ${type}` + (lexeme ? `, ${lexeme}` : '') + ' )';
@@ -23,7 +23,7 @@ export class Token implements IToken {
   }
 
   public toString(): string {
-    return buildTokenString(this);
+    return tokenToString(this);
   }
 }
 
