@@ -16,9 +16,19 @@ npm i
 
 ### Single execution
 
-> [!WARNING]
->
-> It needs to be defined
+> to check the output at the terminal
+
+#### Lexer
+
+```
+npm run lexer
+```
+
+#### Parser
+
+```
+npm run parser
+```
 
 ### Development
 
