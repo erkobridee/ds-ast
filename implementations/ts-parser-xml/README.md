@@ -16,7 +16,7 @@ npm i
 
 ### Single execution
 
-> [!IMPORTANT]
+> [!WARNING]
 >
 > It needs to be defined
 
@@ -34,12 +34,12 @@ npm run dev
 
 ## Documentation
 
-> [!IMPORTANT]
+> [!WARNING]
 >
 > It needs to be defined
 
 ## References
 
-> [!IMPORTANT]
+> [!WARNING]
 >
 > It needs to be defined
