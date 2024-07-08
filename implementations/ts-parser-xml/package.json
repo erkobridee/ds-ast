@@ -1,0 +1,31 @@
+{
+  "name": "ts-parser-xml",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "TypeScript implementation of a XML Parser",
+  "scripts": {
+    "start": "npm run test",
+    "test": "vitest watch --exclude **/_execute.spec.ts",
+    "lexer": "vitest run src/lexer/__tests__/_execute.spec.ts --reporter=verbose",
+    "parser": "vitest run src/parser/__tests__/_execute.spec.ts --reporter=verbose"
+  },
+  "keywords": [
+    "rdp",
+    "parser",
+    "lexer",
+    "implementation",
+    "xml",
+    "typescript",
+    "vitest"
+  ],
+  "author": "Erko Bridee",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "29.5.12",
+    "@types/node": "20.14.2",
+    "esbuild": "0.21.5",
+    "typescript": "5.4.5",
+    "vite-tsconfig-paths": "4.3.2",
+    "vitest": "1.6.0"
+  }
+}
