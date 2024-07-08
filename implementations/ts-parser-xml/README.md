@@ -54,6 +54,8 @@ npm run dev
 
 ## References
 
+- [XML | Wikipedia](https://en.wikipedia.org/wiki/XML)
+
 - [Extensible Markup Language (XML) | W3C](https://www.w3.org/XML/)
 
   - [Extensible Markup Language (XML) 1.1 (Second Edition) | W3C](https://www.w3.org/TR/2006/REC-xml11-20060816/)
@@ -62,9 +64,21 @@ npm run dev
 
 - [Parsing and serializing XML - XML: Extensible Markup Language | MDN](https://developer.mozilla.org/en-US/docs/Web/XML/Parsing_and_serializing_XML)
 
+- [A Really, Really, Really Good Introduction to XML | SitePoint](https://www.sitepoint.com/really-good-introduction-xml/)
+
+### ANTLR v4 Grammar
+
 - [[GitHub] antlr/grammars-v4](https://github.com/antlr/grammars-v4) - Grammars written for ANTLR v4; expectation that the grammars are free of actions.
 
   - [xml](https://github.com/antlr/grammars-v4/tree/master/xml) - [lexer](https://github.com/antlr/grammars-v4/blob/master/xml/XMLLexer.g4) | [parser](https://github.com/antlr/grammars-v4/blob/master/xml/XMLParser.g4)
+
+### EBNF
+
+- [EBNF for XML 1.0 | Jelks' Home Page](https://www.jelks.nu/XML/xmlebnf.html)
+
+- [XML 1.0 EBNF | Liquid Technologies - XML Glossary](https://www.liquid-technologies.com/Reference/Glossary/XML_EBNF1.0.html)
+
+- [XML 1.1 EBNF | Liquid Technologies - XML Glossary](https://www.liquid-technologies.com/Reference/Glossary/XML_EBNF1.1.html)
 
 ### Implementations
 

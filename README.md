@@ -169,8 +169,16 @@ type LexerFn = (input: string) => Token[];
 
   - [Playground](http://lab.antlr.org/)
 
+    - [[GitHub] antlr/antlr4-lab](https://github.com/antlr/antlr4-lab) - A client/server for trying out and learning about ANTLR
+
+  - [ANTLR4 grammar syntax support | Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=mike-lischke.vscode-antlr4)
+
+    - [[GitHub] mike-lischke/vscode-antlr4](https://github.com/mike-lischke/vscode-antlr4) - ANTLR4 language support for Visual Studio Code
+
 - [[GitHub] antlr/antlr4](https://github.com/antlr/antlr4) - is a powerful parser generator for reading, processing, executing, or translating structured text or binary files.
 
 - [[GitHub] antlr/grammars-v4](https://github.com/antlr/grammars-v4) - Grammars written for ANTLR v4; expectation that the grammars are free of actions.
 
 - [The ANTLR Mega Tutorial | strumenta](https://tomassetti.me/antlr-mega-tutorial/)
+
+- [Antlr - (Grammar|Lexicon) (g4) | DataCadamia](https://datacadamia.com/antlr/grammar)
