@@ -2,6 +2,10 @@
 
 DS ( Data Structure ) AST (Abstract Syntax Tree)
 
+> [!TIP]
+>
+> This knowledge is really useful and it helps whenever you need to process any kind text.
+
 ## Implementations
 
 - [TypeScript implementation of: _**Building a Parser from scratch**_](./implementations/ts-parser-from-scratch/README.md)
