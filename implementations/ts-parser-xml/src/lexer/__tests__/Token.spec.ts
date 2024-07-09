@@ -1,6 +1,6 @@
 import { Token, tokenToString, buildToken, Spec } from '~/lexer/Token';
 
-import { regexpIt } from './_helpers';
+import { regexpIt, namedRegexpIt } from './_helpers';
 
 //----------------------------------------------------------------------------//
 
@@ -75,9 +75,8 @@ describe('Token', () => {
   });
 
   describe('regexp specs', () => {
-    regexpIt({
+    namedRegexpIt({
       name: 'Element',
-      regexp: Spec.Element[0],
       input:
         '<greetings attr1="1" attr2=\'2\' required>Hello World</greetings>',
       check: (result) => {
@@ -92,9 +91,8 @@ describe('Token', () => {
       },
     });
 
-    regexpIt({
+    namedRegexpIt({
       name: 'EmptySpaces',
-      regexp: Spec.EmptySpaces[0],
       input: ' \n\t\r\n       \n\t\r     ',
       check: (result) => {
         expect(result).not.toBeNull();
@@ -102,9 +100,8 @@ describe('Token', () => {
       },
     });
 
-    regexpIt({
+    namedRegexpIt({
       name: 'Comment',
-      regexp: Spec.Comment[0],
       input: '<!-- comment -->',
       check: (result) => {
         expect(result).not.toBeNull();
@@ -154,9 +151,8 @@ describe('Token', () => {
       });
     });
 
-    regexpIt({
+    namedRegexpIt({
       name: 'ExternalStyleSheets',
-      regexp: Spec.ExternalStyleSheets[0],
       input: '<?xml-stylesheet type="text/xsl" href="style.xsl"?>',
       check: (result) => {
         expect(result).not.toBeNull();
@@ -166,9 +162,8 @@ describe('Token', () => {
       },
     });
 
-    regexpIt({
+    namedRegexpIt({
       name: 'XmlDeclStart',
-      regexp: Spec.XmlDeclStart[0],
       input: '<?xml version="1.0"?>',
       check: (result) => {
         expect(result).not.toBeNull();
@@ -176,10 +171,8 @@ describe('Token', () => {
       },
     });
 
-    // SpecialClose
-    regexpIt({
+    namedRegexpIt({
       name: 'SpecialClose',
-      regexp: Spec.SpecialClose[0],
       input: '?>',
       check: (result) => {
         expect(result).not.toBeNull();
@@ -187,7 +180,6 @@ describe('Token', () => {
       },
     });
 
-    // Name
     describe('Name', () => {
       regexpIt({
         name: 'simple name',
@@ -242,9 +234,8 @@ describe('Token', () => {
       });
     });
 
-    regexpIt({
+    namedRegexpIt({
       name: 'CData',
-      regexp: Spec.CData[0],
       input: '<![CDATA[cdata]]>',
       check: (result) => {
         expect(result).toBeDefined();
@@ -256,21 +247,17 @@ describe('Token', () => {
       },
     });
 
-    regexpIt({
+    namedRegexpIt({
       name: 'Text',
-      regexp: Spec.Text[0],
       input: 'Hello World</greetings>',
       check: (result) => {
         expect(result).not.toBeNull();
         expect(result![0]).toBe('Hello World');
-
-        console.log(result);
       },
     });
 
-    regexpIt({
+    namedRegexpIt({
       name: 'RawText',
-      regexp: Spec.RawText[0],
       input: `dasd>%%$&&&&&<asdasdasdas$$%%^^^</`,
       check: (result) => {
         expect(result).not.toBeNull();
@@ -284,9 +271,8 @@ describe('Token', () => {
       },
     });
 
-    regexpIt({
+    namedRegexpIt({
       name: 'Open',
-      regexp: Spec.Open[0],
       input: '<greetings>',
       check: (result) => {
         expect(result).not.toBeNull();
@@ -294,9 +280,8 @@ describe('Token', () => {
       },
     });
 
-    regexpIt({
+    namedRegexpIt({
       name: 'Close',
-      regexp: Spec.Close[0],
       input: '>',
       check: (result) => {
         expect(result).not.toBeNull();
@@ -304,9 +289,8 @@ describe('Token', () => {
       },
     });
 
-    regexpIt({
+    namedRegexpIt({
       name: 'Slash',
-      regexp: Spec.Slash[0],
       input: '/',
       check: (result) => {
         expect(result).not.toBeNull();
@@ -314,9 +298,8 @@ describe('Token', () => {
       },
     });
 
-    regexpIt({
+    namedRegexpIt({
       name: 'Equals',
-      regexp: Spec.Equals[0],
       input: '=',
       check: (result) => {
         expect(result).not.toBeNull();

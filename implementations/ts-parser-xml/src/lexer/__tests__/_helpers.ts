@@ -1,3 +1,7 @@
+import { Spec } from '~/lexer/Token';
+
+//----------------------------------------------------------------------------//
+
 export const runIt = (name: string, specFn: Function) => {
   it(name, () => {
     console.log('');
@@ -21,12 +25,14 @@ export const runRexExp = (
 
 //----------------------------------------------------------------------------//
 
+type TCheckFn = (result: RegExpExecArray | null) => void;
+
 interface IRegexpItOptions {
   name?: string;
   maxRegExpLength?: number;
   regexp: RegExp;
   input: string;
-  check: (result: RegExpExecArray | null) => void;
+  check: TCheckFn;
 }
 
 export const regexpIt = (options: IRegexpItOptions) => {
@@ -39,4 +45,17 @@ export const regexpIt = (options: IRegexpItOptions) => {
     const result = regexp.exec(input);
     check(result);
   });
+};
+
+interface INamedRegexpItOptions {
+  name: string;
+  maxRegExpLength?: number;
+  input: string;
+  check: TCheckFn;
+}
+
+export const namedRegexpIt = (options: INamedRegexpItOptions) => {
+  const { name, ...rest } = options;
+  const regexp = Spec[name][0];
+  return regexpIt({ name, regexp, ...rest });
 };
