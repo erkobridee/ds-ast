@@ -6,28 +6,15 @@ title EBNF - XML Lexer
 EOF = ? end of the file = no more charecteres to process ? ;
 
 
-(* regexp *)
-
-ANY_SINGLE_CHARACTER = ? regexp ? (* . *) ;
-
-
 (* Skip *)
 
-EMPTY_SPACE = ? [ \t\r\n] ? ;
+EMPTY_SPACE = "RegExp( /^[\s\S]/ )" ;
 
-COMMENT = "<!--" , { ANY_SINGLE_CHARACTER } , "-->"  |
-  ? regexp ? (* <!- -[\s\S]*?- -> *)
-  ;
+COMMENT = "RegExp( /^<!--[\s\S]*?-->/ )" ;
 
-XML_STYLESHEET = "<?xml-stylesheet" , { ANY_SINGLE_CHARACTER } , "?>" ;
+XML_STYLESHEET = "RegExp( /^<\?xml\-stylesheet[\s\S]*?\?>/ )" ;
 
-DTD = "<!DOCTYPE" , { ANY_SINGLE_CHARACTER } , ">" |
-  ? regext ? (* <!DOCTYPE[\s\S]*?> *)
-  ;
-
-CDATA = "<![CDATA[" , { ANY_SINGLE_CHARACTER } , "]]>" |
-  ? regexp ? (* <![CDATA[[\s\S]*?]]> - allow characters with markup *)
-  ;
+DTD =  "RegExp( /^<!DOCTYPE[\s\S]*?>/ )" ;
 
 
 (* symbols *)
@@ -47,10 +34,14 @@ XML_DECL_START = "<?xml" ;
 
 SPECIAL_CLOSE = "?>" ;
 
-STRING = ? regexp ? (* ^("[^"]*")|('[^']*') - anything in between "" or '' *) ;
+STRING = ? regexp ? (* RegExp( /^("[^"]*")|('[^']*')/ ) - anything in between "" or '' *) ;
 
-NAME = ? regexp ? (* ^\w+:[\w-]+ *) ;
+NAME = "RegExp( /^\w+:[\w-]+/ )" ;
 
-TEXT = ? regexp ? (* ^[^<&]+ *) ;
+TEXT = "RegExp( /^[^<&]+/ )" ;
+
+RAW_TEXT = "RegExp( /^(?<raw>[\s\S]+)<\// )" ;
+
+CDATA = "RegExp( /^<!\[CDATA\[(?<raw>[\s\S]*)?\]\]\s?>/ )" ;
 
 @endebnf

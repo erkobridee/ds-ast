@@ -52,11 +52,25 @@ npm run dev
 
 ## Documentation
 
+### Lexer
+
+- [Token.ts](src/lexer/Token.ts) - tokens specifications
+
+- [Lexer.ts](src/lexer/Lexer.ts) - engine that produces the tokens
+
+![EBNF Lexer plantuml diagram](assets/images/lexer.png)
+
+### Parser
+
 > [!WARNING]
 >
-> It needs to be defined
+> TODO: add the documentation
+
+![EBNF Parser plantuml diagram](assets/images/parser.png)
 
 ## References
+
+#### XML
 
 - [XML | Wikipedia](https://en.wikipedia.org/wiki/XML)
 
@@ -69,6 +83,24 @@ npm run dev
 - [Parsing and serializing XML - XML: Extensible Markup Language | MDN](https://developer.mozilla.org/en-US/docs/Web/XML/Parsing_and_serializing_XML)
 
 - [A Really, Really, Really Good Introduction to XML | SitePoint](https://www.sitepoint.com/really-good-introduction-xml/)
+
+#### HTML
+
+- [WHATWG](https://whatwg.org/)
+
+  - [Standards](https://spec.whatwg.org/)
+
+    - [HTML Standard](https://html.spec.whatwg.org/)
+
+      - [HTML Syntax](https://html.spec.whatwg.org/multipage/syntax.html)
+
+- [Void element | MDN](https://developer.mozilla.org/en-US/docs/Glossary/Void_element)
+
+- [HTML Easy](https://www.html-easy.com/) - Learn HTML the Easy Way
+
+  - [References | HTML Easy](https://www.html-easy.com/references/)
+
+    - [HTML <style> Tag: Usage, Attributes, and Examples | HTML Easy](https://www.html-easy.com/references/html-style-tag/)
 
 ### ANTLR v4 Grammar
 
