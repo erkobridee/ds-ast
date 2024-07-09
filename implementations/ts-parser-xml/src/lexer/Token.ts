@@ -93,102 +93,116 @@ export const buildEOFToken = () => new Token(Types.EOF);
 export const isEOF = (token: IToken) => token.type === Types.EOF;
 
 //----------------------------------------------------------------------------//
-// Single Spec
+// Specifications Map
 
 export type TSpec = [RegExp, string | null];
 
-//---//
+export const Spec: Record<string, TSpec> = {
+  /** Type: `ELEMENT` - any valid xml tag that could have attributes, content and it closes it at the end */
+  Element: [
+    /<(?<tag>[\w:]+)(?:(?<attributes>(\s(\w+)(?:=(?:"(.+)"|'(.+)'))?)+)|[\s\S]*?)>(?<content>[\s\S]*)?<\/\k<tag>*?>/,
+    Types.ELEMENT,
+  ],
 
-/** Type: `ELEMENT` - any valid xml tag that could have attributes, content and it closes it at the end */
-export const ElementSpec: TSpec = [
-  /<(?<tag>[\w:]+)(?:(?<attributes>(\s(\w+)(?:=(?:"(.+)"|'(.+)'))?)+)|[\s\S]*?)>(?<content>[\s\S]*)?<\/\k<tag>*?>/,
-  Types.ELEMENT,
-];
+  //---//
 
-//---//
+  /** Type: `SKIP` */
+  EmptySpaces: [/^[\s\S]/, Types.SKIP],
+  /** Type: `SKIP` */
+  Comment: [/^<!--[\s\S]*?-->/, Types.SKIP],
 
-/** Type: `SKIP` */
-export const EmptySpacesSpec: TSpec = [/^[\s\S]/, Types.SKIP];
-/** Type: `SKIP` */
-export const CommentSpec: TSpec = [/^<!--[\s\S]*?-->/, Types.SKIP];
+  // DTD
+  // https://www.xmlfiles.com/dtd/
+  // https://tutorialreference.com/xml/dtd/dtd-tutorial
+  // https://en.wikipedia.org/wiki/Document_type_definition
+  /** Type: `SKIP` */
+  DTD: [
+    // /^<!DOCTYPE\s\w+(\s\[[\s\S]*?\]|([\s\w]|("[^"]*")|('[^']*'))*)>/,
+    /^<!DOCTYPE\s\w+(\s\[[\s\S]*?\]|([\s\w]|("[^"]*")|('[^']*'))*)>/,
+    Types.SKIP,
+  ],
 
-/** Type: `NAME` */
-export const NameSpec: TSpec = [/^\w+:[\w-]+/, Types.NAME];
-/** Type: `STRING` - "" or '' with its content */
-export const ValueSpec: TSpec = [/^("[^"]*")|('[^']*')/, Types.STRING];
+  // external style sheets
+  // https://www.w3.org/Style/styling-XML.en.html
 
-/** Type: `CDATA` - allows characters with markup */
-export const CDataSpec: TSpec = [
-  /^<!\[CDATA\[(?<raw>[\s\S]*)?\]\]\s?>/,
-  Types.CDATA,
-];
-/** Type: `TEXT` */
-export const TextSpec: TSpec = [/^[^<&]+/, Types.TEXT];
-/** Type: `RAW_TEXT` */
-export const RawTextSpec: TSpec = [/^(?<raw>[\s\S]+)<\//, Types.RAW_TEXT];
+  /** Type: `SKIP` */
+  ExternalStyleSheets: [/^<\?xml\-stylesheet[\s\S]*?\?>/, Types.SKIP],
 
-/** Type: `<` */
-export const OpenSpec: TSpec = [/^</, '<'];
-/** Type: `>` */
-export const CloseSpec: TSpec = [/^>/, '>'];
-/** Type: `/` */
-export const SlashSpec: TSpec = [/^\//, '/'];
-/** Type: `=` */
-export const EqualsSpec: TSpec = [/^=/, '='];
+  //---//
+
+  /** Type: `XML_DECL_START` - XML Declaration begin */
+  XmlDeclStart: [/^<\?xml/, Types.XML_DECL_START],
+
+  /** Type: `SPECIAL_CLOSE` - XML special close */
+  SpecialClose: [/^\?>/, Types.SPECIAL_CLOSE],
+
+  //---//
+
+  /** Type: `NAME` */
+  Name: [/^\w+:?[\w-]+/, Types.NAME],
+  /** Type: `STRING` - "" or '' with its content */
+  String: [/^("[^"]*")|('[^']*')/, Types.STRING],
+
+  /** Type: `CDATA` - allows characters with markup */
+  CData: [/^<!\[CDATA\[(?<raw>[\s\S]*)?\]\]\s?>/, Types.CDATA],
+  /** Type: `TEXT` */
+  Text: [/^[^<&]+/, Types.TEXT],
+  /** Type: `RAW_TEXT` */
+  RawText: [/^(?<raw>[\s\S]+)<\//, Types.RAW_TEXT],
+
+  /** Type: `<` */
+  Open: [/^</, '<'],
+  /** Type: `>` */
+  Close: [/^>/, '>'],
+  /** Type: `/` */
+  Slash: [/^\//, '/'],
+  /** Type: `=` */
+  Equals: [/^=/, '='],
+} as const;
 
 //----------------------------------------------------------------------------//
 // Set of Specs
 
 /** To process the beginning of the file */
 export const PrologSpecs: TSpec[] = [
-  EmptySpacesSpec,
+  Spec.EmptySpaces,
 
-  CommentSpec,
+  Spec.Comment,
 
-  // DTD
-  // https://www.xmlfiles.com/dtd/
-  // https://tutorialreference.com/xml/dtd/dtd-tutorial
-  // https://en.wikipedia.org/wiki/Document_type_definition
-  [/^<!DOCTYPE[\s\S]*?>/, Types.SKIP],
+  Spec.DTD,
+  Spec.ExternalStyleSheets,
 
-  // external style sheets
-  // https://www.w3.org/Style/styling-XML.en.html
-  [/^<\?xml\-stylesheet[\s\S]*?\?>/, Types.SKIP],
+  Spec.XmlDeclStart,
+  Spec.SpecialClose,
 
-  // XML Declaration begin
-  [/^<\?xml/, Types.XML_DECL_START],
+  Spec.Name,
 
-  // XML special close
-  [/^\?>/, Types.SPECIAL_CLOSE],
+  Spec.Equals,
 
-  NameSpec,
+  Spec.String,
 
-  EqualsSpec,
-
-  ValueSpec,
-
-  OpenSpec,
+  Spec.Open,
 ];
 
 /** To whenever it needs to read a content as a Raw Text */
-export const SpecialTagSpecs: TSpec[] = [RawTextSpec, OpenSpec];
+export const SpecialTagSpecs: TSpec[] = [Spec.RawText, Spec.Open];
 
 export const TagSpecs: TSpec[] = [
-  EmptySpacesSpec,
-  CommentSpec,
+  Spec.EmptySpaces,
+  Spec.Comment,
 
-  NameSpec,
+  Spec.Name,
 
-  EqualsSpec,
-  ValueSpec,
+  Spec.Equals,
+  Spec.String,
 
-  SlashSpec,
-  CloseSpec,
+  Spec.Slash,
+  Spec.Close,
 
-  CDataSpec,
-  TextSpec,
+  Spec.CData,
+  Spec.Text,
 
-  OpenSpec,
+  Spec.Open,
 ];
 
 //----------------------------------------------------------------------------//
