@@ -60,13 +60,15 @@ npm run dev
 
 - [Lexer.ts](src/lexer/Lexer.ts) - engine that produces the tokens
 
+  - 🚧 [Lexer.spec.ts](src/lexer/__tests__/Lexer.spec.ts) 🚧 - I'm working on it yet...
+
 ![EBNF Lexer plantuml diagram](assets/images/lexer.png)
 
 ### Parser
 
 > [!WARNING]
 >
-> TODO: add the documentation
+> TODO: implement and add its documentation 🚨 🏗️ 🚧
 
 ![EBNF Parser plantuml diagram](assets/images/parser.png)
 
