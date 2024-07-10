@@ -1,4 +1,4 @@
-import { isNull, isUndefined, isNumber, isString } from './check';
+import { isNull, isUndefined, isNumber, isString } from '~/utils/check';
 
 describe('check', () => {
   it('isNull', () => {

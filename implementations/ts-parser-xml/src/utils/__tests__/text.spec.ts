@@ -1,4 +1,4 @@
-import { countLines, truncate } from './text';
+import { countLines, truncate } from '~/utils/text';
 
 describe('text', () => {
   describe('count text lines', () => {
