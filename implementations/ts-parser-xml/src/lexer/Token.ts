@@ -158,7 +158,6 @@ export const Spec: Record<string, TSpec> = {
   // https://en.wikipedia.org/wiki/Document_type_definition
   /** Type: `SKIP` */
   DTD: [
-    // /^<!DOCTYPE\s\w+(\s\[[\s\S]*?\]|([\s\w]|("[^"]*")|('[^']*'))*)>/,
     /^<!DOCTYPE\s\w+(\s\[[\s\S]*?\]|([\s\w]|("[^"]*")|('[^']*'))*)>/,
     Types.SKIP,
   ],
