@@ -103,7 +103,9 @@ export const Types = {
   EOL: 'EOL',
 
   COMMENT: 'COMMENT',
+  DTD: 'DTD',
 
+  EXTERNAL_STYLE_SHEETS: 'EXTERNAL_STYLE_SHEETS',
   XML_DECL_START: 'XML_DECL_START',
   SPECIAL_CLOSE: 'SPECIAL_CLOSE',
 
@@ -118,7 +120,12 @@ export const Types = {
 } as const;
 
 // EOF - End of File
-export const buildEOFToken = () => new Token(Types.EOF);
+export const buildEOFToken = (line?: number, column?: number) =>
+  buildToken({
+    type: Types.EOF,
+    line,
+    column,
+  });
 
 export const isEOF = (token: IToken) => token.type === Types.EOF;
 
@@ -152,6 +159,11 @@ export const Spec: Record<string, TSpec> = {
   /** Type: `SKIP` */
   EmptySpaces: [/^[ \t]/, Types.SKIP],
 
+  // external style sheets
+  // https://www.w3.org/Style/styling-XML.en.html
+
+  //---//
+
   // DTD
   // https://www.xmlfiles.com/dtd/
   // https://tutorialreference.com/xml/dtd/dtd-tutorial
@@ -159,14 +171,14 @@ export const Spec: Record<string, TSpec> = {
   /** Type: `SKIP` */
   DTD: [
     /^<!DOCTYPE\s\w+(\s\[[\s\S]*?\]|([\s\w]|("[^"]*")|('[^']*'))*)>/,
-    Types.SKIP,
+    Types.DTD,
   ],
 
-  // external style sheets
-  // https://www.w3.org/Style/styling-XML.en.html
-
-  /** Type: `SKIP` */
-  ExternalStyleSheets: [/^<\?xml\-stylesheet[\s\S]*?\?>/, Types.SKIP],
+  /** Type: `EXTERNAL_STYLE_SHEETS` */
+  ExternalStyleSheets: [
+    /^<\?xml\-stylesheet[\s\S]*?\?>/,
+    Types.EXTERNAL_STYLE_SHEETS,
+  ],
 
   //---//
 

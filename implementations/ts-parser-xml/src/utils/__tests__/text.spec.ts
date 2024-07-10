@@ -8,17 +8,22 @@ describe('text', () => {
     });
 
     it('multiple lines', () => {
-      const text = `a\nb\nc\r
-      
-      another value
-  
-      12312
-  
-  
-      ggasqe
-      `;
+      let lines = countLines(`a
 
-      expect(countLines(text)).toBe(11);
+another value
+
+12312
+
+
+ggasqe`);
+      expect(lines).toBe(8);
+
+      lines = countLines(`<!-- 
+  hello 
+    world 
+      -->`);
+
+      expect(lines).toBe(4);
     });
   });
 

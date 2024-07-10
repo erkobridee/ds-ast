@@ -1,5 +1,3 @@
-import { countLines } from '~/utils/text';
-
 import type { IToken, TSpec } from './Token';
 import { buildToken, PrologSpecs, Types, buildEOFToken } from './Token';
 
@@ -13,8 +11,10 @@ import { buildToken, PrologSpecs, Types, buildEOFToken } from './Token';
 export class Lexer {
   private source = '';
   private cursor = 0;
+
   private line = 1;
   private column = 1;
+
   private lookahead: IToken = buildEOFToken();
   private specs: TSpec[] = [];
 
@@ -24,8 +24,10 @@ export class Lexer {
   public init(source = '', shouldLookahead = true, specsToUse = PrologSpecs) {
     this.source = source;
     this.cursor = 0;
+
     this.line = 1;
     this.column = 1;
+
     this.specs = specsToUse;
 
     /*
@@ -40,7 +42,7 @@ export class Lexer {
   }
 
   constructor(source = '') {
-    this.init(source);
+    source && this.init(source);
   }
 
   /**
@@ -78,8 +80,8 @@ export class Lexer {
   //--------------------------------------------------------------------------//
 
   private runTokenAction(tokenType: string | null, tokenLexeme: string) {
-    const currentLine = this.line;
-    const currentColumn = this.column;
+    const previousLine = this.line;
+    const previousColumn = this.column;
 
     switch (tokenType) {
       case Types.EOL:
@@ -87,11 +89,21 @@ export class Lexer {
         this.column = 1;
         break;
 
-      case Types.COMMENT:
+      case Types.DTD:
       case Types.CDATA:
+      case Types.COMMENT:
       case Types.RAW_TEXT:
-        this.line += countLines(tokenLexeme);
-        this.column = 1;
+      case Types.EXTERNAL_STYLE_SHEETS:
+        const tokenLexemeLines = tokenLexeme.split('\n');
+        const linesNumber = tokenLexemeLines.length;
+
+        this.line += linesNumber - 1;
+
+        if (this.hasMoreTokens()) {
+          this.column = 1;
+        } else {
+          this.column = tokenLexemeLines[linesNumber - 1].length + 1;
+        }
         break;
 
       default:
@@ -101,15 +113,21 @@ export class Lexer {
 
     switch (tokenType) {
       case Types.EOL:
+      case Types.DTD:
       case Types.SKIP:
       case Types.COMMENT:
+      case Types.EXTERNAL_STYLE_SHEETS:
         return this.getNextToken();
       default:
-        return buildToken(tokenType, tokenLexeme, currentLine, currentColumn);
+        return buildToken(tokenType, tokenLexeme, previousLine, previousColumn);
     }
   }
 
   //--------------------------------------------------------------------------//
+
+  public setSpecs(specsToUse: TSpec[]) {
+    this.specs = specsToUse;
+  }
 
   /**
    * Obtains the next token
@@ -124,7 +142,7 @@ export class Lexer {
    */
   public getNextToken(specsToUse?: TSpec[]): IToken {
     if (!this.hasMoreTokens()) {
-      return buildEOFToken();
+      return buildEOFToken(this.line, this.column);
     }
 
     if (specsToUse) {
@@ -169,7 +187,7 @@ export class Lexer {
   public eatToken(tokenType: string, specsToUse?: TSpec[]) {
     const token = this.lookahead;
 
-    if (token === null) {
+    if (token.type === Types.EOF) {
       throw new SyntaxError(
         `Unexpected end of input, expected: "${tokenType}"`
       );
