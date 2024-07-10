@@ -1,3 +1,5 @@
+import { countLines } from '~/utils/text';
+
 import type { IToken, TSpec } from './Token';
 import { buildToken, PrologSpecs, Types, buildEOFToken } from './Token';
 
@@ -76,34 +78,34 @@ export class Lexer {
   //--------------------------------------------------------------------------//
 
   private runTokenAction(tokenType: string | null, tokenLexeme: string) {
+    const currentLine = this.line;
     const currentColumn = this.column;
-    this.column += tokenLexeme.length;
-
-    if (tokenType === Types.EOL) {
-      this.line += 1;
-      this.column = 1;
-
-      return this.getNextToken();
-    }
-
-    if (tokenType === Types.COMMENT) {
-      // TODO: count the number of lines present at the tokenLexeme
-      // TODO: update the line counter
-
-      // this.line += 1;
-      // this.column = 1;
-
-      return this.getNextToken();
-    }
-
-    // TODO: handle cases where it needs to count the number of lines
-    // CDATA and RAW_TEXT
 
     switch (tokenType) {
+      case Types.EOL:
+        this.line += 1;
+        this.column = 1;
+        break;
+
+      case Types.COMMENT:
+      case Types.CDATA:
+      case Types.RAW_TEXT:
+        this.line += countLines(tokenLexeme);
+        this.column = 1;
+        break;
+
+      default:
+        this.column += tokenLexeme.length;
+        break;
+    }
+
+    switch (tokenType) {
+      case Types.EOL:
       case Types.SKIP:
+      case Types.COMMENT:
         return this.getNextToken();
       default:
-        return buildToken(tokenType, tokenLexeme);
+        return buildToken(tokenType, tokenLexeme, currentLine, currentColumn);
     }
   }
 
