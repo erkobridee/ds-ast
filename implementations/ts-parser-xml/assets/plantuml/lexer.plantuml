@@ -5,10 +5,11 @@ title EBNF - XML Lexer
 
 EOF = ? end of the file = no more charecteres to process ? ;
 
+EOF = "RegExp( /^(?:\n|\r\n|\n\r)/ )" (* `\\n` on POSIX and `\\r\\n` on Windows *) ;
 
 (* Skip *)
 
-EMPTY_SPACE = "RegExp( /^[\s\S]/ )" ;
+EMPTY_SPACE = "RegExp( /^[ \t]/ )" ;
 
 COMMENT = "RegExp( /^<!--[\s\S]*?-->/ )" ;
 
