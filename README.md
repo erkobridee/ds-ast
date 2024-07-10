@@ -115,6 +115,16 @@ type LexerFn = (input: string) => Token[];
 
   - [[GitHub] GuntherRademacher/rr](https://github.com/GuntherRademacher/rr)
 
+- [[GitHub] matthijsgroen/ebnf2railroad](https://github.com/matthijsgroen/ebnf2railroad) - 📔 Create beautiful documentation for EBNF
+
+  - [Try online!](https://matthijsgroen.github.io/ebnf2railroad/try-yourself.html)
+
+- [[GitHub] kaigouthro/ebnf_live_graphviz](https://github.com/kaigouthro/ebnf_live_graphviz) - [python] streamlit w3c ebnf visualzer, json output, markdown visualizer, and live graphviz hierarchy
+
+- [EBNF (Syntax diagrams / Railroad diagrams / Grammar diagrams) #4252 | mermaidjs / mermeid - GitHub](https://github.com/mermaid-js/mermaid/issues/4252)
+
+- [Railroad, Syntax diagrams, EBNF | Wiki at mermaidjs / mermeid - GitHub](https://github.com/mermaid-js/mermaid/wiki/Railroad,-Syntax-diagrams,-EBNF)
+
 #### Compiler
 
 - [Computer Language - (Compiler|Interpreter) - Language translator | DataCadamia](https://datacadamia.com/code/compiler/compiler)
