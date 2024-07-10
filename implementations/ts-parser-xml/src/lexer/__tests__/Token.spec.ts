@@ -24,6 +24,27 @@ describe('Token', () => {
     expect(token.toString()).toBe(tokenToString(token));
   });
 
+  describe('long lexeme - lorem ipsum', () => {
+    it('default maxLexemeLength = 50', () => {
+      const lexeme = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Vestibulum lectus mauris ultrices eros in cursus turpis massa tincidunt.`;
+      const token = new Token('type', lexeme);
+      expect(token.type).toBe('type');
+      expect(token.lexeme).toBe(lexeme);
+      expect(token.toString()).toBe(tokenToString(token));
+    });
+
+    it('maxLexemeLength = 25', () => {
+      const maxLexemeLength = 25;
+      const lexeme = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Vestibulum lectus mauris ultrices eros in cursus turpis massa tincidunt.`;
+      const token = new Token('type', lexeme);
+      expect(token.type).toBe('type');
+      expect(token.lexeme).toBe(lexeme);
+      expect(token.toString(maxLexemeLength)).toBe(
+        tokenToString(token, maxLexemeLength)
+      );
+    });
+  });
+
   describe('buildToken', () => {
     it('one argument', () => {
       const token = buildToken('type');
@@ -88,6 +109,15 @@ describe('Token', () => {
         expect(groups!['tag']).toBe('greetings');
         expect(groups!['attributes']).toBe(` attr1="1" attr2='2' required`);
         expect(groups!['content']).toBe('Hello World');
+      },
+    });
+
+    namedRegexpIt({
+      name: 'EndOfLine',
+      input: '\n',
+      check: (result) => {
+        expect(result).not.toBeNull();
+        expect(result![0]).toBe('\n');
       },
     });
 

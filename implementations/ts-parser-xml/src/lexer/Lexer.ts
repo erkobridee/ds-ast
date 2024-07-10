@@ -11,6 +11,8 @@ import { buildToken, PrologSpecs, Types, buildEOFToken } from './Token';
 export class Lexer {
   private source = '';
   private cursor = 0;
+  private line = 1;
+  private column = 1;
   private lookahead: IToken = buildEOFToken();
   private specs: TSpec[] = [];
 
@@ -20,6 +22,8 @@ export class Lexer {
   public init(source = '', shouldLookahead = true, specsToUse = PrologSpecs) {
     this.source = source;
     this.cursor = 0;
+    this.line = 1;
+    this.column = 1;
     this.specs = specsToUse;
 
     /*
@@ -45,29 +49,65 @@ export class Lexer {
     return this.cursor < this.source.length;
   }
 
-  private matchHelper(
-    regexp: RegExp,
-    strToCheck: string,
-    tokenType: string | null
-  ) {
+  //--------------------------------------------------------------------------//
+
+  private getMatchedIndex(tokenType: string | null) {
+    switch (tokenType) {
+      case Types.CDATA:
+      case Types.RAW_TEXT:
+        return 1;
+      default:
+        return 0;
+    }
+  }
+
+  private matchHelper(regexp: RegExp, strToCheck: string, matchedIndex = 0) {
     const matched = regexp.exec(strToCheck);
 
     if (matched === null) {
       return null;
     }
 
-    let tokenLexeme = matched[0];
-
-    switch (tokenType) {
-      case Types.CDATA:
-      case Types.RAW_TEXT:
-        tokenLexeme = matched[1];
-        break;
-    }
-
+    const tokenLexeme = matched[matchedIndex];
     this.cursor += tokenLexeme.length;
     return tokenLexeme;
   }
+
+  //--------------------------------------------------------------------------//
+
+  private runTokenAction(tokenType: string | null, tokenLexeme: string) {
+    const currentColumn = this.column;
+    this.column += tokenLexeme.length;
+
+    if (tokenType === Types.EOL) {
+      this.line += 1;
+      this.column = 1;
+
+      return this.getNextToken();
+    }
+
+    if (tokenType === Types.COMMENT) {
+      // TODO: count the number of lines present at the tokenLexeme
+      // TODO: update the line counter
+
+      // this.line += 1;
+      // this.column = 1;
+
+      return this.getNextToken();
+    }
+
+    // TODO: handle cases where it needs to count the number of lines
+    // CDATA and RAW_TEXT
+
+    switch (tokenType) {
+      case Types.SKIP:
+        return this.getNextToken();
+      default:
+        return buildToken(tokenType, tokenLexeme);
+    }
+  }
+
+  //--------------------------------------------------------------------------//
 
   /**
    * Obtains the next token
@@ -92,18 +132,17 @@ export class Lexer {
     const strToCheck = this.source.slice(this.cursor);
 
     for (const [regexp, tokenType] of this.specs) {
-      const tokenLexeme = this.matchHelper(regexp, strToCheck, tokenType);
+      const tokenLexeme = this.matchHelper(
+        regexp,
+        strToCheck,
+        this.getMatchedIndex(tokenType)
+      );
 
       if (tokenLexeme === null) {
         continue;
       }
 
-      // should skip token, e.g. whitespace
-      if (tokenType === Types.SKIP) {
-        return this.getNextToken();
-      }
-
-      return buildToken(tokenType, tokenLexeme);
+      return this.runTokenAction(tokenType, tokenLexeme);
     }
 
     throw new SyntaxError(`Unexpected token: "${strToCheck[0]}"`);

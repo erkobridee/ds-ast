@@ -1,3 +1,4 @@
+import { truncate } from '~/utils/text';
 import { Spec } from '~/lexer/Token';
 
 //----------------------------------------------------------------------------//
@@ -37,8 +38,7 @@ interface IRegexpItOptions {
 
 export const regexpIt = (options: IRegexpItOptions) => {
   const { name, regexp, maxRegExpLength = 50, input, check } = options;
-  const truncateRegExt = new RegExp(`/(.{${maxRegExpLength}})..+/`);
-  const regexpStr = regexp.toString().replace(truncateRegExt, '$1 …');
+  const regexpStr = truncate(regexp.toString(), maxRegExpLength);
   const regexpDisplay = `RegExp( ${regexpStr} )`;
   const itName = name ? `${name} - ${regexpDisplay}` : regexpDisplay;
   it(itName, () => {

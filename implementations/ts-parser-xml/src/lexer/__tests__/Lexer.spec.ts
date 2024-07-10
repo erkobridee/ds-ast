@@ -1,6 +1,20 @@
-// TODO: define the tests cases to cover the Lexer
+import { Lexer, TokenTypes } from '~/lexer';
+
 describe('Lexer', () => {
-  it('test', () => {
-    console.log('Lexer > test');
+  it.skip('no source', () => {
+    const lexer = new Lexer();
+    expect(lexer.getNextToken()).toMatchObject({
+      type: TokenTypes.EOF,
+    });
   });
+
+  it('throw unexpected token', () => {
+    const ErrorRegexp = /^Unexpected token: "/;
+    const lexer = new Lexer();
+
+    lexer.init('\n\ts####', false);
+    expect(() => lexer.getNextToken()).toThrow(ErrorRegexp);
+  });
+
+  // TODO: define more test cases
 });

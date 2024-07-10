@@ -1,29 +1,44 @@
+import { truncate } from '~/utils/text';
 import { isObject, isString, isNumber, isUndefined } from '~/utils/check';
 
 export interface IToken {
   type: string;
   lexeme?: string;
+
+  // information useful for error reporting or debugging
+  line?: number;
+  column?: number;
 }
 
 //----------------------------------------------------------------------------//
 
-export const tokenToString = (token: IToken): string => {
-  const { type, lexeme } = token;
+export const tokenToString = (token: IToken, maxLexemeLength = 50): string => {
+  const { type, lexeme, line, column } = token;
 
-  return `Token( ${type}` + (lexeme ? `, ${lexeme}` : '') + ' )';
+  let message = `Token`;
+  if (line && column) message += `@[ ${line}, ${column} ]`;
+  message += `( ${type}`;
+  if (lexeme) message += `, ${truncate(lexeme, maxLexemeLength)}`;
+  message += ' )';
+
+  return message;
 };
 
 export class Token implements IToken {
   public type: string;
   public lexeme?: string;
+  public line?: number;
+  public column?: number;
 
-  constructor(type: string, lexeme?: string) {
+  constructor(type: string, lexeme?: string, line?: number, column?: number) {
     this.type = type;
     this.lexeme = lexeme;
+    this.line = line;
+    this.column = column;
   }
 
-  public toString(): string {
-    return tokenToString(this);
+  public toString(maxLexemeLength = 50): string {
+    return tokenToString(this, maxLexemeLength);
   }
 }
 
@@ -44,11 +59,11 @@ export const buildToken = (...args: unknown[]) => {
     throw new BuildTokenError('buildToken must have at least one argument');
   }
 
-  const [first, second] = args;
+  const [first, second, third, fourth] = args;
 
   if (isObject(first)) {
-    const { type, lexeme } = first as IToken;
-    return new Token(type, lexeme);
+    const { type, lexeme, line, column } = first as IToken;
+    return new Token(type, lexeme, line, column);
   }
 
   if (isString(first)) {
@@ -58,9 +73,19 @@ export const buildToken = (...args: unknown[]) => {
       );
     }
 
+    let line: undefined | number, column: undefined | number;
+    if (isNumber(third)) {
+      line = Number(third);
+    }
+    if (isNumber(fourth)) {
+      column = Number(fourth);
+    }
+
     return new Token(
       first as string,
-      isString(second) ? (second as string) : undefined
+      isString(second) ? (second as string) : undefined,
+      line,
+      column
     );
   }
 
@@ -70,9 +95,14 @@ export const buildToken = (...args: unknown[]) => {
 //----------------------------------------------------------------------------//
 
 export const Types = {
-  SKIP: null,
+  SKIP: 'SKIP',
 
+  /** end of file */
   EOF: 'EOF',
+  /** end of line - `\n` on POSIX and `\r\n` on Windows */
+  EOL: 'EOL',
+
+  COMMENT: 'COMMENT',
 
   XML_DECL_START: 'XML_DECL_START',
   SPECIAL_CLOSE: 'SPECIAL_CLOSE',
@@ -95,7 +125,12 @@ export const isEOF = (token: IToken) => token.type === Types.EOF;
 //----------------------------------------------------------------------------//
 // Specifications Map
 
-export type TSpec = [RegExp, string | null];
+export type TSpec = [
+  // Token RegExp matcher
+  RegExp,
+  // Token Type value
+  string | null
+];
 
 export const Spec: Record<string, TSpec> = {
   /** Type: `ELEMENT` - any valid xml tag that could have attributes, content and it closes it at the end */
@@ -106,10 +141,16 @@ export const Spec: Record<string, TSpec> = {
 
   //---//
 
+  /** Type: `EOL` */
+  EndOfLine: [/^(?:\n|\r\n|\n\r)/, Types.EOL],
+
+  /** Type: `COMMENT` */
+  Comment: [/^<!--[\s\S]*?-->/, Types.COMMENT],
+
+  //---//
+
   /** Type: `SKIP` */
-  EmptySpaces: [/^[\s\S]/, Types.SKIP],
-  /** Type: `SKIP` */
-  Comment: [/^<!--[\s\S]*?-->/, Types.SKIP],
+  EmptySpaces: [/^[ \t]/, Types.SKIP],
 
   // DTD
   // https://www.xmlfiles.com/dtd/
@@ -165,6 +206,7 @@ export const Spec: Record<string, TSpec> = {
 
 /** To process the beginning of the file */
 export const PrologSpecs: TSpec[] = [
+  Spec.EndOfLine,
   Spec.EmptySpaces,
 
   Spec.Comment,
@@ -188,6 +230,7 @@ export const PrologSpecs: TSpec[] = [
 export const SpecialTagSpecs: TSpec[] = [Spec.RawText, Spec.Open];
 
 export const TagSpecs: TSpec[] = [
+  Spec.EndOfLine,
   Spec.EmptySpaces,
   Spec.Comment,
 
