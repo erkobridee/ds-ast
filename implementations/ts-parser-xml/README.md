@@ -78,7 +78,7 @@ npm run dev
 
 #### AST
 
-- 🚧 [AST](src/parser/AST.ts) 🚧 - I'm still working on it...
+- 🚧 [AST.ts](src/parser/AST.ts) 🚧 - I'm still working on it...
 
 ```mermaid
 classDiagram
