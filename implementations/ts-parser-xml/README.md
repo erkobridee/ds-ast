@@ -76,6 +76,100 @@ npm run dev
 
 ![EBNF Parser plantuml diagram](assets/images/parser.png)
 
+#### AST
+
+- 🚧 [AST](src/parser/AST.ts) 🚧 - I'm still working on it...
+
+```mermaid
+classDiagram
+
+note for INodeDocument "AST (Abstract Syntax Tree) Root"
+
+INodeDocument "1" --> "1" INodeElement
+INodeElementBase "1" --> "0..n" IElementAttribute
+
+INodeDocument --|> INodeBase : extends
+INodeValue --|> INodeBase : extends
+INodeElementBase --> INodeBase : extends
+
+INodeText --|> INodeValue : extends
+INodeCData --|> INodeValue : extends
+INodeRawText --|> INodeValue : extends
+
+INodeSpecialElement --|> INodeElementBase : extends
+INodeElement --|> INodeElementBase : extends
+
+INodeBase "1" --> "1" NodeType
+
+TElementChildren --* INodeText
+TElementChildren --* INodeCData
+TElementChildren <--* INodeElement
+
+class NodeType {
+    << enum >>
+    Document
+    Element
+    SpecialElement
+    Text
+    CData
+    RawText
+}
+
+
+class INodeBase {
+    type: NodeType
+}
+
+class INodeValue {
+    value: string
+}
+
+
+class INodeText {
+    type: NodeType.Text
+}
+
+class INodeCData {
+    type: NodeType.CDATA
+}
+
+
+class INodeRawText {
+    type: NodeType.RawText
+}
+
+
+class IElementAttribute {
+    name: string
+    value: string
+}
+
+class INodeElementBase {
+    name: string
+    attributes: IElementAttribute[]
+}
+
+class INodeSpecialElement {
+    type: NodeType.SpecialElement
+    content: INodeRawText
+}
+
+class TElementChildren {
+    << type >>
+}
+
+class INodeElement {
+    type: NodeType.Element
+    children: TElementChildren[]
+}
+
+class INodeDocument {
+    type: NodeType.Document
+    root: INodeElement
+}
+
+```
+
 ## References
 
 #### XML
