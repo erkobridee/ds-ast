@@ -7,12 +7,12 @@ Document = [ Prolog ] , Element , EOF (* end of file *) ;
 Prolog = XML_DECL_START (* <?xml *) , { Attributes } (* { version, encoding? } *) , SPECIAL_CLOSE (* ?> *) ;
 
 Element = (
-    OPEN_TAG (* < *) , NAME , { Attribute } , SLASH (* / *) , CLOSE_TAG (* > *) |
-    OPEN_TAG (* < *) , NAME , { Attribute } , CLOSE_TAG (* > *) , Content , OPEN_TAG (* < *) , SLASH (* / *) , NAME , CLOSE_TAG (* > *)
+    "<" , NAME , { Attribute } , "/" , ">" |
+    "<" , NAME , { Attribute } , ">" , Content , "<" , "/" , NAME , ">"
   ) 
   ;
 
-Attribute = NAME , EQUALS (* = *) , STRING ;
+Attribute = NAME , "=" , STRING ;
 
 Content = { ( 
     TEXT |

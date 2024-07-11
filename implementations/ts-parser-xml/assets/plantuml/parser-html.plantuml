@@ -11,28 +11,28 @@ Element = SpecialElement | VoidElement | AutoCloseElement | WithContentElement ;
 
 
 SpecialElement = (
-    OPEN_TAG (* < *) , "script" , { Attribute } , CLOSE_TAG (* > *) , [ RAW_TEXT ] , OPEN_TAG (* < *) , SLASH (* / *) , "script" , CLOSE_TAG (* > *) | 
-    OPEN_TAG (* < *) , "style" , { Attribute } , CLOSE_TAG (* > *) , RAW_TEXT , OPEN_TAG (* < *) , SLASH (* / *) , "style" , CLOSE_TAG (* > *)
+    "<" , "script" , { Attribute } , ">" , [ RAW_TEXT ] , "<" , "/" , "script" , ">" | 
+    "<" , "style" , { Attribute } , ">" , RAW_TEXT , "<" , "/" , "style" , ">"
   ) 
   ;
 
 VoidElement = (
-    OPEN_TAG (* < *) , VOID_TAG_NAME (* for eg.: meta, link, img, input, br, hr, ... *) , { Attribute } , CLOSE_TAG (* > *)
+    "<" , VOID_TAG_NAME (* for eg.: meta, link, img, input, br, hr, ... *) , { Attribute } , ">"
   )
   ;
 
 AutoCloseElement = (
-    OPEN_TAG (* < *) , NAME , { Attribute } , SLASH (* / *) , CLOSE_TAG (* > *)
+    "<" , NAME , { Attribute } , "/" , ">"
   )
   ;
 
 WithContentElement = (
-    OPEN_TAG (* < *) , NAME , { Attribute } , CLOSE_TAG (* > *) , Content , OPEN_TAG (* < *) , SLASH (* / *) , NAME , CLOSE_TAG (* > *)
+    "<" , NAME , { Attribute } , ">" , Content , "<" , "/" , NAME , ">"
   )
   ;
 
 
-Attribute = NAME , EQUALS (* = *) , STRING ;
+Attribute = NAME , "=" , STRING ;
 
 Content = { ( 
     TEXT |

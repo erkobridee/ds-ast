@@ -139,6 +139,7 @@ export type TSpec = [
   string | null
 ];
 
+// TODO: should it be an enum?
 export const Spec: Record<string, TSpec> = {
   /** Type: `ELEMENT` - any valid xml tag that could have attributes, content and it closes it at the end */
   Element: [
