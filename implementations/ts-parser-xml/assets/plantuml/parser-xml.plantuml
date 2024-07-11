@@ -12,7 +12,7 @@ Element = (
   ) 
   ;
 
-Attribute = NAME , "=" , STRING ;
+Attribute = NAME , [ "=" , STRING ] ;
 
 Content = { ( 
     TEXT |

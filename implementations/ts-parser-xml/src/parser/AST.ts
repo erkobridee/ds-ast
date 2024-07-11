@@ -49,7 +49,7 @@ export interface INodeRawText extends INodeValue {
 
 export interface IElementAttriute {
   name: string;
-  value: string;
+  value?: string;
 }
 
 export interface INodeElementBase extends INodeBase {
