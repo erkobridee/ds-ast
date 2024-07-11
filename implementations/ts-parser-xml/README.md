@@ -217,6 +217,8 @@ class INodeDocument {
 
 - [Empty HTML Tags (21 Weird Things You Need To Know!) | Matthew James Taylor](https://matthewjamestaylor.com/empty-tags)
 
+- [Self Closing Tags | Code Kracken](https://www.codekracken.com/self-closing-tags/)
+
 - [HTML Easy](https://www.html-easy.com/) - Learn HTML the Easy Way
 
   - [References | HTML Easy](https://www.html-easy.com/references/)
