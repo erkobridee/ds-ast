@@ -65,7 +65,11 @@ export interface INodeSpecialElement extends INodeElementBase {
   content: INodeRawText;
 }
 
-export type TElementChildren = INodeText | INodeCData | INodeElement;
+export type TElementChildren =
+  | INodeText
+  | INodeCData
+  | INodeElement
+  | INodeSpecialElement;
 
 export interface INodeElement extends INodeElementBase {
   type: NodeType.Element;
@@ -81,3 +85,66 @@ export interface INodeDocument extends INodeBase {
 }
 
 //----------------------------------------------------------------------------//
+
+export const nodeFactory = {
+  Document: ({
+    root,
+    prolog,
+  }: {
+    root: INodeElement;
+    prolog: IDocumentProlog;
+  }): INodeDocument => ({
+    type: NodeType.Document,
+    prolog,
+    root,
+  }),
+
+  Element: ({
+    name,
+    attributes,
+    children,
+  }: {
+    name: string;
+    attributes?: IElementAttriute[];
+    children: TElementChildren[];
+  }): INodeElement => ({
+    type: NodeType.Element,
+    name,
+    attributes,
+    children,
+  }),
+
+  SpecialElement: ({
+    name,
+    attributes,
+    content,
+  }: {
+    name: string;
+    attributes?: IElementAttriute[];
+    content: INodeRawText;
+  }): INodeSpecialElement => ({
+    type: NodeType.SpecialElement,
+    name,
+    attributes,
+    content,
+  }),
+
+  RawText: (value: string): INodeRawText => ({
+    type: NodeType.RawText,
+    value,
+  }),
+
+  Text: (value: string): INodeText => ({
+    type: NodeType.Text,
+    value,
+  }),
+
+  CData: (value: string): INodeCData => ({
+    type: NodeType.CData,
+    value,
+  }),
+};
+
+//----------------------------------------------------------------------------//
+
+export type TAbstractSyntaxTree = INodeDocument;

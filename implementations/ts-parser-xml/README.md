@@ -105,6 +105,7 @@ INodeBase "1" --> "1" NodeType
 
 TElementChildren --* INodeText
 TElementChildren --* INodeCData
+TElementChildren --* INodeSpecialElement
 TElementChildren <--* INodeElement
 
 class NodeType {
