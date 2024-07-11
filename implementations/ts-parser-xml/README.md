@@ -74,16 +74,22 @@ npm run dev
 >
 > TODO: implement and add its documentation 🚨 🏗️ 🚧
 
-![EBNF Parser plantuml diagram](assets/images/parser.png)
+#### Basic XML
+
+![EBNF Basic XML Parser plantuml diagram](assets/images/parser-xml.png)
+
+#### Basic HTML
+
+![EBNF Basic HTML Parser plantuml diagram](assets/images/parser-html.png)
 
 #### AST
 
-- 🚧 [AST.ts](src/parser/AST.ts) 🚧 - I'm still working on it...
+- [AST.ts](src/parser/AST.ts) 🚧 - It needs to be reviewed
 
 ```mermaid
 classDiagram
 
-note for INodeDocument "AST (Abstract Syntax Tree) Root"
+note for INodeDocument "TAbstractSyntaxTree"
 
 note for INodeSpecialElement "for example the script and/or style tags"
 
@@ -201,6 +207,8 @@ class INodeDocument {
 
 - [Void element | MDN](https://developer.mozilla.org/en-US/docs/Glossary/Void_element)
 
+- [Empty HTML Tags (21 Weird Things You Need To Know!) | Matthew James Taylor](https://matthewjamestaylor.com/empty-tags)
+
 - [HTML Easy](https://www.html-easy.com/) - Learn HTML the Easy Way
 
   - [References | HTML Easy](https://www.html-easy.com/references/)
@@ -262,3 +270,9 @@ class INodeDocument {
 - [Regexp - Unicode: flag "u" and class \p{...} | javascript.info](https://javascript.info/regexp-unicode)
 
 - [Unicode | Understanding JavaScript RegExp](https://learnbyexample.github.io/learn_js_regexp/unicode.html)
+
+#### Class Diagrams
+
+- [Mermaid Class Diagram | Mermaid Docs](https://mermaid.js.org/syntax/classDiagram.html)
+
+- [UML Class Diagram Relationships Explained with Examples | Creately](https://creately.com/guides/class-diagram-relationships/)

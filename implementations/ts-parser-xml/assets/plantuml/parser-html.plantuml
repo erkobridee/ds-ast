@@ -1,0 +1,43 @@
+@startebnf
+title EBNF - Basic HTML Parser
+
+
+Document = [ Prolog ] , Element , EOF (* end of file *) ;
+
+Prolog = XML_DECL_START (* <?xml *) , { Attributes } (* { version, encoding? } *) , SPECIAL_CLOSE (* ?> *) ;
+
+
+Element = SpecialElement | VoidElement | AutoCloseElement | WithContentElement ;
+
+
+SpecialElement = (
+    OPEN_TAG (* < *) , "script" , { Attribute } , CLOSE_TAG (* > *) , [ RAW_TEXT ] , OPEN_TAG (* < *) , SLASH (* / *) , "script" , CLOSE_TAG (* > *) | 
+    OPEN_TAG (* < *) , "style" , { Attribute } , CLOSE_TAG (* > *) , RAW_TEXT , OPEN_TAG (* < *) , SLASH (* / *) , "style" , CLOSE_TAG (* > *)
+  ) 
+  ;
+
+VoidElement = (
+    OPEN_TAG (* < *) , VOID_TAG_NAME (* for eg.: meta, link, img, input, br, hr, ... *) , { Attribute } , CLOSE_TAG (* > *)
+  )
+  ;
+
+AutoCloseElement = (
+    OPEN_TAG (* < *) , NAME , { Attribute } , SLASH (* / *) , CLOSE_TAG (* > *)
+  )
+  ;
+
+WithContentElement = (
+    OPEN_TAG (* < *) , NAME , { Attribute } , CLOSE_TAG (* > *) , Content , OPEN_TAG (* < *) , SLASH (* / *) , NAME , CLOSE_TAG (* > *)
+  )
+  ;
+
+
+Attribute = NAME , EQUALS (* = *) , STRING ;
+
+Content = { ( 
+    TEXT |
+    Element
+  ) }-
+  ;
+
+@endebnf
