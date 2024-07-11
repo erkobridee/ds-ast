@@ -39,7 +39,7 @@ STRING = ? regexp ? (* RegExp( /^("[^"]*")|('[^']*')/ ) - anything in between ""
 
 NAME = "RegExp( /^\w+:?[\w-]+/ )" ;
 
-TEXT = "RegExp( /^[^<&]+/ )" ;
+TEXT = "RegExp( /^[^<]+/ )" ;
 
 RAW_TEXT = "RegExp( /^(?<raw>[\s\S]+)<\// )" ;
 

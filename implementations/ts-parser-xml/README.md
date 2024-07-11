@@ -54,6 +54,10 @@ npm run dev
 
 ### Lexer
 
+> [!TIP]
+>
+> On this implementation I have added the support to line and column position of the readed token
+
 - [Token.ts](src/lexer/Token.ts) - tokens specifications
 
   - [Token.spec.ts](src/lexer/__tests__/Token.spec.ts)

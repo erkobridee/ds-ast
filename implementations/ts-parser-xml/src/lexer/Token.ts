@@ -16,7 +16,7 @@ export const tokenToString = (token: IToken, maxLexemeLength = 50): string => {
   const { type, lexeme, line, column } = token;
 
   let message = `Token`;
-  if (line && column) message += `@[ ${line}, ${column} ]`;
+  if (line && column) message += `@[ Ln ${line}, Col ${column} ]`;
   message += `( ${type}`;
   if (lexeme) message += `, ${truncate(lexeme, maxLexemeLength)}`;
   message += ' )';
@@ -198,7 +198,7 @@ export const Spec: Record<string, TSpec> = {
   /** Type: `CDATA` - allows characters with markup */
   CData: [/^<!\[CDATA\[(?<raw>[\s\S]*)?\]\]\s?>/, Types.CDATA],
   /** Type: `TEXT` */
-  Text: [/^[^<&]+/, Types.TEXT],
+  Text: [/^[^<]+/, Types.TEXT],
   /** Type: `RAW_TEXT` */
   RawText: [/^(?<raw>[\s\S]+)<\//, Types.RAW_TEXT],
 
@@ -240,18 +240,22 @@ export const PrologSpecs: TSpec[] = [
 /** To whenever it needs to read a content as a Raw Text */
 export const SpecialTagSpecs: TSpec[] = [Spec.RawText, Spec.Open];
 
-export const TagSpecs: TSpec[] = [
+export const TagDeclSpecs: TSpec[] = [
   Spec.EndOfLine,
   Spec.EmptySpaces,
-  Spec.Comment,
 
   Spec.Name,
-
   Spec.Equals,
   Spec.String,
 
   Spec.Slash,
   Spec.Close,
+];
+
+export const TagContentSpecs: TSpec[] = [
+  Spec.EndOfLine,
+  Spec.EmptySpaces,
+  Spec.Comment,
 
   Spec.CData,
   Spec.Text,
