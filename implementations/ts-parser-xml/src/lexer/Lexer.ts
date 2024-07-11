@@ -55,26 +55,16 @@ export class Lexer {
 
   //--------------------------------------------------------------------------//
 
-  private getMatchedIndex(tokenType: string | null) {
-    switch (tokenType) {
-      case Types.CDATA:
-      case Types.RAW_TEXT:
-        return 1;
-      default:
-        return 0;
-    }
-  }
-
-  private matchHelper(regexp: RegExp, strToCheck: string, matchedIndex = 0) {
+  private matchHelper(regexp: RegExp, strToCheck: string) {
     const matched = regexp.exec(strToCheck);
 
     if (matched === null) {
       return null;
     }
 
-    const tokenLexeme = matched[matchedIndex];
-    this.cursor += tokenLexeme.length;
-    return tokenLexeme;
+    const lexeme = matched[0];
+    this.cursor += lexeme.length;
+    return lexeme;
   }
 
   //--------------------------------------------------------------------------//
@@ -118,6 +108,9 @@ export class Lexer {
       case Types.COMMENT:
       case Types.EXTERNAL_STYLE_SHEETS:
         return this.getNextToken();
+      case Types.RAW_TEXT:
+        tokenLexeme = tokenLexeme.replace(/<\/$/, '');
+        this.cursor -= 2;
       default:
         return buildToken(tokenType, tokenLexeme, previousLine, previousColumn);
     }
@@ -152,11 +145,7 @@ export class Lexer {
     const strToCheck = this.source.slice(this.cursor);
 
     for (const [regexp, tokenType] of this.specs) {
-      const tokenLexeme = this.matchHelper(
-        regexp,
-        strToCheck,
-        this.getMatchedIndex(tokenType)
-      );
+      const tokenLexeme = this.matchHelper(regexp, strToCheck);
 
       if (tokenLexeme === null) {
         continue;
@@ -165,7 +154,11 @@ export class Lexer {
       return this.runTokenAction(tokenType, tokenLexeme);
     }
 
-    throw new SyntaxError(`Unexpected token: "${strToCheck[0]}"`);
+    let message = `Unexpected token`;
+    message += ` @[ Ln ${this.line}, Col ${this.column} ]`;
+    message += ` : "${strToCheck[0]}"`;
+
+    throw new SyntaxError(message);
   }
 
   /**
@@ -188,15 +181,19 @@ export class Lexer {
     const token = this.lookahead;
 
     if (token.type === Types.EOF) {
-      throw new SyntaxError(
-        `Unexpected end of input, expected: "${tokenType}"`
-      );
+      let message = `Unexpected end of input`;
+      message += ` @[ Ln ${this.line}, Col ${this.column} ]`;
+      message += `, expected: "${tokenType}"`;
+
+      throw new SyntaxError(message);
     }
 
     if (token.type !== tokenType) {
-      throw new SyntaxError(
-        `Unexpected "${token.type}", expected: "${tokenType}"`
-      );
+      let message = `Unexpected token type`;
+      message += ` @[ Ln ${this.line}, Col ${this.column} ]`;
+      message += ` "${token.type}", expected: "${tokenType}"`;
+
+      throw new SyntaxError(message);
     }
 
     // Advance to the next token

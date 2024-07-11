@@ -3,7 +3,8 @@ export {
   Types as TokenTypes,
   PrologSpecs,
   SpecialTagSpecs,
-  TagSpecs,
+  TagDeclSpecs,
+  TagContentSpecs,
 } from './Token';
 
 export { default } from './Lexer';

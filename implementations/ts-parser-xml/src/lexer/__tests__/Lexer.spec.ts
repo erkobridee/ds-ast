@@ -1,4 +1,10 @@
-import { Lexer, TokenTypes, TagSpecs } from '~/lexer';
+import {
+  Lexer,
+  TokenTypes,
+  TagDeclSpecs,
+  TagContentSpecs,
+  SpecialTagSpecs,
+} from '~/lexer';
 
 describe('Lexer', () => {
   it('EOF - end of file', () => {
@@ -9,7 +15,7 @@ describe('Lexer', () => {
   });
 
   it('Unexpected token', () => {
-    const ErrorRegexp = /^Unexpected token: "/;
+    const ErrorRegexp = /^Unexpected token @/;
     const lexer = new Lexer();
 
     lexer.init('\n\ts####', false);
@@ -174,7 +180,7 @@ describe('Lexer', () => {
 
       lexer.init(lexeme, false);
 
-      expect(lexer.getNextToken(TagSpecs)).toMatchObject({
+      expect(lexer.getNextToken(TagDeclSpecs)).toMatchObject({
         type: lexeme,
         lexeme,
       });
@@ -186,7 +192,7 @@ describe('Lexer', () => {
       const lexeme = '/';
 
       lexer.init(lexeme, false);
-      lexer.setSpecs(TagSpecs);
+      lexer.setSpecs(TagDeclSpecs);
 
       expect(lexer.getNextToken()).toMatchObject({
         type: lexeme,
@@ -199,7 +205,7 @@ describe('Lexer', () => {
 
       const lexeme = '=';
 
-      lexer.init(lexeme, true, TagSpecs);
+      lexer.init(lexeme, true, TagDeclSpecs);
 
       expect(lexer.eatToken(lexeme)).toMatchObject({
         type: lexeme,
@@ -280,16 +286,329 @@ describe('Lexer', () => {
     });
   });
 
-  it.skip('text', () => {
-    // TODO: define the test
+  describe('text', () => {
+    it('text token after close the tag declaration token', () => {
+      const lexer = new Lexer();
+
+      const input = '>some content that should be present indide of a tag';
+
+      lexer.init(input, false);
+
+      expect(lexer.getNextToken(TagDeclSpecs)).toMatchObject({
+        type: '>',
+        line: 1,
+        column: 1,
+      });
+
+      expect(lexer.getNextToken(TagContentSpecs)).toMatchObject({
+        type: TokenTypes.TEXT,
+        line: 1,
+        column: 2,
+      });
+    });
+
+    it('the next token is the text token', () => {
+      const lexer = new Lexer();
+
+      const input = 'some content that should be present indide of a tag';
+
+      lexer.init(input, false);
+
+      expect(lexer.getNextToken(TagContentSpecs)).toMatchObject({
+        type: TokenTypes.TEXT,
+        line: 1,
+        column: 1,
+      });
+    });
+
+    it('text token until next open tag declaration token', () => {
+      const lexer = new Lexer();
+
+      const input = 'some content that should <br> be present indide of a tag';
+
+      lexer.init(input, false);
+
+      expect(lexer.getNextToken(TagContentSpecs)).toMatchObject({
+        type: TokenTypes.TEXT,
+        lexeme: 'some content that should ',
+        line: 1,
+        column: 1,
+      });
+    });
+
+    it('tag between text tokens', () => {
+      const lexer = new Lexer();
+
+      const input = 'some content that should <br> be present indide of a tag';
+
+      lexer.init(input, false);
+
+      let token = lexer.getNextToken(TagContentSpecs);
+      expect(token).toMatchObject({
+        type: TokenTypes.TEXT,
+        lexeme: 'some content that should ',
+        line: 1,
+        column: 1,
+      });
+
+      token = lexer.getNextToken();
+      expect(token).toMatchObject({
+        type: '<',
+        lexeme: '<',
+        line: 1,
+        column: 26,
+      });
+
+      token = lexer.getNextToken(TagDeclSpecs);
+      expect(token).toMatchObject({
+        type: 'NAME',
+        lexeme: 'br',
+        line: 1,
+        column: 27,
+      });
+
+      token = lexer.getNextToken();
+      expect(token).toMatchObject({
+        type: '>',
+        lexeme: '>',
+        line: 1,
+        column: 29,
+      });
+
+      token = lexer.getNextToken(TagContentSpecs);
+      expect(token).toMatchObject({
+        type: TokenTypes.TEXT,
+        lexeme: 'be present indide of a tag',
+        line: 1,
+        column: 31,
+      });
+    });
   });
 
-  it.skip('raw text', () => {
-    // TODO: define the test
+  describe('CData', () => {
+    it('single line content', () => {
+      const lexer = new Lexer();
+
+      const input = '<![CDATA[hello world]]>';
+
+      lexer.init(input, false);
+
+      let token = lexer.getNextToken(TagContentSpecs);
+      expect(token).toMatchObject({
+        type: TokenTypes.CDATA,
+        lexeme: input,
+        line: 1,
+        column: 1,
+      });
+
+      token = lexer.getNextToken();
+      expect(token).toMatchObject({
+        type: TokenTypes.EOF,
+        line: 1,
+        column: 24,
+      });
+    });
+
+    it('multiple lines content', () => {
+      const lexer = new Lexer();
+
+      const input = `<![CDATA[hello
+
+world
+
+!]]>`;
+
+      lexer.init(input, false);
+
+      let token = lexer.getNextToken(TagContentSpecs);
+      expect(token).toMatchObject({
+        type: TokenTypes.CDATA,
+        lexeme: input,
+        line: 1,
+        column: 1,
+      });
+
+      token = lexer.getNextToken();
+      expect(token).toMatchObject({
+        type: TokenTypes.EOF,
+        line: 5,
+        column: 5,
+      });
+    });
+
+    it('as tag content', () => {
+      const lexer = new Lexer();
+
+      const content = `<![CDATA[hello
+      
+world
+
+!]]>`;
+      const input = `>${content}<`;
+
+      lexer.init(input, false);
+
+      let token = lexer.getNextToken(TagDeclSpecs);
+      expect(token).toMatchObject({
+        type: '>',
+        lexeme: '>',
+        line: 1,
+        column: 1,
+      });
+
+      token = lexer.getNextToken(TagContentSpecs);
+      expect(token).toMatchObject({
+        type: TokenTypes.CDATA,
+        lexeme: content,
+        line: 1,
+        column: 2,
+      });
+
+      token = lexer.getNextToken();
+      expect(token).toMatchObject({
+        type: '<',
+        lexeme: '<',
+        line: 5,
+        column: 1,
+      });
+
+      token = lexer.getNextToken();
+      expect(token).toMatchObject({
+        type: TokenTypes.EOF,
+        line: 5,
+        column: 2,
+      });
+    });
   });
 
-  it.skip('CData', () => {
-    // TODO: define the test
+  describe('raw text', () => {
+    it('single line content', () => {
+      const lexer = new Lexer();
+
+      const content = `? any text ?!@#$=[]/\t$%&^*()\\!±#%^ "'\``;
+      const input = `${content}</`;
+
+      lexer.init(input, false);
+
+      let token = lexer.getNextToken(SpecialTagSpecs);
+      expect(token).toMatchObject({
+        type: TokenTypes.RAW_TEXT,
+        lexeme: content,
+        line: 1,
+        column: 1,
+      });
+
+      token = lexer.getNextToken();
+      expect(token).toMatchObject({
+        type: '<',
+        lexeme: '<',
+        line: 1,
+        column: 41,
+      });
+
+      token = lexer.getNextToken(TagDeclSpecs);
+      expect(token).toMatchObject({
+        type: '/',
+        lexeme: '/',
+        line: 1,
+        column: 42,
+      });
+
+      token = lexer.getNextToken();
+      expect(token).toMatchObject({
+        type: TokenTypes.EOF,
+        line: 1,
+        column: 43,
+      });
+    });
+
+    it('multiple lines content', () => {
+      const lexer = new Lexer();
+
+      const content = `? any text ?!@#$=[]/\n\t\r\n$%&^*()\\!±#%^ "'\``;
+      const input = `${content}</`;
+
+      lexer.init(input, false);
+
+      let token = lexer.getNextToken(SpecialTagSpecs);
+      expect(token).toMatchObject({
+        type: TokenTypes.RAW_TEXT,
+        lexeme: content,
+        line: 1,
+        column: 1,
+      });
+
+      token = lexer.getNextToken();
+      expect(token).toMatchObject({
+        type: '<',
+        lexeme: '<',
+        line: 3,
+        column: 20,
+      });
+
+      token = lexer.getNextToken(TagDeclSpecs);
+      expect(token).toMatchObject({
+        type: '/',
+        lexeme: '/',
+        line: 3,
+        column: 21,
+      });
+
+      token = lexer.getNextToken();
+      expect(token).toMatchObject({
+        type: TokenTypes.EOF,
+        line: 3,
+        column: 22,
+      });
+    });
+
+    it('as tag content', () => {
+      const lexer = new Lexer();
+
+      const content = `? any text ?!@#$=[]/\n\t\r\n$%&^*()\\!±#%^ "'\``;
+      const input = `>${content}</`;
+
+      lexer.init(input, false);
+
+      let token = lexer.getNextToken(TagDeclSpecs);
+      expect(token).toMatchObject({
+        type: '>',
+        lexeme: '>',
+        line: 1,
+        column: 1,
+      });
+
+      token = lexer.getNextToken(SpecialTagSpecs);
+      expect(token).toMatchObject({
+        type: TokenTypes.RAW_TEXT,
+        lexeme: content,
+        line: 1,
+        column: 2,
+      });
+
+      token = lexer.getNextToken();
+      expect(token).toMatchObject({
+        type: '<',
+        lexeme: '<',
+        line: 3,
+        column: 20,
+      });
+
+      token = lexer.getNextToken(TagDeclSpecs);
+      expect(token).toMatchObject({
+        type: '/',
+        lexeme: '/',
+        line: 3,
+        column: 21,
+      });
+
+      token = lexer.getNextToken();
+      expect(token).toMatchObject({
+        type: TokenTypes.EOF,
+        line: 3,
+        column: 22,
+      });
+    });
   });
 
   describe('eat tokens', () => {
@@ -316,20 +635,20 @@ describe('Lexer', () => {
     });
 
     it('Unexpected end of input', () => {
-      const ErrorRegexp = /^Unexpected end of input/;
+      const ErrorRegexp = /^Unexpected end of input @\[/;
       const lexer = new Lexer();
 
-      lexer.init('', true, TagSpecs);
+      lexer.init('', true, TagDeclSpecs);
       expect(() => lexer.eatToken(TokenTypes.SPECIAL_CLOSE)).toThrow(
         ErrorRegexp
       );
     });
 
     it('Unexpected token', () => {
-      const ErrorRegexp = /^Unexpected "/;
+      const ErrorRegexp = /^Unexpected token type @\[/;
       const lexer = new Lexer();
 
-      lexer.init('>', true, TagSpecs);
+      lexer.init('>', true, TagDeclSpecs);
       expect(() => lexer.eatToken('<')).toThrow(ErrorRegexp);
     });
   });

@@ -64,7 +64,7 @@ npm run dev
 
 - [Lexer.ts](src/lexer/Lexer.ts) - engine that produces the tokens
 
-  - 🚧 [Lexer.spec.ts](src/lexer/__tests__/Lexer.spec.ts) 🚧 - I'm working on it yet...
+  - [Lexer.spec.ts](src/lexer/__tests__/Lexer.spec.ts)
 
 ![EBNF Lexer plantuml diagram](assets/images/lexer.png)
 
