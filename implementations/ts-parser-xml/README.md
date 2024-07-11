@@ -85,6 +85,8 @@ classDiagram
 
 note for INodeDocument "AST (Abstract Syntax Tree) Root"
 
+note for INodeSpecialElement "for example the script and/or style tags"
+
 INodeDocument "1" --> "1" INodeElement
 INodeElementBase "1" --> "0..n" IElementAttribute
 
