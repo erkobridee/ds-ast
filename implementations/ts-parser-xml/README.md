@@ -76,9 +76,17 @@ npm run dev
 
 #### Basic XML
 
+> [!WARNING]
+>
+> TODO: implement and add its documentation 🚨 🏗️ 🚧
+
 ![EBNF Basic XML Parser plantuml diagram](assets/images/parser-xml.png)
 
 #### Basic HTML
+
+> [!WARNING]
+>
+> TODO: implement and add its documentation 🚨 🏗️ 🚧
 
 ![EBNF Basic HTML Parser plantuml diagram](assets/images/parser-html.png)
 
