@@ -150,12 +150,12 @@ class INodeRawText {
 
 class IElementAttribute {
     name: string
-    value: string
+    value?: string
 }
 
 class INodeElementBase {
     name: string
-    attributes: IElementAttribute[]
+    attributes?: IElementAttribute[]
 }
 
 class INodeSpecialElement {
