@@ -66,13 +66,13 @@ npm run dev
 
   - [Lexer.spec.ts](src/lexer/__tests__/Lexer.spec.ts)
 
-<details>
-<summary>See the EBNF Diagram - Lexer</summary>
-<br>
+- <details>
+    <summary>See the EBNF Diagram - Lexer</summary>
+    <br>
 
-![EBNF Lexer EBNF Diagram](assets/images/lexer.png)
+  ![EBNF Lexer EBNF Diagram](assets/images/lexer.png)
 
-</details>
+  </details>
 
 ### Parser
 
@@ -84,128 +84,128 @@ npm run dev
 
 - [StatesMachineXML.ts](src/parser/states-machine/StatesMachineXML.ts) 🏗️ - TODO: implement 🚧
 
-<details>
-<summary>See the EBNF Diagram - Basic XML States Machine</summary>
-<br>
+- <details>
+  <summary>See the EBNF Diagram - Basic XML States Machine</summary>
+  <br>
 
-![Basic XML States Machine EBNF Diagram](assets/images/parser-xml.png)
+  ![Basic XML States Machine EBNF Diagram](assets/images/parser-xml.png)
 
-</details>
+  </details>
 
 ##### Basic HTML
 
 - [StatesMachineHTML.ts](src/parser/states-machine/StatesMachineHTML.ts) 🏗️ - TODO: implement 🚧
 
-<details>
-<summary>See the EBNF Diagram - Basic HTML States Machine</summary>
-<br>
+- <details>
+  <summary>See the EBNF Diagram - Basic HTML States Machine</summary>
+  <br>
 
-![EBNF Basic HTML States Machine EBNF Diagram](assets/images/parser-html.png)
+  ![EBNF Basic HTML States Machine EBNF Diagram](assets/images/parser-html.png)
 
-</details>
+  </details>
 
 #### AST
 
 - [AST.ts](src/parser/AST.ts) 🚧 - It needs to be reviewed
 
-<details>
-<summary>See the Mermaid.js Class Diagram</summary>
-<br>
+- <details>
+  <summary>See the Mermaid.js Class Diagram</summary>
+  <br>
 
-```mermaid
-classDiagram
+  ```mermaid
+  classDiagram
 
-note for INodeDocument "TAbstractSyntaxTree"
+  note for INodeDocument "TAbstractSyntaxTree"
 
-note for INodeSpecialElement "for example the script and/or style tags"
+  note for INodeSpecialElement "for example the script and/or style tags"
 
-INodeDocument "1" --> "1" INodeElement
-INodeElementBase "1" --> "0..n" IElementAttribute
+  INodeDocument "1" --> "1" INodeElement
+  INodeElementBase "1" --> "0..n" IElementAttribute
 
-INodeDocument --|> INodeBase : extends
-INodeValue --|> INodeBase : extends
-INodeElementBase --> INodeBase : extends
+  INodeDocument --|> INodeBase : extends
+  INodeValue --|> INodeBase : extends
+  INodeElementBase --> INodeBase : extends
 
-INodeText --|> INodeValue : extends
-INodeCData --|> INodeValue : extends
-INodeRawText --|> INodeValue : extends
+  INodeText --|> INodeValue : extends
+  INodeCData --|> INodeValue : extends
+  INodeRawText --|> INodeValue : extends
 
-INodeSpecialElement --|> INodeElementBase : extends
-INodeElement --|> INodeElementBase : extends
+  INodeSpecialElement --|> INodeElementBase : extends
+  INodeElement --|> INodeElementBase : extends
 
-INodeBase "1" --> "1" NodeType
+  INodeBase "1" --> "1" NodeType
 
-TElementChildren --* INodeText
-TElementChildren --* INodeCData
-TElementChildren --* INodeSpecialElement
-TElementChildren <--* INodeElement
+  TElementChildren --* INodeText
+  TElementChildren --* INodeCData
+  TElementChildren --* INodeSpecialElement
+  TElementChildren <--* INodeElement
 
-class NodeType {
-    << enum >>
-    Document
-    Element
-    SpecialElement
-    Text
-    CData
-    RawText
-}
-
-
-class INodeBase {
-    type: NodeType
-}
-
-class INodeValue {
-    value: string
-}
+  class NodeType {
+      << enum >>
+      Document
+      Element
+      SpecialElement
+      Text
+      CData
+      RawText
+  }
 
 
-class INodeText {
-    type: NodeType.Text
-}
+  class INodeBase {
+      type: NodeType
+  }
 
-class INodeCData {
-    type: NodeType.CDATA
-}
-
-
-class INodeRawText {
-    type: NodeType.RawText
-}
+  class INodeValue {
+      value: string
+  }
 
 
-class IElementAttribute {
-    name: string
-    value?: string
-}
+  class INodeText {
+      type: NodeType.Text
+  }
 
-class INodeElementBase {
-    name: string
-    attributes?: IElementAttribute[]
-}
+  class INodeCData {
+      type: NodeType.CDATA
+  }
 
-class INodeSpecialElement {
-    type: NodeType.SpecialElement
-    content: INodeRawText
-}
 
-class TElementChildren {
-    << type >>
-}
+  class INodeRawText {
+      type: NodeType.RawText
+  }
 
-class INodeElement {
-    type: NodeType.Element
-    children: TElementChildren[]
-}
 
-class INodeDocument {
-    type: NodeType.Document
-    root: INodeElement
-}
+  class IElementAttribute {
+      name: string
+      value?: string
+  }
 
-```
+  class INodeElementBase {
+      name: string
+      attributes?: IElementAttribute[]
+  }
 
-</details>
+  class INodeSpecialElement {
+      type: NodeType.SpecialElement
+      content: INodeRawText
+  }
+
+  class TElementChildren {
+      << type >>
+  }
+
+  class INodeElement {
+      type: NodeType.Element
+      children: TElementChildren[]
+  }
+
+  class INodeDocument {
+      type: NodeType.Document
+      root: INodeElement
+  }
+
+  ```
+
+  </details>
 
 ## References
 
