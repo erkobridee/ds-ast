@@ -23,26 +23,43 @@ DS ( Data Structure ) AST (Abstract Syntax Tree)
 > A compiler **lexer** is a crucial component in the compilation process of a programming language. It is responsible for breaking down the source code into smaller, meaningful units called tokens or lexemes. These tokens are then fed into the parser, which constructs the abstract syntax tree (AST) of the program.
 
 ```ts
+
 enum TokenType {
+  TOKEN_TYPE = 'TOKEN_TYPE',
   ...
 }
 
-interface TokenPosition {
-  /** line */
-  ln: number;
-  /** column */
-  col: number;
+type TTokenSpec = [RegExp, TokenType];
+
+
+/**
+ * The line and column values are useful for debugging propose and also
+ * to have a better error messaging that points out where the error happens
+ *
+ * The start and end values are useful to UI implementation that informantion
+ * enables to select the given text by its start and end cursor position
+ *
+ * An example of the start and end cursor position to highlight text could be
+ * seen at: https://astexplorer.net/
+ */
+interface TokenLocation {
+  line: number;
+  column: number;
+
+  start: number;
+  end: number;
 }
 
 interface Token {
   type: TokenType;
   lexeme: string;
 
-  /** it's useful for debugging proprose later one for a given programming language */
-  position?: TokenPosition;
+  /**
+   *  This information is useful for debugging and UI implementation of a code editor
+   */
+  location?: TokenLocation;
 }
 
-type LexerFn = (input: string) => Token[];
 ```
 
 #### Key Features of a Compiler Lexer
