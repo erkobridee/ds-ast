@@ -74,7 +74,9 @@ npm run dev
 >
 > TODO: implement and add its documentation 🚨 🏗️ 🚧
 
-#### Basic XML - State Machine
+#### States Machine
+
+##### Basic XML
 
 > [!WARNING]
 >
@@ -82,7 +84,7 @@ npm run dev
 
 ![EBNF Basic XML Parser plantuml diagram](assets/images/parser-xml.png)
 
-#### Basic HTML - State Machine
+##### Basic HTML
 
 > [!WARNING]
 >
@@ -93,6 +95,9 @@ npm run dev
 #### AST
 
 - [AST.ts](src/parser/AST.ts) 🚧 - It needs to be reviewed
+
+<details>
+<summary>See the Mermaid.js Class Diagram</summary>
 
 ```mermaid
 classDiagram
@@ -186,6 +191,8 @@ class INodeDocument {
 }
 
 ```
+
+</details>
 
 ## References
 
