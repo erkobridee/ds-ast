@@ -249,7 +249,25 @@ npm run dev
 
   - [References | HTML Easy](https://www.html-easy.com/references/)
 
-    - [HTML <style> Tag: Usage, Attributes, and Examples | HTML Easy](https://www.html-easy.com/references/html-style-tag/)
+    - [HTML style Tag: Usage, Attributes, and Examples | HTML Easy](https://www.html-easy.com/references/html-style-tag/)
+
+#### SSML
+
+> Text-to-Speech
+
+- [SSML - Speech Synthesis Markup Language : Specification | W3C](https://www.w3.org/TR/speech-synthesis/)
+
+- [Speech Synthesis Markup Language | Wikipedia](https://en.wikipedia.org/wiki/Speech_Synthesis_Markup_Language)
+
+- [Speech Synthesis Markup Language: An Introduction | XML.com](https://www.xml.com/pub/a/2004/10/20/ssml.html)
+
+- [Speech Synthesis Markup Language (SSML) | Cloud Text-to-Speech API - Google Cloud](https://cloud.google.com/text-to-speech/docs/ssml?hl=en)
+
+- [Speech Synthesis Markup Language (SSML) overview - Speech service - Azure AI services | Microsoft Learn](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-synthesis-markup)
+
+- [Introduction to SSML | WebSphere Voice Server / 6.1.1 - IBM Documentation](https://www.ibm.com/docs/en/wvs/6.1.1?topic=guide-introduction-ssml)
+
+- [Text to Speech XML: A Comprehensive Guide to SSML and Its Applications | Speechify](https://speechify.com/blog/text-to-speech-xml-a-comprehensive-guide-to-ssml-and-its-applications/)
 
 ### ANTLR v4 Grammar
 
