@@ -132,15 +132,12 @@ export const isEOF = (token: IToken) => token.type === Types.EOF;
 //----------------------------------------------------------------------------//
 // Specifications Map
 
-export type TSpec = [
-  // Token RegExp matcher
-  RegExp,
-  // Token Type value
-  string | null
-];
+/*
+  [Gist] erkobridee/ts-use_consts_instead_of_enums.ts
+  https://gist.github.com/erkobridee/576bcba33ed5fcf26c68fb0f32efdef3
+*/
 
-// TODO: should it be an enum?
-export const Spec: Record<string, TSpec> = {
+export const Spec = {
   /** Type: `ELEMENT` - any valid xml tag that could have attributes, content and it closes it at the end */
   Element: [
     /<(?<tag>[\w:]+)(?:(?<attributes>(\s(\w+)(?:=(?:"(.+)"|'(.+)'))?)+)|[\s\S]*?)>(?<content>[\s\S]*)?<\/\k<tag>*?>/,
@@ -213,6 +210,9 @@ export const Spec: Record<string, TSpec> = {
   Equals: [/^=/, '='],
 } as const;
 
+export type TSpecKeys = keyof typeof Spec;
+export type TSpec = (typeof Spec)[TSpecKeys];
+
 //----------------------------------------------------------------------------//
 // Set of Specs
 
@@ -263,6 +263,13 @@ export const TagContentSpecs: TSpec[] = [
 
   Spec.Open,
 ];
+
+export const Specs = {
+  Prolog: PrologSpecs,
+  SpecialTag: SpecialTagSpecs,
+  TagDecl: TagDeclSpecs,
+  TagContent: TagContentSpecs,
+};
 
 //----------------------------------------------------------------------------//
 

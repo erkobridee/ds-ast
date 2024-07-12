@@ -26,8 +26,8 @@ AutoCloseElement = (
   )
   ;
 
-WithContentElement = (
-    "<" , NAME , { Attribute } , ">" , Content , "<" , "/" , NAME , ">"
+ContentElement = (
+    "<" , NAME , { Attribute } , ">" , [ Content ] , "<" , "/" , NAME , ">"
   )
   ;
 

@@ -1,3 +1,5 @@
-// TODO: define the code
+export { AvailableStatesMachine as AvailableParsers } from './states-machine/StatesMachine';
 
-export {};
+export { Parser } from './Parser';
+
+export { default } from './Parser';

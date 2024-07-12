@@ -76,13 +76,17 @@ npm run dev
 
 ### Parser
 
-- [Parser.ts](src/parser/Parser.ts) 🏗️ - TODO: implement 🚧
+- [Parser.ts](src/parser/Parser.ts)
 
 #### States Machine
+
+- [StatesMachine.ts](src/parser/states-machine/StatesMachine.ts)
 
 ##### Basic XML
 
 - [StatesMachineXML.ts](src/parser/states-machine/StatesMachineXML.ts) 🏗️ - TODO: implement 🚧
+
+  - [ParserXML.spec.ts](src/parser/__tests__/ParserXML.spec.ts) 🏗️ - TODO: implement 🚧
 
 - <details>
   <summary>See the EBNF Diagram - Basic XML States Machine</summary>
@@ -95,6 +99,8 @@ npm run dev
 ##### Basic HTML
 
 - [StatesMachineHTML.ts](src/parser/states-machine/StatesMachineHTML.ts) 🏗️ - TODO: implement 🚧
+
+  - [ParserHTML.spec.ts](src/parser/__tests__/ParserHTML.spec.ts) 🏗️ - TODO: implement 🚧
 
 - <details>
   <summary>See the EBNF Diagram - Basic HTML States Machine</summary>

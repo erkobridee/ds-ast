@@ -1,10 +1,4 @@
-import {
-  Lexer,
-  TokenTypes,
-  TagDeclSpecs,
-  TagContentSpecs,
-  SpecialTagSpecs,
-} from '~/lexer';
+import { Lexer, TokenTypes, TokenSpecs } from '~/lexer';
 
 describe('Lexer', () => {
   it('EOF - end of file', () => {
@@ -180,7 +174,7 @@ describe('Lexer', () => {
 
       lexer.init(lexeme, false);
 
-      expect(lexer.getNextToken(TagDeclSpecs)).toMatchObject({
+      expect(lexer.getNextToken(TokenSpecs.TagDecl)).toMatchObject({
         type: lexeme,
         lexeme,
       });
@@ -192,7 +186,7 @@ describe('Lexer', () => {
       const lexeme = '/';
 
       lexer.init(lexeme, false);
-      lexer.setSpecs(TagDeclSpecs);
+      lexer.setSpecs(TokenSpecs.TagDecl);
 
       expect(lexer.getNextToken()).toMatchObject({
         type: lexeme,
@@ -205,7 +199,7 @@ describe('Lexer', () => {
 
       const lexeme = '=';
 
-      lexer.init(lexeme, true, TagDeclSpecs);
+      lexer.init(lexeme, true, TokenSpecs.TagDecl);
 
       expect(lexer.eatToken(lexeme)).toMatchObject({
         type: lexeme,
@@ -294,13 +288,13 @@ describe('Lexer', () => {
 
       lexer.init(input, false);
 
-      expect(lexer.getNextToken(TagDeclSpecs)).toMatchObject({
+      expect(lexer.getNextToken(TokenSpecs.TagDecl)).toMatchObject({
         type: '>',
         line: 1,
         column: 1,
       });
 
-      expect(lexer.getNextToken(TagContentSpecs)).toMatchObject({
+      expect(lexer.getNextToken(TokenSpecs.TagContent)).toMatchObject({
         type: TokenTypes.TEXT,
         line: 1,
         column: 2,
@@ -314,7 +308,7 @@ describe('Lexer', () => {
 
       lexer.init(input, false);
 
-      expect(lexer.getNextToken(TagContentSpecs)).toMatchObject({
+      expect(lexer.getNextToken(TokenSpecs.TagContent)).toMatchObject({
         type: TokenTypes.TEXT,
         line: 1,
         column: 1,
@@ -328,7 +322,7 @@ describe('Lexer', () => {
 
       lexer.init(input, false);
 
-      expect(lexer.getNextToken(TagContentSpecs)).toMatchObject({
+      expect(lexer.getNextToken(TokenSpecs.TagContent)).toMatchObject({
         type: TokenTypes.TEXT,
         lexeme: 'some content that should ',
         line: 1,
@@ -343,7 +337,7 @@ describe('Lexer', () => {
 
       lexer.init(input, false);
 
-      let token = lexer.getNextToken(TagContentSpecs);
+      let token = lexer.getNextToken(TokenSpecs.TagContent);
       expect(token).toMatchObject({
         type: TokenTypes.TEXT,
         lexeme: 'some content that should ',
@@ -359,7 +353,7 @@ describe('Lexer', () => {
         column: 26,
       });
 
-      token = lexer.getNextToken(TagDeclSpecs);
+      token = lexer.getNextToken(TokenSpecs.TagDecl);
       expect(token).toMatchObject({
         type: 'NAME',
         lexeme: 'br',
@@ -375,7 +369,7 @@ describe('Lexer', () => {
         column: 29,
       });
 
-      token = lexer.getNextToken(TagContentSpecs);
+      token = lexer.getNextToken(TokenSpecs.TagContent);
       expect(token).toMatchObject({
         type: TokenTypes.TEXT,
         lexeme: 'be present indide of a tag',
@@ -393,7 +387,7 @@ describe('Lexer', () => {
 
       lexer.init(input, false);
 
-      let token = lexer.getNextToken(TagContentSpecs);
+      let token = lexer.getNextToken(TokenSpecs.TagContent);
       expect(token).toMatchObject({
         type: TokenTypes.CDATA,
         lexeme: input,
@@ -420,7 +414,7 @@ world
 
       lexer.init(input, false);
 
-      let token = lexer.getNextToken(TagContentSpecs);
+      let token = lexer.getNextToken(TokenSpecs.TagContent);
       expect(token).toMatchObject({
         type: TokenTypes.CDATA,
         lexeme: input,
@@ -448,7 +442,7 @@ world
 
       lexer.init(input, false);
 
-      let token = lexer.getNextToken(TagDeclSpecs);
+      let token = lexer.getNextToken(TokenSpecs.TagDecl);
       expect(token).toMatchObject({
         type: '>',
         lexeme: '>',
@@ -456,7 +450,7 @@ world
         column: 1,
       });
 
-      token = lexer.getNextToken(TagContentSpecs);
+      token = lexer.getNextToken(TokenSpecs.TagContent);
       expect(token).toMatchObject({
         type: TokenTypes.CDATA,
         lexeme: content,
@@ -490,7 +484,7 @@ world
 
       lexer.init(input, false);
 
-      let token = lexer.getNextToken(SpecialTagSpecs);
+      let token = lexer.getNextToken(TokenSpecs.SpecialTag);
       expect(token).toMatchObject({
         type: TokenTypes.RAW_TEXT,
         lexeme: content,
@@ -506,7 +500,7 @@ world
         column: 41,
       });
 
-      token = lexer.getNextToken(TagDeclSpecs);
+      token = lexer.getNextToken(TokenSpecs.TagDecl);
       expect(token).toMatchObject({
         type: '/',
         lexeme: '/',
@@ -530,7 +524,7 @@ world
 
       lexer.init(input, false);
 
-      let token = lexer.getNextToken(SpecialTagSpecs);
+      let token = lexer.getNextToken(TokenSpecs.SpecialTag);
       expect(token).toMatchObject({
         type: TokenTypes.RAW_TEXT,
         lexeme: content,
@@ -546,7 +540,7 @@ world
         column: 20,
       });
 
-      token = lexer.getNextToken(TagDeclSpecs);
+      token = lexer.getNextToken(TokenSpecs.TagDecl);
       expect(token).toMatchObject({
         type: '/',
         lexeme: '/',
@@ -570,7 +564,7 @@ world
 
       lexer.init(input, false);
 
-      let token = lexer.getNextToken(TagDeclSpecs);
+      let token = lexer.getNextToken(TokenSpecs.TagDecl);
       expect(token).toMatchObject({
         type: '>',
         lexeme: '>',
@@ -578,7 +572,7 @@ world
         column: 1,
       });
 
-      token = lexer.getNextToken(SpecialTagSpecs);
+      token = lexer.getNextToken(TokenSpecs.SpecialTag);
       expect(token).toMatchObject({
         type: TokenTypes.RAW_TEXT,
         lexeme: content,
@@ -594,7 +588,7 @@ world
         column: 20,
       });
 
-      token = lexer.getNextToken(TagDeclSpecs);
+      token = lexer.getNextToken(TokenSpecs.TagDecl);
       expect(token).toMatchObject({
         type: '/',
         lexeme: '/',
@@ -638,7 +632,7 @@ world
       const ErrorRegexp = /^Unexpected end of input @\[/;
       const lexer = new Lexer();
 
-      lexer.init('', true, TagDeclSpecs);
+      lexer.init('', true, TokenSpecs.TagDecl);
       expect(() => lexer.eatToken(TokenTypes.SPECIAL_CLOSE)).toThrow(
         ErrorRegexp
       );
@@ -648,7 +642,7 @@ world
       const ErrorRegexp = /^Unexpected token type @\[/;
       const lexer = new Lexer();
 
-      lexer.init('>', true, TagDeclSpecs);
+      lexer.init('>', true, TokenSpecs.TagDecl);
       expect(() => lexer.eatToken('<')).toThrow(ErrorRegexp);
     });
   });

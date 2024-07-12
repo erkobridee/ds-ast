@@ -8,7 +8,7 @@ Prolog = XML_DECL_START (* <?xml *) , { Attributes } (* { version, encoding? } *
 
 Element = (
     "<" , NAME , { Attribute } , "/" , ">" |
-    "<" , NAME , { Attribute } , ">" , Content , "<" , "/" , NAME , ">"
+    "<" , NAME , { Attribute } , ">" , [ Content ] , "<" , "/" , NAME , ">"
   ) 
   ;
 
