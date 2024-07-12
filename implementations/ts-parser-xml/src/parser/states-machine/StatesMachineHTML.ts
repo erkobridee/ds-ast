@@ -4,40 +4,19 @@
  */
 
 import { Lexer } from '~/lexer';
-import { TAbstractSyntaxTree } from '~/parser/AST';
+import { INodeElement } from '~/parser/AST';
 
-import { AbstractStatesMachine } from './AbstractStatesMachine';
+import { AbstractStatesMachineImpl } from './AbstractStatesMachineImpl';
 
-export class StatesMachineHTML extends AbstractStatesMachine {
+export class StatesMachineHTML extends AbstractStatesMachineImpl {
   constructor(lexer: Lexer) {
     super(lexer);
-  }
 
-  public start(): TAbstractSyntaxTree {
-    return this.Document();
+    this.contentType = this.DocumentType.HTML;
   }
 
   //--------------------------------------------------------------------------//
   // @begin: states definitions
-
-  /**
-   * Document
-   *  : Prolog? Element EOF
-   *  ;
-   *
-   */
-  private Document(): TAbstractSyntaxTree {
-    throw new Error('Not implemented');
-  }
-
-  /**
-   * Prolog
-   *  : XML_DECL_START Attribute* SPECIAL_CLOSE
-   *  ;
-   */
-  protected Prolog() {
-    throw new Error('Not implemented');
-  }
 
   /**
    * Element
@@ -47,14 +26,14 @@ export class StatesMachineHTML extends AbstractStatesMachine {
    *  | ContentElement
    *  ;
    */
-  protected Element() {
+  protected Element(): INodeElement {
     throw new Error('Not implemented');
   }
 
   /**
    * SpecialElement
-   *  : '<' 'script' Attribute* '>' RAW_TEXT? '<' '/' 'script' '>
-   *  | '<' 'style' Attribute* '>' RAW_TEXT '<' '/' 'style' '>
+   *  : '<' 'script' AttributeList '>' RAW_TEXT? '<' '/' 'script' '>
+   *  | '<' 'style' AttributeList '>' RAW_TEXT '<' '/' 'style' '>
    *  ;
    */
   protected SpecialElement() {
@@ -63,7 +42,7 @@ export class StatesMachineHTML extends AbstractStatesMachine {
 
   /**
    * VoidElement
-   *  : '<' VOID_TAG_NAME Attribute* '>'
+   *  : '<' VOID_TAG_NAME AttributeList '>'
    *  ;
    */
   protected VoidElement() {
@@ -72,7 +51,7 @@ export class StatesMachineHTML extends AbstractStatesMachine {
 
   /**
    * AutoCloseElement
-   *  : '<' NAME Attribute* '/' '>'
+   *  : '<' NAME AttributeList '/' '>'
    *  ;
    */
   protected AutoCloseElement() {
@@ -81,20 +60,10 @@ export class StatesMachineHTML extends AbstractStatesMachine {
 
   /**
    * WithContentElement
-   *  : '<' NAME Attribute* '>' Content* '<' '/' NAME '>'
+   *  : '<' NAME AttributeList '>' Content* '<' '/' NAME '>'
    *  ;
    */
   protected ContentElement() {
-    throw new Error('Not implemented');
-  }
-
-  /**
-   * Attribute
-   *  : NAME '=' STRING
-   *  | NAME
-   *  ;
-   */
-  protected Attribute() {
     throw new Error('Not implemented');
   }
 

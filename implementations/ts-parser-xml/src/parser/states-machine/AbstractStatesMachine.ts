@@ -9,12 +9,11 @@
   https://www.tutorialsteacher.com/typescript/abstract-class
 */
 
-import { Lexer, TokenSpecs } from '~/lexer';
+import { Lexer } from '~/lexer';
 import { TAbstractSyntaxTree } from '~/parser/AST';
 
 export abstract class AbstractStatesMachine {
   protected lexer: Lexer;
-  protected TokenSpecs = TokenSpecs;
 
   //--------------------------------------------------------------------------//
 
@@ -29,24 +28,6 @@ export abstract class AbstractStatesMachine {
    */
   public abstract start(): TAbstractSyntaxTree;
 
-  //--------------------------------------------------------------------------//
-  // @begin: lexer helpers
-
-  /**
-   * Expects a token of a given type
-   *
-   * @param {string} tokenType
-   * @returns {IToken} the expected token
-   */
-  protected eatToken(tokenType: string) {
-    return this.lexer.eatToken(tokenType);
-  }
-
-  protected getLookaheadTokenType() {
-    return this.lexer.getLookaheadTokenType();
-  }
-
-  // @end: lexer helpers
   //--------------------------------------------------------------------------//
 }
 

@@ -1,6 +1,11 @@
+import { Parser } from '~/parser';
+
 describe('Parser', () => {
   it('execute', () => {
-    // TODO: define the execution code
-    console.log('Parser > execute');
+    const parser = new Parser();
+
+    const input = `<?xml version="1.0" ?><book />`;
+
+    const result = parser.parse(input);
   });
 });

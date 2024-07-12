@@ -4,58 +4,27 @@
  */
 
 import { Lexer } from '~/lexer';
-import { TAbstractSyntaxTree } from '~/parser/AST';
+import { INodeElement } from '~/parser/AST';
 
-import { AbstractStatesMachine } from './AbstractStatesMachine';
+import { AbstractStatesMachineImpl } from './AbstractStatesMachineImpl';
 
-export class StatesMachineXML extends AbstractStatesMachine {
+export class StatesMachineXML extends AbstractStatesMachineImpl {
   constructor(lexer: Lexer) {
     super(lexer);
-  }
 
-  public start(): TAbstractSyntaxTree {
-    return this.Document();
+    this.contentType = this.DocumentType.XML;
   }
 
   //--------------------------------------------------------------------------//
   // @begin: states definitions
 
   /**
-   * Document
-   *  : Prolog? Element EOF
-   *  ;
-   *
-   */
-  private Document(): TAbstractSyntaxTree {
-    throw new Error('Not implemented');
-  }
-
-  /**
-   * Prolog
-   *  : XML_DECL_START Attribute* SPECIAL_CLOSE
-   *  ;
-   */
-  protected Prolog() {
-    throw new Error('Not implemented');
-  }
-
-  /**
    * Element
-   *  : '<' NAME Attribute* '/' '>'
-   *  | '<' NAME Attribute* '>' Content* '<' '/' NAME '>'
+   *  : '<' NAME AttributeList '/' '>'
+   *  | '<' NAME AttributeList '>' Content* '<' '/' NAME '>'
    *  ;
    */
-  protected Element() {
-    throw new Error('Not implemented');
-  }
-
-  /**
-   * Attribute
-   *  : NAME '=' STRING
-   *  | NAME
-   *  ;
-   */
-  protected Attribute() {
+  protected Element(): INodeElement {
     throw new Error('Not implemented');
   }
 

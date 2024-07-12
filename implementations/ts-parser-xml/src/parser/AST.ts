@@ -1,11 +1,10 @@
-export enum DocumentContentType {
+export enum DocumentType {
   XML = 'XML',
   HTML = 'HTML',
 }
 
 export interface IDocumentProlog {
-  // TODO: review
-  type: DocumentContentType;
+  doctype: DocumentType;
   version?: string;
   encoding?: string;
 }
@@ -47,14 +46,14 @@ export interface INodeRawText extends INodeValue {
 
 //---//
 
-export interface IElementAttriute {
+export interface IElementAttribute {
   name: string;
   value?: string;
 }
 
 export interface INodeElementBase extends INodeBase {
   name: string;
-  attributes?: IElementAttriute[];
+  attributes?: IElementAttribute[];
 }
 
 /**
@@ -105,7 +104,7 @@ export const nodeFactory = {
     children,
   }: {
     name: string;
-    attributes?: IElementAttriute[];
+    attributes?: IElementAttribute[];
     children: TElementChildren[];
   }): INodeElement => ({
     type: NodeType.Element,
@@ -120,7 +119,7 @@ export const nodeFactory = {
     content,
   }: {
     name: string;
-    attributes?: IElementAttriute[];
+    attributes?: IElementAttribute[];
     content: INodeRawText;
   }): INodeSpecialElement => ({
     type: NodeType.SpecialElement,
