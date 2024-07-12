@@ -135,8 +135,10 @@ export const isEOF = (token: IToken) => token.type === Types.EOF;
 /*
   [Gist] erkobridee/ts-use_consts_instead_of_enums.ts
   https://gist.github.com/erkobridee/576bcba33ed5fcf26c68fb0f32efdef3
-*/
 
+  Regex Vis - that helps to visualize regular expressions bellow
+  https://regex-vis.com/
+*/
 export const Spec = {
   /** Type: `ELEMENT` - any valid xml tag that could have attributes, content and it closes it at the end */
   Element: [
