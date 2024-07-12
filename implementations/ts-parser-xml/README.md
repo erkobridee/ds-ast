@@ -66,31 +66,43 @@ npm run dev
 
   - [Lexer.spec.ts](src/lexer/__tests__/Lexer.spec.ts)
 
-![EBNF Lexer plantuml diagram](assets/images/lexer.png)
+<details>
+<summary>See the EBNF Diagram - Lexer</summary>
+<br>
+
+![EBNF Lexer EBNF Diagram](assets/images/lexer.png)
+
+</details>
 
 ### Parser
 
-> [!WARNING]
->
-> TODO: implement and add its documentation 🚨 🏗️ 🚧
+- [Parser.ts](src/parser/Parser.ts) 🏗️ - TODO: implement 🚧
 
 #### States Machine
 
 ##### Basic XML
 
-> [!WARNING]
->
-> TODO: implement and add its documentation 🚨 🏗️ 🚧
+- [StatesMachineXML.ts](src/parser/states-machine/StatesMachineXML.ts) 🏗️ - TODO: implement 🚧
 
-![EBNF Basic XML Parser plantuml diagram](assets/images/parser-xml.png)
+<details>
+<summary>See the EBNF Diagram - Basic XML States Machine</summary>
+<br>
+
+![Basic XML States Machine EBNF Diagram](assets/images/parser-xml.png)
+
+</details>
 
 ##### Basic HTML
 
-> [!WARNING]
->
-> TODO: implement and add its documentation 🚨 🏗️ 🚧
+- [StatesMachineHTML.ts](src/parser/states-machine/StatesMachineHTML.ts) 🏗️ - TODO: implement 🚧
 
-![EBNF Basic HTML Parser plantuml diagram](assets/images/parser-html.png)
+<details>
+<summary>See the EBNF Diagram - Basic HTML States Machine</summary>
+<br>
+
+![EBNF Basic HTML States Machine EBNF Diagram](assets/images/parser-html.png)
+
+</details>
 
 #### AST
 
@@ -98,6 +110,7 @@ npm run dev
 
 <details>
 <summary>See the Mermaid.js Class Diagram</summary>
+<br>
 
 ```mermaid
 classDiagram
