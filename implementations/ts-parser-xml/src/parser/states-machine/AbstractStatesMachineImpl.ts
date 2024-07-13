@@ -1,6 +1,7 @@
-import { Lexer, TokenSpecs, TokenTypes } from '~/lexer';
+import { Lexer, TokenSpecs, TokenTypes, TSpec } from '~/lexer';
 import {
   TAbstractSyntaxTree,
+  TElementChildren,
   IDocumentProlog,
   INodeElement,
   IElementAttribute,
@@ -12,10 +13,13 @@ import {
 import { AbstractStatesMachine } from './AbstractStatesMachine';
 
 export abstract class AbstractStatesMachineImpl extends AbstractStatesMachine {
+  protected TokenTypes = TokenTypes;
   protected TokenSpecs = TokenSpecs;
   protected NodeType = NodeType;
   protected DocumentType = DocumentType;
   protected nodeFactory = nodeFactory;
+
+  //-------------------------------------------------------------------------//
 
   protected contentType: DocumentType | undefined;
 
@@ -41,10 +45,11 @@ export abstract class AbstractStatesMachineImpl extends AbstractStatesMachine {
    * Expects a token of a given type
    *
    * @param {string} tokenType
+   * @param {TSpec[]} specsToUse - optional
    * @returns {IToken} the expected token
    */
-  protected eatToken(tokenType: string) {
-    return this.lexer.eatToken(tokenType);
+  protected eatToken(tokenType: string, specsToUse?: TSpec[]) {
+    return this.lexer.eatToken(tokenType, specsToUse);
   }
 
   protected getLookaheadTokenType() {
@@ -53,14 +58,46 @@ export abstract class AbstractStatesMachineImpl extends AbstractStatesMachine {
 
   // @end: lexer helpers
   //--------------------------------------------------------------------------//
+  // @begin: processment stack
 
+  protected elementsStack: INodeElement[] = [];
+
+  protected stackPush(element: INodeElement) {
+    this.elementsStack.push(element);
+  }
+
+  protected stackPop() {
+    return this.elementsStack.pop();
+  }
+
+  protected stackTopParent() {
+    return this.elementsStack[this.elementsStack.length - 2];
+  }
+
+  protected stackTop() {
+    const length = this.elementsStack.length;
+    const parent = this.elementsStack[length - 2];
+    const current = this.elementsStack[length - 1];
+
+    if (parent) {
+      parent.children
+        ? parent.children.push(current)
+        : (parent.children = [current]);
+    }
+
+    return current;
+  }
+
+  // @end: processment stack
+  //--------------------------------------------------------------------------//
   // @begin: states definitions
 
   /**
+   * ```
    * Document
    *  : Prolog? Element EOF
    *  ;
-   *
+   *```
    */
   private Document(): TAbstractSyntaxTree {
     return this.nodeFactory.Document({
@@ -70,46 +107,57 @@ export abstract class AbstractStatesMachineImpl extends AbstractStatesMachine {
   }
 
   /**
+   * ```
    * Prolog
    *  : XML_DECL_START AttributeList SPECIAL_CLOSE
    *  ;
+   * ```
    */
   private Prolog() {
-    let attributes: IElementAttribute[] = [];
+    let attributes: IElementAttribute[] | undefined;
 
     if (this.getLookaheadTokenType() === TokenTypes.XML_DECL_START) {
       this.eatToken(TokenTypes.XML_DECL_START);
 
       if (this.getLookaheadTokenType() === TokenTypes.NAME) {
-        attributes = this.AttributeList(TokenTypes.SPECIAL_CLOSE, [
-          'version',
-          'encoding',
-        ]);
+        attributes = this.AttributeList(
+          [TokenTypes.SPECIAL_CLOSE],
+          ['version', 'encoding']
+        );
       }
 
-      this.eatToken(TokenTypes.SPECIAL_CLOSE);
+      this.eatToken(TokenTypes.SPECIAL_CLOSE, TokenSpecs.TagDecl);
     }
 
     return {
       doctype: this.contentType!,
-      ...attributes,
+      attributes,
     } as IDocumentProlog;
   }
 
-  protected abstract Element(): INodeElement;
-
   /**
+   * Process a list of attributes until the defined stop tokens
+   * and this function will returns [ Attribute[], TokenType ]
+   *
+   * ```
    * AttributeList
    *  : Attribute*
    *  ;
+   * ```
    */
   protected AttributeList(
-    stopLookahedTokenType: string,
+    stopLookahedTokenTypes: string[],
     expectedAttributeNames?: string[]
-  ): IElementAttribute[] {
-    const attributes: IElementAttribute[] = [];
+  ): IElementAttribute[] | undefined {
+    let attributes: IElementAttribute[] | undefined;
 
-    while (this.getLookaheadTokenType() !== stopLookahedTokenType) {
+    // TODO: remove
+    console.log('AttributeList ', {
+      LookaheadTokenType: this.getLookaheadTokenType(),
+      stopLookahedTokenTypes,
+    });
+
+    while (!stopLookahedTokenTypes.includes(this.getLookaheadTokenType())) {
       const attribute = this.Attribute();
 
       if (
@@ -125,7 +173,8 @@ export abstract class AbstractStatesMachineImpl extends AbstractStatesMachine {
         );
       }
 
-      attributes.push(attribute);
+      if (!attributes) attributes = [attribute];
+      else attributes.push(attribute);
     }
 
     return attributes;
@@ -145,11 +194,91 @@ export abstract class AbstractStatesMachineImpl extends AbstractStatesMachine {
     if (this.getLookaheadTokenType() === '=') {
       this.eatToken('=');
 
-      value = this.eatToken(TokenTypes.STRING).lexeme!;
+      value = this.eatToken(TokenTypes.STRING).lexeme!.slice(1, -1);
     }
 
     return { name, value };
   }
+
+  /**
+   * ```
+   * OpenTag
+   *  : '<'? NAME AttributeList ( '/' | '>' )
+   *  ;
+   * ```
+   */
+  protected OpenTag(skipFirstToken = false) {
+    // TODO: remove
+    console.log('OpenTag');
+
+    if (!skipFirstToken) console.log(this.eatToken('<'));
+
+    const name = this.eatToken(TokenTypes.NAME).lexeme!;
+
+    // TODO: remove
+    console.log('OpenTag name: ', name);
+
+    const attributes = this.AttributeList(['/', '>']);
+
+    const element = this.nodeFactory.Element({ name, attributes });
+
+    // TODO: remove
+    console.log('OpenTag', element);
+
+    this.stackPush(element);
+
+    return element;
+  }
+
+  /**
+   * ```
+   * AutoCloseTag
+   *  : '/' '>'
+   *  ;
+   */
+  protected AutoCloseTag() {
+    this.eatToken('/');
+
+    this.eatToken('>');
+
+    this.stackPop();
+  }
+
+  /**
+   * ```
+   * CloseTag
+   *  : '<'? '/' NAME '>'
+   *  ;
+   * ```
+   */
+  protected CloseTag(skipFirstToken = false) {
+    const currentTag = this.stackPop();
+
+    if (!skipFirstToken) this.eatToken('<');
+
+    this.eatToken('/');
+
+    const name = this.eatToken(TokenTypes.NAME).lexeme!;
+
+    if (!currentTag) {
+      throw new SyntaxError(
+        `CloseTag: Unexpected tag production. Missing Element on the Elements Stack.`
+      );
+    } else if (currentTag.name !== name) {
+      throw new SyntaxError(
+        `CloseTag: Unexpected tag production. Wrong closing tag, it was expected "${currentTag.name}", but it was found "${name}".`
+      );
+    }
+
+    this.eatToken('>');
+  }
+
+  // It needs to be implemented on the specific states machine implementation
+  protected abstract Element(): INodeElement;
+
+  protected abstract Content(
+    parentElement: INodeElement
+  ): TElementChildren | undefined;
 
   // @end: states definitions
   //--------------------------------------------------------------------------//

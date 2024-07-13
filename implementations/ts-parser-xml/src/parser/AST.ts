@@ -14,7 +14,11 @@ export interface IDocumentProlog {
 export enum NodeType {
   Document = 'Document',
   Element = 'Element',
+  AutoCloseElement = 'AutoCloseElement',
+  /** `script` or `style` */
   SpecialElement = 'SpecialElement',
+  /** for eg. `meta`, `link`, `img`, `input`, ... */
+  VoidElement = 'VoidElement',
   Text = 'Text',
   CData = 'CData',
   RawText = 'RawText',
@@ -70,9 +74,15 @@ export type TElementChildren =
   | INodeElement
   | INodeSpecialElement;
 
+export type TNodeElementType =
+  | NodeType.Element
+  | NodeType.AutoCloseElement
+  | NodeType.VoidElement
+  | NodeType.SpecialElement;
+
 export interface INodeElement extends INodeElementBase {
-  type: NodeType.Element;
-  children: TElementChildren[];
+  type: TNodeElementType;
+  children?: TElementChildren[];
 }
 
 //---//
@@ -99,15 +109,17 @@ export const nodeFactory = {
   }),
 
   Element: ({
+    type = NodeType.Element,
     name,
     attributes,
     children,
   }: {
+    type?: TNodeElementType;
     name: string;
     attributes?: IElementAttribute[];
-    children: TElementChildren[];
+    children?: TElementChildren[];
   }): INodeElement => ({
-    type: NodeType.Element,
+    type,
     name,
     attributes,
     children,
