@@ -114,10 +114,7 @@ export abstract class AbstractStatesMachineImpl extends AbstractStatesMachine {
    * ```
    */
   private Prolog() {
-    let attributesMap: Record<string, string | undefined> = {
-      version: undefined,
-      encoding: undefined,
-    };
+    let attributesMap: Record<string, string | undefined> = {};
 
     if (this.getLookaheadTokenType() === TokenTypes.XML_DECL_START) {
       this.eatToken(TokenTypes.XML_DECL_START);
@@ -137,10 +134,7 @@ export abstract class AbstractStatesMachineImpl extends AbstractStatesMachine {
       this.eatToken(TokenTypes.SPECIAL_CLOSE);
     }
 
-    return {
-      doctype: this.contentType!,
-      ...attributesMap,
-    } as IDocumentProlog;
+    return nodeFactory.Prolog({ doctype: this.contentType!, ...attributesMap });
   }
 
   /**
