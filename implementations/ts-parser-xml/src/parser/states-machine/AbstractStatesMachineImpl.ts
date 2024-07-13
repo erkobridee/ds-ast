@@ -67,14 +67,6 @@ export abstract class AbstractStatesMachineImpl extends AbstractStatesMachine {
   }
 
   protected stackPop() {
-    return this.elementsStack.pop();
-  }
-
-  protected stackTopParent() {
-    return this.elementsStack[this.elementsStack.length - 2];
-  }
-
-  protected stackTop() {
     const length = this.elementsStack.length;
     const parent = this.elementsStack[length - 2];
     const current = this.elementsStack[length - 1];
@@ -86,6 +78,14 @@ export abstract class AbstractStatesMachineImpl extends AbstractStatesMachine {
     }
 
     return current;
+  }
+
+  protected stackTopParent() {
+    return this.elementsStack[this.elementsStack.length - 2];
+  }
+
+  protected stackTop() {
+    return this.elementsStack[this.elementsStack.length - 1];
   }
 
   // @end: processment stack
