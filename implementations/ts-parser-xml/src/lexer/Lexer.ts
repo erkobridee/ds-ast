@@ -154,7 +154,7 @@ export class Lexer {
       return this.runTokenAction(tokenType, tokenLexeme);
     }
 
-    let message = `Unexpected token`;
+    let message = `Lexer.getNextToken: Unexpected token`;
     message += ` @[ Ln ${this.line}, Col ${this.column} ]`;
     message += ` : "${strToCheck[0]}"`;
 
@@ -174,14 +174,14 @@ export class Lexer {
    * Expects a token of a given type
    *
    * @param {string} tokenType
-   * @param {TSpec[]} specsToUse - optional
+   * @param {TSpec[]} specsToUse - optional to use once reading the next token
    * @returns {IToken} the expected token
    */
   public eatToken(tokenType: string, specsToUse?: TSpec[]) {
     const token = this.lookahead;
 
     if (token.type === Types.EOF) {
-      let message = `Unexpected end of input`;
+      let message = `Lexer.eatToken: Unexpected end of input`;
       message += ` @[ Ln ${this.line}, Col ${this.column} ]`;
       message += `, expected: "${tokenType}"`;
 
@@ -189,7 +189,7 @@ export class Lexer {
     }
 
     if (token.type !== tokenType) {
-      let message = `Unexpected token type`;
+      let message = `Lexer.eatToken: Unexpected token type`;
       message += ` @[ Ln ${this.line}, Col ${this.column} ]`;
       message += ` "${token.type}", expected: "${tokenType}"`;
 

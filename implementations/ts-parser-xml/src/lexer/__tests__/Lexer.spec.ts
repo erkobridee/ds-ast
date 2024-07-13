@@ -1,16 +1,20 @@
-import { Lexer, TokenTypes, TokenSpecs } from '~/lexer';
+import { Lexer, TokenTypes, TokenSpecs, TSpec } from '~/lexer';
 
 describe('Lexer', () => {
+  let lexer: Lexer;
+
+  beforeEach(() => {
+    lexer = new Lexer();
+  });
+
   it('EOF - end of file', () => {
-    const lexer = new Lexer();
     expect(lexer.getNextToken()).toMatchObject({
       type: TokenTypes.EOF,
     });
   });
 
   it('Unexpected token', () => {
-    const ErrorRegexp = /^Unexpected token @/;
-    const lexer = new Lexer();
+    const ErrorRegexp = /^Lexer.getNextToken: Unexpected token @/;
 
     lexer.init('\n\ts####', false);
     expect(() => lexer.getNextToken()).toThrow(ErrorRegexp);
@@ -18,8 +22,6 @@ describe('Lexer', () => {
 
   describe('does not create a specific token for', () => {
     it('EOL - end of line', () => {
-      const lexer = new Lexer();
-
       const input = '\n\r\n';
 
       lexer.init(input, false);
@@ -32,8 +34,6 @@ describe('Lexer', () => {
     });
 
     it('Empty Space', () => {
-      const lexer = new Lexer();
-
       const input = ' \t  \t\t   ';
 
       lexer.init(input, false);
@@ -46,8 +46,6 @@ describe('Lexer', () => {
     });
 
     it('Comment', () => {
-      const lexer = new Lexer();
-
       lexer.init('<!-- hello world -->', false);
       expect(lexer.getNextToken()).toMatchObject({
         type: TokenTypes.EOF,
@@ -69,8 +67,6 @@ describe('Lexer', () => {
     });
 
     it('XML StyleSheet', () => {
-      const lexer = new Lexer();
-
       lexer.init(`<?xml-stylesheet href="my-style.css"?>`, false);
 
       expect(lexer.getNextToken()).toMatchObject({
@@ -97,7 +93,6 @@ describe('Lexer', () => {
       it('html v5', () => {
         const input = `<!DOCTYPE html>`;
 
-        const lexer = new Lexer();
         lexer.init(input, false);
 
         expect(lexer.getNextToken()).toMatchObject({
@@ -110,7 +105,6 @@ describe('Lexer', () => {
       it('html v4', () => {
         const input = `<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">`;
 
-        const lexer = new Lexer();
         lexer.init(input, false);
 
         expect(lexer.getNextToken()).toMatchObject({
@@ -123,7 +117,6 @@ describe('Lexer', () => {
       it('xml book system', () => {
         const input = `<!DOCTYPE book SYSTEM "book.dtd">`;
 
-        const lexer = new Lexer();
         lexer.init(input, false);
 
         expect(lexer.getNextToken()).toMatchObject({
@@ -141,7 +134,6 @@ describe('Lexer', () => {
 	<!ELEMENT publisher(#PCDATA)>
 ]>`;
 
-        const lexer = new Lexer();
         lexer.init(input, false);
 
         expect(lexer.getNextToken()).toMatchObject({
@@ -155,8 +147,6 @@ describe('Lexer', () => {
 
   describe('supported symbols', () => {
     it('<', () => {
-      const lexer = new Lexer();
-
       const lexeme = '<';
 
       lexer.init(lexeme, false);
@@ -168,8 +158,6 @@ describe('Lexer', () => {
     });
 
     it('>', () => {
-      const lexer = new Lexer();
-
       const lexeme = '>';
 
       lexer.init(lexeme, false);
@@ -181,8 +169,6 @@ describe('Lexer', () => {
     });
 
     it('/', () => {
-      const lexer = new Lexer();
-
       const lexeme = '/';
 
       lexer.init(lexeme, false);
@@ -195,8 +181,6 @@ describe('Lexer', () => {
     });
 
     it('=', () => {
-      const lexer = new Lexer();
-
       const lexeme = '=';
 
       lexer.init(lexeme, true, TokenSpecs.TagDecl);
@@ -210,8 +194,6 @@ describe('Lexer', () => {
 
   describe('xml declaration', () => {
     it('<?xml - XML_DECL_START', () => {
-      const lexer = new Lexer();
-
       const lexeme = '<?xml';
 
       lexer.init(lexeme, false);
@@ -223,8 +205,6 @@ describe('Lexer', () => {
     });
 
     it('?> - SPECIAL_CLOSE', () => {
-      const lexer = new Lexer();
-
       const lexeme = '?>';
 
       lexer.init(lexeme, false);
@@ -236,8 +216,6 @@ describe('Lexer', () => {
     });
 
     it('attribute name', () => {
-      const lexer = new Lexer();
-
       const lexeme = 'encoding';
 
       lexer.init(`${lexeme}="UTF-8"`, false);
@@ -249,8 +227,6 @@ describe('Lexer', () => {
     });
 
     it('attribute value', () => {
-      const lexer = new Lexer();
-
       const lexeme = '"UTF-8"';
 
       lexer.init(`encoding=${lexeme}`, false);
@@ -282,8 +258,6 @@ describe('Lexer', () => {
 
   describe('text', () => {
     it('text token after close the tag declaration token', () => {
-      const lexer = new Lexer();
-
       const input = '>some content that should be present indide of a tag';
 
       lexer.init(input, false);
@@ -302,8 +276,6 @@ describe('Lexer', () => {
     });
 
     it('the next token is the text token', () => {
-      const lexer = new Lexer();
-
       const input = 'some content that should be present indide of a tag';
 
       lexer.init(input, false);
@@ -316,8 +288,6 @@ describe('Lexer', () => {
     });
 
     it('text token until next open tag declaration token', () => {
-      const lexer = new Lexer();
-
       const input = 'some content that should <br> be present indide of a tag';
 
       lexer.init(input, false);
@@ -331,8 +301,6 @@ describe('Lexer', () => {
     });
 
     it('tag between text tokens', () => {
-      const lexer = new Lexer();
-
       const input = 'some content that should <br> be present indide of a tag';
 
       lexer.init(input, false);
@@ -381,8 +349,6 @@ describe('Lexer', () => {
 
   describe('CData', () => {
     it('single line content', () => {
-      const lexer = new Lexer();
-
       const input = '<![CDATA[hello world]]>';
 
       lexer.init(input, false);
@@ -404,8 +370,6 @@ describe('Lexer', () => {
     });
 
     it('multiple lines content', () => {
-      const lexer = new Lexer();
-
       const input = `<![CDATA[hello
 
 world
@@ -431,8 +395,6 @@ world
     });
 
     it('as tag content', () => {
-      const lexer = new Lexer();
-
       const content = `<![CDATA[hello
       
 world
@@ -477,8 +439,6 @@ world
 
   describe('raw text', () => {
     it('single line content', () => {
-      const lexer = new Lexer();
-
       const content = `? any text ?!@#$=[]/\t$%&^*()\\!±#%^ "'\``;
       const input = `${content}</`;
 
@@ -517,8 +477,6 @@ world
     });
 
     it('multiple lines content', () => {
-      const lexer = new Lexer();
-
       const content = `? any text ?!@#$=[]/\n\t\r\n$%&^*()\\!±#%^ "'\``;
       const input = `${content}</`;
 
@@ -557,8 +515,6 @@ world
     });
 
     it('as tag content', () => {
-      const lexer = new Lexer();
-
       const content = `? any text ?!@#$=[]/\n\t\r\n$%&^*()\\!±#%^ "'\``;
       const input = `>${content}</`;
 
@@ -606,31 +562,8 @@ world
   });
 
   describe('eat tokens', () => {
-    it('xml declaration', () => {
-      const lexer = new Lexer();
-
-      lexer.init(`<?xml version="1.0" encoding="UTF-8"?>`);
-
-      [
-        [TokenTypes.XML_DECL_START, '<?xml'],
-        [TokenTypes.NAME, 'version'],
-        ['=', '='],
-        [TokenTypes.STRING, '"1.0"'],
-        [TokenTypes.NAME, 'encoding'],
-        ['=', '='],
-        [TokenTypes.STRING, '"UTF-8"'],
-        [TokenTypes.SPECIAL_CLOSE, '?>'],
-      ].forEach(([type, lexeme]) => {
-        expect(lexer.eatToken(type)).toMatchObject({
-          type,
-          lexeme,
-        });
-      });
-    });
-
     it('Unexpected end of input', () => {
-      const ErrorRegexp = /^Unexpected end of input @\[/;
-      const lexer = new Lexer();
+      const ErrorRegexp = /^Lexer.eatToken: Unexpected end of input @\[/;
 
       lexer.init('', true, TokenSpecs.TagDecl);
       expect(() => lexer.eatToken(TokenTypes.SPECIAL_CLOSE)).toThrow(
@@ -639,11 +572,107 @@ world
     });
 
     it('Unexpected token', () => {
-      const ErrorRegexp = /^Unexpected token type @\[/;
-      const lexer = new Lexer();
+      const ErrorRegexp = /^Lexer.eatToken: Unexpected token type @\[/;
 
       lexer.init('>', true, TokenSpecs.TagDecl);
       expect(() => lexer.eatToken('<')).toThrow(ErrorRegexp);
+    });
+
+    describe('xml declaration', () => {
+      it('without attributes', () => {
+        lexer.init(`<?xml ?>`);
+
+        [
+          [TokenTypes.XML_DECL_START, '<?xml'],
+          [TokenTypes.SPECIAL_CLOSE, '?>'],
+        ].forEach(([type, lexeme]) => {
+          expect(lexer.eatToken(type)).toMatchObject({
+            type,
+            lexeme,
+          });
+        });
+      });
+
+      it('with attributes version and encoding', () => {
+        lexer.init(`<?xml version="1.0" encoding="UTF-8"?>`);
+
+        [
+          [TokenTypes.XML_DECL_START, '<?xml'],
+          [TokenTypes.NAME, 'version'],
+          ['=', '='],
+          [TokenTypes.STRING, '"1.0"'],
+          [TokenTypes.NAME, 'encoding'],
+          ['=', '='],
+          [TokenTypes.STRING, '"UTF-8"'],
+          [TokenTypes.SPECIAL_CLOSE, '?>'],
+        ].forEach(([type, lexeme]) => {
+          expect(lexer.eatToken(type)).toMatchObject({
+            type,
+            lexeme,
+          });
+        });
+      });
+    });
+
+    describe('xml source', () => {
+      it('with xml declaration', () => {
+        lexer.init(`
+          <?xml version="1.0" encoding="UTF-8"?>
+          <message>Hello World</message>
+        `);
+
+        let specsToUse: TSpec[] = TokenSpecs.Prolog;
+        [
+          [TokenTypes.XML_DECL_START, '<?xml'],
+          [TokenTypes.NAME, 'version'],
+          ['=', '='],
+          [TokenTypes.STRING, '"1.0"'],
+          [TokenTypes.NAME, 'encoding'],
+          ['=', '='],
+          [TokenTypes.STRING, '"UTF-8"'],
+          [TokenTypes.SPECIAL_CLOSE, '?>'],
+          ['<', '<', TokenSpecs.TagDecl],
+          [TokenTypes.NAME, 'message'],
+          ['>', '>', TokenSpecs.TagContent],
+          [TokenTypes.TEXT, 'Hello World'],
+          ['<', '<', TokenSpecs.TagDecl],
+          ['/', '/'],
+          [TokenTypes.NAME, 'message'],
+          ['>', '>'],
+        ].forEach(([type, lexeme, useSpecs]) => {
+          if (useSpecs) specsToUse = useSpecs as unknown as TSpec[];
+
+          expect(lexer.eatToken(type as string, specsToUse)).toMatchObject({
+            type,
+            lexeme,
+          });
+        });
+      });
+
+      it('without xml declaration', () => {
+        lexer.init(`
+          <message>Hello World</message>
+        `);
+
+        let specsToUse: TSpec[] = TokenSpecs.Prolog;
+        [
+          ['<', '<', TokenSpecs.TagDecl],
+          [TokenTypes.NAME, 'message'],
+          ['>', '>', TokenSpecs.TagContent],
+          [TokenTypes.TEXT, 'Hello World'],
+          ['<', '<', TokenSpecs.TagDecl],
+          ['/', '/'],
+          [TokenTypes.NAME, 'message'],
+          ['>', '>'],
+        ].forEach(([type, lexeme, useSpecs]) => {
+          if (useSpecs) specsToUse = useSpecs as unknown as TSpec[];
+
+          expect(lexer.eatToken(type as string, specsToUse)).toMatchObject({
+            type,
+            lexeme,
+          });
+        });
+      });
     });
   });
 });
