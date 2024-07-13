@@ -57,7 +57,7 @@ export interface IElementAttribute {
 
 export interface INodeElementBase extends INodeBase {
   name: string;
-  attributes?: IElementAttribute[];
+  attributes?: IElementAttribute[]; // TODO: transfom it info a object
 }
 
 /**
@@ -77,11 +77,10 @@ export type TElementChildren =
 export type TNodeElementType =
   | NodeType.Element
   | NodeType.AutoCloseElement
-  | NodeType.VoidElement
-  | NodeType.SpecialElement;
+  | NodeType.VoidElement;
 
 export interface INodeElement extends INodeElementBase {
-  type: TNodeElementType;
+  type: TNodeElementType | NodeType.SpecialElement;
   children?: TElementChildren[];
 }
 
