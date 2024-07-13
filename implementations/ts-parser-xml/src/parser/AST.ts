@@ -96,6 +96,20 @@ export interface INodeDocument extends INodeBase {
 //----------------------------------------------------------------------------//
 
 export const nodeFactory = {
+  Prolog: ({
+    doctype,
+    version,
+    encoding,
+  }: {
+    doctype: DocumentType;
+    version?: string;
+    encoding?: string;
+  }) => ({
+    doctype,
+    version,
+    encoding,
+  }),
+
   Document: ({
     root,
     prolog,

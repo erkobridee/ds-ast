@@ -114,24 +114,32 @@ export abstract class AbstractStatesMachineImpl extends AbstractStatesMachine {
    * ```
    */
   private Prolog() {
-    let attributes: IElementAttribute[] | undefined;
+    let attributesMap: Record<string, string | undefined> = {
+      version: undefined,
+      encoding: undefined,
+    };
 
     if (this.getLookaheadTokenType() === TokenTypes.XML_DECL_START) {
       this.eatToken(TokenTypes.XML_DECL_START);
 
       if (this.getLookaheadTokenType() === TokenTypes.NAME) {
-        attributes = this.AttributeList(
-          [TokenTypes.SPECIAL_CLOSE],
-          ['version', 'encoding']
-        );
+        const attributes =
+          this.AttributeList(
+            [TokenTypes.SPECIAL_CLOSE],
+            ['version', 'encoding']
+          ) || [];
+
+        attributes.forEach(({ name, value }) => {
+          attributesMap[name] = value;
+        });
       }
 
-      this.eatToken(TokenTypes.SPECIAL_CLOSE, TokenSpecs.TagDecl);
+      this.eatToken(TokenTypes.SPECIAL_CLOSE);
     }
 
     return {
       doctype: this.contentType!,
-      attributes,
+      ...attributesMap,
     } as IDocumentProlog;
   }
 
@@ -150,12 +158,6 @@ export abstract class AbstractStatesMachineImpl extends AbstractStatesMachine {
     expectedAttributeNames?: string[]
   ): IElementAttribute[] | undefined {
     let attributes: IElementAttribute[] | undefined;
-
-    // TODO: remove
-    console.log('AttributeList ', {
-      LookaheadTokenType: this.getLookaheadTokenType(),
-      stopLookahedTokenTypes,
-    });
 
     while (!stopLookahedTokenTypes.includes(this.getLookaheadTokenType())) {
       const attribute = this.Attribute();
@@ -208,22 +210,13 @@ export abstract class AbstractStatesMachineImpl extends AbstractStatesMachine {
    * ```
    */
   protected OpenTag(skipFirstToken = false) {
-    // TODO: remove
-    console.log('OpenTag');
-
-    if (!skipFirstToken) console.log(this.eatToken('<'));
+    if (!skipFirstToken) this.eatToken('<', TokenSpecs.TagDecl);
 
     const name = this.eatToken(TokenTypes.NAME).lexeme!;
-
-    // TODO: remove
-    console.log('OpenTag name: ', name);
 
     const attributes = this.AttributeList(['/', '>']);
 
     const element = this.nodeFactory.Element({ name, attributes });
-
-    // TODO: remove
-    console.log('OpenTag', element);
 
     this.stackPush(element);
 

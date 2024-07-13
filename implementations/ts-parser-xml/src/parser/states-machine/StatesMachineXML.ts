@@ -25,9 +25,6 @@ export class StatesMachineXML extends AbstractStatesMachineImpl {
    *  ;
    */
   protected Element(skipFirstToken = false): INodeElement {
-    // TODO: remove
-    console.log('Element');
-
     const element = this.OpenTag(skipFirstToken);
 
     switch (this.getLookaheadTokenType()) {
