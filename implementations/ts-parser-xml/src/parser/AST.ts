@@ -57,7 +57,7 @@ export interface IElementAttribute {
 
 export interface INodeElementBase extends INodeBase {
   name: string;
-  attributes?: IElementAttribute[]; // TODO: transfom it info a object
+  attributes?: Record<string, string | undefined>;
 }
 
 /**
@@ -91,6 +91,21 @@ export interface INodeDocument extends INodeBase {
   prolog: IDocumentProlog;
   root: INodeElement;
 }
+
+//----------------------------------------------------------------------------//
+
+const attributesHelper = (
+  attributes?: IElementAttribute[] | Record<string, string | undefined>
+): Record<string, string> | undefined => {
+  if (attributes && Array.isArray(attributes)) {
+    attributes = attributes.reduce((acc, { name, value }) => {
+      acc[name] = value;
+      return acc;
+    }, {} as Record<string, string | undefined>);
+  }
+
+  return attributes && (attributes as unknown as Record<string, string>);
+};
 
 //----------------------------------------------------------------------------//
 
@@ -129,12 +144,12 @@ export const nodeFactory = {
   }: {
     type?: TNodeElementType;
     name: string;
-    attributes?: IElementAttribute[];
+    attributes?: IElementAttribute[] | Record<string, string>;
     children?: TElementChildren[];
   }): INodeElement => ({
     type,
     name,
-    attributes,
+    attributes: attributesHelper(attributes),
     children,
   }),
 
@@ -144,12 +159,12 @@ export const nodeFactory = {
     content,
   }: {
     name: string;
-    attributes?: IElementAttribute[];
+    attributes?: IElementAttribute[] | Record<string, string>;
     content: INodeRawText;
   }): INodeSpecialElement => ({
     type: NodeType.SpecialElement,
     name,
-    attributes,
+    attributes: attributesHelper(attributes),
     content,
   }),
 

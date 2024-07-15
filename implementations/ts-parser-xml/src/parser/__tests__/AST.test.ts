@@ -54,7 +54,6 @@ describe('AST nodeFactory', () => {
     });
   });
 
-  // TODO: review and improve tests cases
   describe('element', () => {
     it('crete a auto close element node', () => {
       const type = NodeType.AutoCloseElement;
@@ -145,6 +144,45 @@ describe('AST nodeFactory', () => {
             children: undefined,
           },
         ],
+      });
+    });
+
+    describe('attributes', () => {
+      const name = 'hello';
+      const expectedAttributes = {
+        attr1: '1',
+        attr2: 'value two',
+      };
+
+      it('attributes as array', () => {
+        expect(
+          nodeFactory.Element({
+            name,
+            attributes: [
+              { name: 'attr1', value: '1' },
+              { name: 'attr2', value: 'value two' },
+            ],
+          })
+        ).toEqual({
+          type: NodeType.Element,
+          name,
+          attributes: expectedAttributes,
+          children: undefined,
+        });
+      });
+
+      it('attributes as object', () => {
+        expect(
+          nodeFactory.Element({
+            name,
+            attributes: expectedAttributes,
+          })
+        ).toEqual({
+          type: NodeType.Element,
+          name,
+          attributes: expectedAttributes,
+          children: undefined,
+        });
       });
     });
   });
