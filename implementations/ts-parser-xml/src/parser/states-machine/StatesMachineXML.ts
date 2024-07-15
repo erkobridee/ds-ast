@@ -44,6 +44,9 @@ export class StatesMachineXML extends AbstractStatesMachineImpl {
             : (element.children = [content]);
         }
 
+        // TODO: remove
+        console.log('StatesMachineXML > Element > content: ', content);
+
         this.CloseTag(!!content);
 
         return element;
@@ -61,7 +64,7 @@ export class StatesMachineXML extends AbstractStatesMachineImpl {
    *  ;
    */
   protected Content(parentElement: INodeElement) {
-    this.eatToken('>');
+    this.eatToken('>', this.TokenSpecs.TagContent);
 
     //
     // TODO: find out how to handle the content loop between text child and element child
@@ -89,7 +92,7 @@ export class StatesMachineXML extends AbstractStatesMachineImpl {
 
     const textChild = this.nodeFactory.Text(text.lexeme!);
 
-    this.eatToken('<');
+    this.eatToken('<', this.TokenSpecs.TagDecl);
 
     switch (this.getLookaheadTokenType()) {
       case '/':

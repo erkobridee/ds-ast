@@ -37,7 +37,7 @@ describe('XML Parser', () => {
         root: root,
       });
 
-      expect(ast).toMatchObject(expected);
+      expect(ast).toEqual(expected);
     });
 
     it('without xml declaration', () => {
@@ -61,8 +61,7 @@ describe('XML Parser', () => {
     });
   });
 
-  // TODO: fix the parser xml code flow
-  describe.skip('single tag with text content', () => {
+  describe('single tag with text content', () => {
     it('with xml declaration', () => {
       const source = `
         <?xml version="1.0" encoding="UTF-8"?>
@@ -96,6 +95,7 @@ describe('XML Parser', () => {
       expect(ast).toMatchObject(expected);
     });
 
+    // TODO: fix the parser xml code flow
     it('without xml declaration', () => {
       const source = `<message>Hello World!</message>`;
       const ast = parser.parse(source);
@@ -121,6 +121,34 @@ describe('XML Parser', () => {
       console.log(`expected:`, expected);
 
       expect(ast).toMatchObject(expected);
+    });
+  });
+
+  describe('tag with children', () => {
+    it.skip('single son', () => {
+      // TODO: define the code
+    });
+
+    it.skip('text tag', () => {
+      // TODO: define the code
+    });
+
+    it.skip('tag text', () => {
+      // TODO: define the code
+    });
+
+    it.skip('text tag text', () => {
+      // TODO: define the code
+    });
+
+    // TODO: should I have a describe with multiple tests cases?
+    it.skip('two level deep', () => {
+      // TODO: define the code
+    });
+
+    // TODO: should I have a describe with multiple tests cases?
+    it.skip('three level deep', () => {
+      // TODO: define the code
     });
   });
 

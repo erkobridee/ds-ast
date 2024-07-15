@@ -2,7 +2,6 @@ import { Lexer, TokenSpecs, TokenTypes, TSpec } from '~/lexer';
 import {
   TAbstractSyntaxTree,
   TElementChildren,
-  IDocumentProlog,
   INodeElement,
   IElementAttribute,
   DocumentType,
@@ -40,6 +39,13 @@ export abstract class AbstractStatesMachineImpl extends AbstractStatesMachine {
 
   //--------------------------------------------------------------------------//
   // @begin: lexer helpers
+
+  /**
+   * @param {TSpec[]} specsToUse
+   */
+  protected setSpecs(specsToUse: TSpec[]) {
+    this.lexer.setSpecs(specsToUse);
+  }
 
   /**
    * Expects a token of a given type
@@ -204,7 +210,9 @@ export abstract class AbstractStatesMachineImpl extends AbstractStatesMachine {
    * ```
    */
   protected OpenTag(skipFirstToken = false) {
-    if (!skipFirstToken) this.eatToken('<', TokenSpecs.TagDecl);
+    if (!skipFirstToken) {
+      this.eatToken('<', TokenSpecs.TagDecl);
+    }
 
     const name = this.eatToken(TokenTypes.NAME).lexeme!;
 
