@@ -649,27 +649,98 @@ world
         });
       });
 
-      it('without xml declaration', () => {
-        lexer.init(`
-          <message>Hello World</message>
-        `);
+      describe('without xml declaration', () => {
+        it('message: Hello World', () => {
+          lexer.init(`
+            <message>Hello World</message>
+          `);
 
-        let specsToUse: TSpec[] = TokenSpecs.Prolog;
-        [
-          ['<', '<', TokenSpecs.TagDecl],
-          [TokenTypes.NAME, 'message'],
-          ['>', '>', TokenSpecs.TagContent],
-          [TokenTypes.TEXT, 'Hello World'],
-          ['<', '<', TokenSpecs.TagDecl],
-          ['/', '/'],
-          [TokenTypes.NAME, 'message'],
-          ['>', '>'],
-        ].forEach(([type, lexeme, useSpecs]) => {
-          if (useSpecs) specsToUse = useSpecs as unknown as TSpec[];
+          let specsToUse: TSpec[] = TokenSpecs.Prolog;
+          [
+            ['<', '<', TokenSpecs.TagDecl],
+            [TokenTypes.NAME, 'message'],
+            ['>', '>', TokenSpecs.TagContent],
+            [TokenTypes.TEXT, 'Hello World'],
+            ['<', '<', TokenSpecs.TagDecl],
+            ['/', '/'],
+            [TokenTypes.NAME, 'message'],
+            ['>', '>'],
+          ].forEach(([type, lexeme, useSpecs]) => {
+            if (useSpecs) specsToUse = useSpecs as unknown as TSpec[];
 
-          expect(lexer.eatToken(type as string, specsToUse)).toMatchObject({
-            type,
-            lexeme,
+            expect(lexer.eatToken(type as string, specsToUse)).toMatchObject({
+              type,
+              lexeme,
+            });
+          });
+        });
+
+        it('auto close tag', () => {
+          lexer.init(`
+            <message />
+          `);
+
+          let specsToUse: TSpec[] = TokenSpecs.Prolog;
+          [
+            ['<', '<', TokenSpecs.TagDecl],
+            [TokenTypes.NAME, 'message'],
+            ['/', '/'],
+            ['>', '>'],
+          ].forEach(([type, lexeme, useSpecs]) => {
+            if (useSpecs) specsToUse = useSpecs as unknown as TSpec[];
+
+            expect(lexer.eatToken(type as string, specsToUse)).toMatchObject({
+              type,
+              lexeme,
+            });
+          });
+        });
+
+        it('open and close tag without content', () => {
+          lexer.init(`
+            <message></message>
+          `);
+
+          let specsToUse: TSpec[] = TokenSpecs.Prolog;
+          [
+            ['<', '<', TokenSpecs.TagDecl],
+            [TokenTypes.NAME, 'message'],
+            ['>', '>', TokenSpecs.TagContent],
+            ['<', '<', TokenSpecs.TagDecl],
+            ['/', '/'],
+            [TokenTypes.NAME, 'message'],
+            ['>', '>'],
+          ].forEach(([type, lexeme, useSpecs]) => {
+            if (useSpecs) specsToUse = useSpecs as unknown as TSpec[];
+
+            expect(lexer.eatToken(type as string, specsToUse)).toMatchObject({
+              type,
+              lexeme,
+            });
+          });
+        });
+
+        it('open tag and close with different tag name', () => {
+          lexer.init(`
+            <tag-a></tag-b>
+          `);
+
+          let specsToUse: TSpec[] = TokenSpecs.Prolog;
+          [
+            ['<', '<', TokenSpecs.TagDecl],
+            [TokenTypes.NAME, 'tag-a'],
+            ['>', '>', TokenSpecs.TagContent],
+            ['<', '<', TokenSpecs.TagDecl],
+            ['/', '/'],
+            [TokenTypes.NAME, 'tag-b'],
+            ['>', '>'],
+          ].forEach(([type, lexeme, useSpecs]) => {
+            if (useSpecs) specsToUse = useSpecs as unknown as TSpec[];
+
+            expect(lexer.eatToken(type as string, specsToUse)).toMatchObject({
+              type,
+              lexeme,
+            });
           });
         });
       });
