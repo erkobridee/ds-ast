@@ -40,24 +40,54 @@ describe('XML Parser', () => {
       expect(ast).toEqual(expected);
     });
 
-    it('without xml declaration', () => {
-      const source = `<hello />`;
-      const ast = parser.parse(source);
+    describe('without xml declaration', () => {
+      it('auto close', () => {
+        const source = `<hello />`;
+        const ast = parser.parse(source);
 
-      const prolog = nodeFactory.Prolog({
-        doctype: DocumentType.XML,
+        const prolog = nodeFactory.Prolog({
+          doctype: DocumentType.XML,
+        });
+
+        const root = nodeFactory.Element({
+          name: 'hello',
+        });
+
+        const expected = nodeFactory.Document({
+          prolog,
+          root: root,
+        });
+
+        expect(ast).toMatchObject(expected);
       });
 
-      const root = nodeFactory.Element({
-        name: 'hello',
-      });
+      // TODO: fix the StatesMachineXML.ts implementation
+      it('open and close', () => {
+        const source = `<hello></hello>`;
+        const ast = parser.parse(source);
 
-      const expected = nodeFactory.Document({
-        prolog,
-        root: root,
-      });
+        const prolog = nodeFactory.Prolog({
+          doctype: DocumentType.XML,
+        });
 
-      expect(ast).toMatchObject(expected);
+        const root = nodeFactory.Element({
+          name: 'hello',
+        });
+
+        const expected = nodeFactory.Document({
+          prolog,
+          root: root,
+        });
+
+        expect(ast).toMatchObject(expected);
+      });
+    });
+
+    // TODO: review and fix the StatesMachineXML.ts implementation
+    it.skip('throw error to due to wrong tag closing', () => {
+      const source = `<tag-a></tag-b>`;
+      // TODO: update the error message to be matched
+      expect(() => parser.parse(source)).toThrow(/^error$/);
     });
   });
 
@@ -69,9 +99,6 @@ describe('XML Parser', () => {
       `;
 
       const ast = parser.parse(source);
-
-      // TODO: remove
-      console.log(`ast: `, ast);
 
       const prolog = nodeFactory.Prolog({
         doctype: DocumentType.XML,
@@ -89,19 +116,12 @@ describe('XML Parser', () => {
         root: root,
       });
 
-      // TODO: remove
-      console.log(`expected:`, expected);
-
-      expect(ast).toMatchObject(expected);
+      expect(ast).toEqual(expected);
     });
 
-    // TODO: fix the parser xml code flow
     it('without xml declaration', () => {
       const source = `<message>Hello World!</message>`;
       const ast = parser.parse(source);
-
-      // TODO: remove
-      console.log(`ast: `, ast);
 
       const prolog = nodeFactory.Prolog({
         doctype: DocumentType.XML,
@@ -117,40 +137,241 @@ describe('XML Parser', () => {
         root: root,
       });
 
-      // TODO: remove
-      console.log(`expected:`, expected);
-
-      expect(ast).toMatchObject(expected);
+      expect(ast).toEqual(expected);
     });
   });
 
   describe('tag with children', () => {
     it.skip('single son', () => {
-      // TODO: define the code
+      const source = `
+        <message>
+          <p>Hello World!</p>
+        </message>
+      `;
+
+      const ast = parser.parse(source);
+
+      // TODO: remove
+      console.log(`ast: `, ast);
+
+      const prolog = nodeFactory.Prolog({
+        doctype: DocumentType.XML,
+      });
+
+      const root = nodeFactory.Element({
+        name: 'message',
+        children: [
+          nodeFactory.Element({
+            name: 'p',
+            children: [nodeFactory.Text('Hello World!')],
+          }),
+        ],
+      });
+
+      const expected = nodeFactory.Document({
+        prolog,
+        root: root,
+      });
+
+      // TODO: remove
+      console.log(`expected:`, expected);
+
+      expect(ast).toEqual(expected);
     });
 
     it.skip('text tag', () => {
-      // TODO: define the code
+      const source = `
+        <tag-1>
+          Hello World! <tag-2/>
+        </tag-1>
+      `;
+
+      const ast = parser.parse(source);
+
+      // TODO: remove
+      console.log(`ast: `, ast);
+
+      const prolog = nodeFactory.Prolog({
+        doctype: DocumentType.XML,
+      });
+
+      const root = nodeFactory.Element({
+        name: 'tag-1',
+        children: [
+          nodeFactory.Text('Hello World! '),
+          nodeFactory.Element({
+            name: 'tag-2',
+          }),
+        ],
+      });
+
+      const expected = nodeFactory.Document({
+        prolog,
+        root: root,
+      });
+
+      // TODO: remove
+      console.log(`expected:`, expected);
+
+      expect(ast).toEqual(expected);
     });
 
     it.skip('tag text', () => {
-      // TODO: define the code
+      const source = `
+        <tag-1>
+          <tag-2/> Hello World!
+        </tag-1>
+      `;
+
+      const ast = parser.parse(source);
+
+      // TODO: remove
+      console.log(`ast: `, ast);
+
+      const prolog = nodeFactory.Prolog({
+        doctype: DocumentType.XML,
+      });
+
+      const root = nodeFactory.Element({
+        name: 'tag-1',
+        children: [
+          nodeFactory.Element({
+            name: 'tag-2',
+          }),
+          nodeFactory.Text(' Hello World!'),
+        ],
+      });
+
+      const expected = nodeFactory.Document({
+        prolog,
+        root: root,
+      });
+
+      // TODO: remove
+      console.log(`expected:`, expected);
+
+      expect(ast).toEqual(expected);
     });
 
     it.skip('text tag text', () => {
-      // TODO: define the code
+      const source = `
+        <tag-1>
+          Hello <tag-2/> World!
+        </tag-1>
+      `;
+
+      const ast = parser.parse(source);
+
+      // TODO: remove
+      console.log(`ast: `, ast);
+
+      const prolog = nodeFactory.Prolog({
+        doctype: DocumentType.XML,
+      });
+
+      const root = nodeFactory.Element({
+        name: 'tag-1',
+        children: [
+          nodeFactory.Text('Hello '),
+          nodeFactory.Element({
+            name: 'tag-2',
+          }),
+          nodeFactory.Text(' World!'),
+        ],
+      });
+
+      const expected = nodeFactory.Document({
+        prolog,
+        root: root,
+      });
+
+      // TODO: remove
+      console.log(`expected:`, expected);
+
+      expect(ast).toEqual(expected);
     });
 
     // TODO: should I have a describe with multiple tests cases?
     it.skip('two level deep', () => {
-      // TODO: define the code
+      const source = `
+        <tag-1>
+          <tag-2>Hello World!</tag-2>
+        </tag-1>
+      `;
+
+      const ast = parser.parse(source);
+
+      // TODO: remove
+      console.log(`ast: `, ast);
+
+      const prolog = nodeFactory.Prolog({
+        doctype: DocumentType.XML,
+      });
+
+      const root = nodeFactory.Element({
+        name: 'tag-1',
+        children: [
+          nodeFactory.Element({
+            name: 'tag-2',
+            children: [nodeFactory.Text('Hello World!')],
+          }),
+        ],
+      });
+
+      const expected = nodeFactory.Document({
+        prolog,
+        root: root,
+      });
+
+      // TODO: remove
+      console.log(`expected:`, expected);
+
+      expect(ast).toEqual(expected);
     });
 
     // TODO: should I have a describe with multiple tests cases?
     it.skip('three level deep', () => {
-      // TODO: define the code
+      const source = `
+        <tag-1>
+          <tag-2>
+            <tag-3>Hello World!</tag-3>
+          </tag-2>
+        </tag-1>
+      `;
+
+      const ast = parser.parse(source);
+
+      // TODO: remove
+      console.log(`ast: `, ast);
+
+      const prolog = nodeFactory.Prolog({
+        doctype: DocumentType.XML,
+      });
+
+      const root = nodeFactory.Element({
+        name: 'tag-1',
+        children: [
+          nodeFactory.Element({
+            name: 'tag-2',
+            children: [
+              nodeFactory.Element({
+                name: 'tag-3',
+                children: [nodeFactory.Text('Hello World!')],
+              }),
+            ],
+          }),
+        ],
+      });
+
+      const expected = nodeFactory.Document({
+        prolog,
+        root: root,
+      });
+
+      // TODO: remove
+      console.log(`expected:`, expected);
+
+      expect(ast).toEqual(expected);
     });
   });
-
-  // TODO: implement more tests cases
 });
