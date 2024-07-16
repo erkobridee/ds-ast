@@ -1,7 +1,27 @@
 import { Lexer, TokenTypes, TokenSpecs, TSpec } from '~/lexer';
 
+type TtokensSequence = ([string, string, TSpec[]] | [string, string])[];
+
 describe('Lexer', () => {
   let lexer: Lexer;
+
+  const checkTokensSequence = (
+    input: string,
+    tokensSequence: TtokensSequence
+  ) => {
+    lexer.init(input);
+
+    let specsToUse: TSpec[] = TokenSpecs.Prolog;
+
+    tokensSequence.forEach(([type, lexeme, useSpecs]) => {
+      if (useSpecs) specsToUse = useSpecs as unknown as TSpec[];
+
+      expect(lexer.eatToken(type as string, specsToUse)).toMatchObject({
+        type,
+        lexeme,
+      });
+    });
+  };
 
   beforeEach(() => {
     lexer = new Lexer();
@@ -580,23 +600,26 @@ world
 
     describe('xml declaration', () => {
       it('without attributes', () => {
-        lexer.init(`<?xml ?>`);
+        // lexer.init(`<?xml ?>`);
 
-        [
+        // [
+        //   [TokenTypes.XML_DECL_START, '<?xml'],
+        //   [TokenTypes.SPECIAL_CLOSE, '?>'],
+        // ].forEach(([type, lexeme]) => {
+        //   expect(lexer.eatToken(type)).toMatchObject({
+        //     type,
+        //     lexeme,
+        //   });
+        // });
+
+        checkTokensSequence(`<?xml ?>`, [
           [TokenTypes.XML_DECL_START, '<?xml'],
           [TokenTypes.SPECIAL_CLOSE, '?>'],
-        ].forEach(([type, lexeme]) => {
-          expect(lexer.eatToken(type)).toMatchObject({
-            type,
-            lexeme,
-          });
-        });
+        ]);
       });
 
       it('with attributes version and encoding', () => {
-        lexer.init(`<?xml version="1.0" encoding="UTF-8"?>`);
-
-        [
+        checkTokensSequence(`<?xml version="1.0" encoding="UTF-8"?>`, [
           [TokenTypes.XML_DECL_START, '<?xml'],
           [TokenTypes.NAME, 'version'],
           ['=', '='],
@@ -605,58 +628,26 @@ world
           ['=', '='],
           [TokenTypes.STRING, '"UTF-8"'],
           [TokenTypes.SPECIAL_CLOSE, '?>'],
-        ].forEach(([type, lexeme]) => {
-          expect(lexer.eatToken(type)).toMatchObject({
-            type,
-            lexeme,
-          });
-        });
+        ]);
       });
     });
 
     describe('xml source', () => {
       it('with xml declaration', () => {
-        lexer.init(`
-          <?xml version="1.0" encoding="UTF-8"?>
-          <message>Hello World</message>
-        `);
-
-        let specsToUse: TSpec[] = TokenSpecs.Prolog;
-        [
-          [TokenTypes.XML_DECL_START, '<?xml'],
-          [TokenTypes.NAME, 'version'],
-          ['=', '='],
-          [TokenTypes.STRING, '"1.0"'],
-          [TokenTypes.NAME, 'encoding'],
-          ['=', '='],
-          [TokenTypes.STRING, '"UTF-8"'],
-          [TokenTypes.SPECIAL_CLOSE, '?>'],
-          ['<', '<', TokenSpecs.TagDecl],
-          [TokenTypes.NAME, 'message'],
-          ['>', '>', TokenSpecs.TagContent],
-          [TokenTypes.TEXT, 'Hello World'],
-          ['<', '<', TokenSpecs.TagDecl],
-          ['/', '/'],
-          [TokenTypes.NAME, 'message'],
-          ['>', '>'],
-        ].forEach(([type, lexeme, useSpecs]) => {
-          if (useSpecs) specsToUse = useSpecs as unknown as TSpec[];
-
-          expect(lexer.eatToken(type as string, specsToUse)).toMatchObject({
-            type,
-            lexeme,
-          });
-        });
-      });
-
-      describe('without xml declaration', () => {
-        it('message: Hello World', () => {
-          lexer.init(`
+        checkTokensSequence(
+          `
+            <?xml version="1.0" encoding="UTF-8"?>
             <message>Hello World</message>
-          `);
-
-          let specsToUse: TSpec[] = TokenSpecs.Prolog;
+          `,
           [
+            [TokenTypes.XML_DECL_START, '<?xml'],
+            [TokenTypes.NAME, 'version'],
+            ['=', '='],
+            [TokenTypes.STRING, '"1.0"'],
+            [TokenTypes.NAME, 'encoding'],
+            ['=', '='],
+            [TokenTypes.STRING, '"UTF-8"'],
+            [TokenTypes.SPECIAL_CLOSE, '?>'],
             ['<', '<', TokenSpecs.TagDecl],
             [TokenTypes.NAME, 'message'],
             ['>', '>', TokenSpecs.TagContent],
@@ -665,44 +656,35 @@ world
             ['/', '/'],
             [TokenTypes.NAME, 'message'],
             ['>', '>'],
-          ].forEach(([type, lexeme, useSpecs]) => {
-            if (useSpecs) specsToUse = useSpecs as unknown as TSpec[];
+          ]
+        );
+      });
 
-            expect(lexer.eatToken(type as string, specsToUse)).toMatchObject({
-              type,
-              lexeme,
-            });
-          });
+      describe('without xml declaration', () => {
+        it('message: Hello World', () => {
+          checkTokensSequence(`<message>Hello World</message>`, [
+            ['<', '<', TokenSpecs.TagDecl],
+            [TokenTypes.NAME, 'message'],
+            ['>', '>', TokenSpecs.TagContent],
+            [TokenTypes.TEXT, 'Hello World'],
+            ['<', '<', TokenSpecs.TagDecl],
+            ['/', '/'],
+            [TokenTypes.NAME, 'message'],
+            ['>', '>'],
+          ]);
         });
 
         it('auto close tag', () => {
-          lexer.init(`
-            <message />
-          `);
-
-          let specsToUse: TSpec[] = TokenSpecs.Prolog;
-          [
+          checkTokensSequence('<message />', [
             ['<', '<', TokenSpecs.TagDecl],
             [TokenTypes.NAME, 'message'],
             ['/', '/'],
             ['>', '>'],
-          ].forEach(([type, lexeme, useSpecs]) => {
-            if (useSpecs) specsToUse = useSpecs as unknown as TSpec[];
-
-            expect(lexer.eatToken(type as string, specsToUse)).toMatchObject({
-              type,
-              lexeme,
-            });
-          });
+          ]);
         });
 
         it('open and close tag without content', () => {
-          lexer.init(`
-            <message></message>
-          `);
-
-          let specsToUse: TSpec[] = TokenSpecs.Prolog;
-          [
+          checkTokensSequence('<message></message>', [
             ['<', '<', TokenSpecs.TagDecl],
             [TokenTypes.NAME, 'message'],
             ['>', '>', TokenSpecs.TagContent],
@@ -710,272 +692,212 @@ world
             ['/', '/'],
             [TokenTypes.NAME, 'message'],
             ['>', '>'],
-          ].forEach(([type, lexeme, useSpecs]) => {
-            if (useSpecs) specsToUse = useSpecs as unknown as TSpec[];
-
-            expect(lexer.eatToken(type as string, specsToUse)).toMatchObject({
-              type,
-              lexeme,
-            });
-          });
+          ]);
         });
 
         it('open tag and close with different tag name', () => {
-          lexer.init(`
-            <tag-a></tag-b>
-          `);
-
-          let specsToUse: TSpec[] = TokenSpecs.Prolog;
-          [
+          checkTokensSequence('<tag-a></tag-b>', [
             ['<', '<', TokenSpecs.TagDecl],
             [TokenTypes.NAME, 'tag-a'],
             ['>', '>', TokenSpecs.TagContent],
+
             ['<', '<', TokenSpecs.TagDecl],
             ['/', '/'],
             [TokenTypes.NAME, 'tag-b'],
             ['>', '>'],
-          ].forEach(([type, lexeme, useSpecs]) => {
-            if (useSpecs) specsToUse = useSpecs as unknown as TSpec[];
-
-            expect(lexer.eatToken(type as string, specsToUse)).toMatchObject({
-              type,
-              lexeme,
-            });
-          });
+          ]);
         });
 
         describe('with children', () => {
           it('single son', () => {
-            lexer.init(`
+            checkTokensSequence(
+              `
               <tag-a>
                 <tag-b/>
-              </tag-a>
-            `);
+              </tag-a>  
+            `,
+              [
+                ['<', '<', TokenSpecs.TagDecl],
+                [TokenTypes.NAME, 'tag-a'],
+                ['>', '>', TokenSpecs.TagContent],
 
-            let specsToUse: TSpec[] = TokenSpecs.Prolog;
-            [
-              ['<', '<', TokenSpecs.TagDecl],
-              [TokenTypes.NAME, 'tag-a'],
-              ['>', '>', TokenSpecs.TagContent],
+                ['<', '<', TokenSpecs.TagDecl],
+                [TokenTypes.NAME, 'tag-b'],
+                ['/', '/'],
+                ['>', '>', TokenSpecs.TagContent],
 
-              ['<', '<', TokenSpecs.TagDecl],
-              [TokenTypes.NAME, 'tag-b'],
-              ['/', '/'],
-              ['>', '>', TokenSpecs.TagContent],
-
-              ['<', '<', TokenSpecs.TagDecl],
-              ['/', '/'],
-              [TokenTypes.NAME, 'tag-a'],
-              ['>', '>', TokenSpecs.TagContent],
-            ].forEach(([type, lexeme, useSpecs]) => {
-              if (useSpecs) specsToUse = useSpecs as unknown as TSpec[];
-
-              expect(lexer.eatToken(type as string, specsToUse)).toMatchObject({
-                type,
-                lexeme,
-              });
-            });
+                ['<', '<', TokenSpecs.TagDecl],
+                ['/', '/'],
+                [TokenTypes.NAME, 'tag-a'],
+                ['>', '>', TokenSpecs.TagContent],
+              ]
+            );
           });
 
           it('text tag', () => {
-            lexer.init(`
+            checkTokensSequence(
+              `
               <tag-1>
                 Hello World! <tag-2/>
               </tag-1>
-            `);
+            `,
+              [
+                ['<', '<', TokenSpecs.TagDecl],
+                [TokenTypes.NAME, 'tag-1'],
+                ['>', '>', TokenSpecs.TagContent],
 
-            let specsToUse: TSpec[] = TokenSpecs.Prolog;
-            [
-              ['<', '<', TokenSpecs.TagDecl],
-              [TokenTypes.NAME, 'tag-1'],
-              ['>', '>', TokenSpecs.TagContent],
+                [TokenTypes.TEXT, 'Hello World! '],
 
-              [TokenTypes.TEXT, 'Hello World! '],
+                ['<', '<', TokenSpecs.TagDecl],
+                [TokenTypes.NAME, 'tag-2'],
+                ['/', '/'],
+                ['>', '>', TokenSpecs.TagContent],
 
-              ['<', '<', TokenSpecs.TagDecl],
-              [TokenTypes.NAME, 'tag-2'],
-              ['/', '/'],
-              ['>', '>', TokenSpecs.TagContent],
-
-              ['<', '<', TokenSpecs.TagDecl],
-              ['/', '/'],
-              [TokenTypes.NAME, 'tag-1'],
-              ['>', '>', TokenSpecs.TagContent],
-            ].forEach(([type, lexeme, useSpecs]) => {
-              if (useSpecs) specsToUse = useSpecs as unknown as TSpec[];
-
-              expect(lexer.eatToken(type as string, specsToUse)).toMatchObject({
-                type,
-                lexeme,
-              });
-            });
+                ['<', '<', TokenSpecs.TagDecl],
+                ['/', '/'],
+                [TokenTypes.NAME, 'tag-1'],
+                ['>', '>', TokenSpecs.TagContent],
+              ]
+            );
           });
 
           it('tag text', () => {
             // TODO: review the lexer regexp that reads the text
-            lexer.init(`
+            checkTokensSequence(
+              `
               <tag-1>
                 <tag-2/> Hello World!
               </tag-1>
-            `);
-
-            let specsToUse: TSpec[] = TokenSpecs.Prolog;
-            [
-              ['<', '<', TokenSpecs.TagDecl],
-              [TokenTypes.NAME, 'tag-1'],
-              ['>', '>', TokenSpecs.TagContent],
-
-              ['<', '<', TokenSpecs.TagDecl],
-              [TokenTypes.NAME, 'tag-2'],
-              ['/', '/'],
-              ['>', '>', TokenSpecs.TagContent],
-
+            `,
               [
-                TokenTypes.TEXT,
-                `Hello World!
+                ['<', '<', TokenSpecs.TagDecl],
+                [TokenTypes.NAME, 'tag-1'],
+                ['>', '>', TokenSpecs.TagContent],
+
+                ['<', '<', TokenSpecs.TagDecl],
+                [TokenTypes.NAME, 'tag-2'],
+                ['/', '/'],
+                ['>', '>', TokenSpecs.TagContent],
+
+                [
+                  TokenTypes.TEXT,
+                  `Hello World!
               `,
-              ],
+                ],
 
-              ['<', '<', TokenSpecs.TagDecl],
-              ['/', '/'],
-              [TokenTypes.NAME, 'tag-1'],
-              ['>', '>', TokenSpecs.TagContent],
-            ].forEach(([type, lexeme, useSpecs]) => {
-              if (useSpecs) specsToUse = useSpecs as unknown as TSpec[];
-
-              expect(lexer.eatToken(type as string, specsToUse)).toMatchObject({
-                type,
-                lexeme,
-              });
-            });
+                ['<', '<', TokenSpecs.TagDecl],
+                ['/', '/'],
+                [TokenTypes.NAME, 'tag-1'],
+                ['>', '>', TokenSpecs.TagContent],
+              ]
+            );
           });
 
           it('text tag text', () => {
             // TODO: review the lexer regexp that reads the text
-            lexer.init(`
+            checkTokensSequence(
+              `
               <tag-1>
                 Hello <tag-2/> World!
               </tag-1>
-            `);
-
-            let specsToUse: TSpec[] = TokenSpecs.Prolog;
-            [
-              ['<', '<', TokenSpecs.TagDecl],
-              [TokenTypes.NAME, 'tag-1'],
-              ['>', '>', TokenSpecs.TagContent],
-
-              [TokenTypes.TEXT, `Hello `],
-
-              ['<', '<', TokenSpecs.TagDecl],
-              [TokenTypes.NAME, 'tag-2'],
-              ['/', '/'],
-              ['>', '>', TokenSpecs.TagContent],
-
+            `,
               [
-                TokenTypes.TEXT,
-                `World!
+                ['<', '<', TokenSpecs.TagDecl],
+                [TokenTypes.NAME, 'tag-1'],
+                ['>', '>', TokenSpecs.TagContent],
+
+                [TokenTypes.TEXT, `Hello `],
+
+                ['<', '<', TokenSpecs.TagDecl],
+                [TokenTypes.NAME, 'tag-2'],
+                ['/', '/'],
+                ['>', '>', TokenSpecs.TagContent],
+
+                [
+                  TokenTypes.TEXT,
+                  `World!
               `,
-              ],
+                ],
 
-              ['<', '<', TokenSpecs.TagDecl],
-              ['/', '/'],
-              [TokenTypes.NAME, 'tag-1'],
-              ['>', '>', TokenSpecs.TagContent],
-            ].forEach(([type, lexeme, useSpecs]) => {
-              if (useSpecs) specsToUse = useSpecs as unknown as TSpec[];
-
-              expect(lexer.eatToken(type as string, specsToUse)).toMatchObject({
-                type,
-                lexeme,
-              });
-            });
+                ['<', '<', TokenSpecs.TagDecl],
+                ['/', '/'],
+                [TokenTypes.NAME, 'tag-1'],
+                ['>', '>', TokenSpecs.TagContent],
+              ]
+            );
           });
 
           it('two level deep', () => {
-            lexer.init(`
+            checkTokensSequence(
+              `
               <tag-1>
                 <tag-2>Hello World!</tag-2>
               </tag-1>
-            `);
+            `,
+              [
+                ['<', '<', TokenSpecs.TagDecl],
+                [TokenTypes.NAME, 'tag-1'],
+                ['>', '>', TokenSpecs.TagContent],
 
-            let specsToUse: TSpec[] = TokenSpecs.Prolog;
-            [
-              ['<', '<', TokenSpecs.TagDecl],
-              [TokenTypes.NAME, 'tag-1'],
-              ['>', '>', TokenSpecs.TagContent],
+                ['<', '<', TokenSpecs.TagDecl],
+                [TokenTypes.NAME, 'tag-2'],
+                ['>', '>', TokenSpecs.TagContent],
 
-              ['<', '<', TokenSpecs.TagDecl],
-              [TokenTypes.NAME, 'tag-2'],
-              ['>', '>', TokenSpecs.TagContent],
+                [TokenTypes.TEXT, `Hello World!`],
 
-              [TokenTypes.TEXT, `Hello World!`],
+                ['<', '<', TokenSpecs.TagDecl],
+                ['/', '/'],
+                [TokenTypes.NAME, 'tag-2'],
+                ['>', '>', TokenSpecs.TagContent],
 
-              ['<', '<', TokenSpecs.TagDecl],
-              ['/', '/'],
-              [TokenTypes.NAME, 'tag-2'],
-              ['>', '>', TokenSpecs.TagContent],
-
-              ['<', '<', TokenSpecs.TagDecl],
-              ['/', '/'],
-              [TokenTypes.NAME, 'tag-1'],
-              ['>', '>', TokenSpecs.TagContent],
-            ].forEach(([type, lexeme, useSpecs]) => {
-              if (useSpecs) specsToUse = useSpecs as unknown as TSpec[];
-
-              expect(lexer.eatToken(type as string, specsToUse)).toMatchObject({
-                type,
-                lexeme,
-              });
-            });
+                ['<', '<', TokenSpecs.TagDecl],
+                ['/', '/'],
+                [TokenTypes.NAME, 'tag-1'],
+                ['>', '>', TokenSpecs.TagContent],
+              ]
+            );
           });
 
           it('three level deep', () => {
-            lexer.init(`
+            checkTokensSequence(
+              `
               <tag-1>
                 <tag-2>
                   <tag-3>Hello World!</tag-3>
                 </tag-2>
               </tag-1>
-            `);
+            `,
+              [
+                ['<', '<', TokenSpecs.TagDecl],
+                [TokenTypes.NAME, 'tag-1'],
+                ['>', '>', TokenSpecs.TagContent],
 
-            let specsToUse: TSpec[] = TokenSpecs.Prolog;
-            [
-              ['<', '<', TokenSpecs.TagDecl],
-              [TokenTypes.NAME, 'tag-1'],
-              ['>', '>', TokenSpecs.TagContent],
+                ['<', '<', TokenSpecs.TagDecl],
+                [TokenTypes.NAME, 'tag-2'],
+                ['>', '>', TokenSpecs.TagContent],
 
-              ['<', '<', TokenSpecs.TagDecl],
-              [TokenTypes.NAME, 'tag-2'],
-              ['>', '>', TokenSpecs.TagContent],
+                ['<', '<', TokenSpecs.TagDecl],
+                [TokenTypes.NAME, 'tag-3'],
+                ['>', '>', TokenSpecs.TagContent],
 
-              ['<', '<', TokenSpecs.TagDecl],
-              [TokenTypes.NAME, 'tag-3'],
-              ['>', '>', TokenSpecs.TagContent],
+                [TokenTypes.TEXT, `Hello World!`],
 
-              [TokenTypes.TEXT, `Hello World!`],
+                ['<', '<', TokenSpecs.TagDecl],
+                ['/', '/'],
+                [TokenTypes.NAME, 'tag-3'],
+                ['>', '>', TokenSpecs.TagContent],
 
-              ['<', '<', TokenSpecs.TagDecl],
-              ['/', '/'],
-              [TokenTypes.NAME, 'tag-3'],
-              ['>', '>', TokenSpecs.TagContent],
+                ['<', '<', TokenSpecs.TagDecl],
+                ['/', '/'],
+                [TokenTypes.NAME, 'tag-2'],
+                ['>', '>', TokenSpecs.TagContent],
 
-              ['<', '<', TokenSpecs.TagDecl],
-              ['/', '/'],
-              [TokenTypes.NAME, 'tag-2'],
-              ['>', '>', TokenSpecs.TagContent],
-
-              ['<', '<', TokenSpecs.TagDecl],
-              ['/', '/'],
-              [TokenTypes.NAME, 'tag-1'],
-              ['>', '>', TokenSpecs.TagContent],
-            ].forEach(([type, lexeme, useSpecs]) => {
-              if (useSpecs) specsToUse = useSpecs as unknown as TSpec[];
-
-              expect(lexer.eatToken(type as string, specsToUse)).toMatchObject({
-                type,
-                lexeme,
-              });
-            });
+                ['<', '<', TokenSpecs.TagDecl],
+                ['/', '/'],
+                [TokenTypes.NAME, 'tag-1'],
+                ['>', '>', TokenSpecs.TagContent],
+              ]
+            );
           });
         });
       });
