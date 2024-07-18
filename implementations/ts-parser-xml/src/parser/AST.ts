@@ -144,7 +144,7 @@ export const nodeFactory = {
   }: {
     type?: TNodeElementType;
     name: string;
-    attributes?: IElementAttribute[] | Record<string, string>;
+    attributes?: IElementAttribute[] | Record<string, string | undefined>;
     children?: TElementChildren[];
   }): INodeElement => ({
     type,

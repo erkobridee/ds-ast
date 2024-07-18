@@ -191,7 +191,7 @@ export const Spec = {
   //---//
 
   /** Type: `NAME` */
-  Name: [/^\w+:?[\w-]+/, Types.NAME],
+  Name: [/^(?:\w[\w-]*:)?\w[\w-]*/, Types.NAME],
   /** Type: `STRING` - "" or '' with its content */
   String: [/^("[^"]*")|('[^']*')/, Types.STRING],
 

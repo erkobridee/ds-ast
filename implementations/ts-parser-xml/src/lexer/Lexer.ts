@@ -158,6 +158,9 @@ export class Lexer {
     message += ` @[ Ln ${this.line}, Col ${this.column} ]`;
     message += ` : "${strToCheck[0]}"`;
 
+    // TODO: remove
+    // message += `\n\n${strToCheck}`;
+
     throw new SyntaxError(message);
   }
 

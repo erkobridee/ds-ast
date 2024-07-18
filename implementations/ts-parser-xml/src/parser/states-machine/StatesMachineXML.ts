@@ -4,7 +4,7 @@
  */
 
 import { Lexer } from '~/lexer';
-import { INodeElement, INodeText } from '~/parser/AST';
+import { INodeElement, TElementChildren } from '~/parser/AST';
 
 import { AbstractStatesMachineImpl } from './AbstractStatesMachineImpl';
 
@@ -21,33 +21,35 @@ export class StatesMachineXML extends AbstractStatesMachineImpl {
   /**
    * Element
    *  : OpenTag AutoCloseTag
-   *  | OpenTag Content* CloseTag
+   *  | OpenTag ElementChildren* CloseTag
    *  ;
    */
   protected Element(skipFirstToken = false): INodeElement {
+    //
+    // Tokens sequence examples
+    //
+    // < NAME AttributeList / > EOF
+    // < NAME AttributeList > < / NAME > EOF
+    // < NAME AttributeList > TEXT < / NAME > EOF
+    // < NAME AttributeList > TEXT < NAME AttributeList / > < / NAME > EOF
+    // < NAME AttributeList > TEXT < NAME AttributeList > < / NAME > < / NAME > EOF
+    // < NAME AttributeList > TEXT < NAME AttributeList / > TEXT < / NAME > EOF
+    // < NAME AttributeList > TEXT < NAME AttributeList > < / NAME > TEXT < / NAME > EOF
+    // < NAME AttributeList > < NAME AttributeList / > TEXT < / NAME > EOF
+    // < NAME AttributeList > < NAME AttributeList > < / NAME > TEXT < / NAME > EOF
+    //
+
     const element = this.OpenTag(skipFirstToken);
 
     switch (this.getLookaheadTokenType()) {
       case '/':
         this.AutoCloseTag();
+
         return element;
       case '>':
-        const content = this.Content(element);
+        this.eatToken('>', this.TokenSpecs.TagContent);
 
-        //
-        // TODO: find out how to handle the content loop between text child and element child
-        //
-
-        if (content) {
-          element.children
-            ? element.children.push(content)
-            : (element.children = [content]);
-        }
-
-        // TODO: remove
-        console.log('StatesMachineXML > Element > content: ', content);
-
-        this.CloseTag(!!content);
+        element.children = this.ElementChildren();
 
         return element;
     }
@@ -58,63 +60,44 @@ export class StatesMachineXML extends AbstractStatesMachineImpl {
   }
 
   /**
-   * Content
-   *  : ( Text Element )* Text
-   *  | Element Text?
-   *  ;
+   *  ElementChildren
+   *   : ( TEXT | Element )*
+   *   ;
    */
-  protected Content(parentElement: INodeElement) {
-    this.eatToken('>', this.TokenSpecs.TagContent);
+  protected ElementChildren(): TElementChildren[] | undefined {
+    let elements: TElementChildren[] | undefined;
 
-    //
-    // TODO: find out how to handle the content loop between text child and element child
-    //
+    const pushElement = (element: TElementChildren) => {
+      if (!elements) elements = [element];
+      else elements.push(element);
+    };
 
-    switch (this.getLookaheadTokenType()) {
-      case this.TokenTypes.TEXT:
-        return this.Text(parentElement);
-      case '<':
-        this.Element(); // TODO: review here
-      default:
-        return;
-    }
-  }
+    while (this.getLookaheadTokenType() !== this.TokenTypes.EOF) {
+      if (this.getLookaheadTokenType() === this.TokenTypes.TEXT) {
+        const textToken = this.eatToken(this.TokenTypes.TEXT);
 
-  /**
-   * ```
-   * Text
-   *  : TEXT
-   *  ;
-   * ```
-   */
-  protected Text(parentElement: INodeElement): INodeText | undefined {
-    const text = this.eatToken(this.TokenTypes.TEXT);
+        pushElement(this.nodeFactory.Text(textToken.lexeme!));
 
-    const textChild = this.nodeFactory.Text(text.lexeme!);
+        continue;
+      }
 
-    this.eatToken('<', this.TokenSpecs.TagDecl);
+      if (this.getLookaheadTokenType() === '<') {
+        this.eatToken('<', this.TokenSpecs.TagDecl);
 
-    switch (this.getLookaheadTokenType()) {
-      case '/':
-        return textChild;
-      case this.TokenTypes.NAME:
-        this.Element(true); // TODO: double check here
-        return;
+        switch (this.getLookaheadTokenType()) {
+          case '/':
+            this.CloseTag(true /* skipFirstToken */);
+
+            continue;
+          case this.TokenTypes.NAME:
+            pushElement(this.Element(true /* skipFirstToken */));
+
+            continue;
+        }
+      }
     }
 
-    throw new SyntaxError(
-      `TextChild: Unexpected tag production. Next Token found "${this.getLookaheadTokenType()}" and it was expected one of [ '/', '${
-        this.TokenTypes.NAME
-      }' ].`
-    );
-  }
-
-  protected ElementChild(): undefined {
-    //
-    // TODO: find out how to check if the next token is a TEXT
-    //
-
-    throw new Error('Not implemented');
+    return elements;
   }
 
   // @end: states definitions

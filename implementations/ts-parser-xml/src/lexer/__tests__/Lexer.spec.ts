@@ -36,7 +36,7 @@ describe('Lexer', () => {
   it('Unexpected token', () => {
     const ErrorRegexp = /^Lexer.getNextToken: Unexpected token @/;
 
-    lexer.init('\n\ts####', false);
+    lexer.init('\n\t####', false);
     expect(() => lexer.getNextToken()).toThrow(ErrorRegexp);
   });
 

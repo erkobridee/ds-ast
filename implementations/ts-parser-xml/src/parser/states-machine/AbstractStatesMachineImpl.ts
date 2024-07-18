@@ -75,13 +75,13 @@ export abstract class AbstractStatesMachineImpl extends AbstractStatesMachine {
   protected stackPop() {
     const length = this.elementsStack.length;
     const parent = this.elementsStack[length - 2];
-    const current = this.elementsStack[length - 1];
+    const current = this.elementsStack.pop();
 
-    if (parent) {
-      parent.children
-        ? parent.children.push(current)
-        : (parent.children = [current]);
-    }
+    // if (parent && current) {
+    //   parent.children
+    //     ? parent.children.push(current)
+    //     : (parent.children = [current]);
+    // }
 
     return current;
   }
@@ -234,7 +234,7 @@ export abstract class AbstractStatesMachineImpl extends AbstractStatesMachine {
   protected AutoCloseTag() {
     this.eatToken('/');
 
-    this.eatToken('>');
+    this.eatToken('>', this.TokenSpecs.TagContent);
 
     this.stackPop();
   }
@@ -249,7 +249,7 @@ export abstract class AbstractStatesMachineImpl extends AbstractStatesMachine {
   protected CloseTag(skipFirstToken = false) {
     const currentTag = this.stackPop();
 
-    if (!skipFirstToken) this.eatToken('<');
+    if (!skipFirstToken) this.eatToken('<', this.TokenSpecs.TagDecl);
 
     this.eatToken('/');
 
@@ -265,15 +265,11 @@ export abstract class AbstractStatesMachineImpl extends AbstractStatesMachine {
       );
     }
 
-    this.eatToken('>');
+    this.eatToken('>', this.TokenSpecs.TagContent);
   }
 
   // It needs to be implemented on the specific states machine implementation
   protected abstract Element(): INodeElement;
-
-  protected abstract Content(
-    parentElement: INodeElement
-  ): TElementChildren | undefined;
 
   // @end: states definitions
   //--------------------------------------------------------------------------//

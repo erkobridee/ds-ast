@@ -61,8 +61,7 @@ describe('XML Parser', () => {
         expect(ast).toMatchObject(expected);
       });
 
-      // TODO: fix the StatesMachineXML.ts implementation
-      it.skip('open and close', () => {
+      it('open and close', () => {
         const source = `<hello></hello>`;
         const ast = parser.parse(source);
 
@@ -79,15 +78,15 @@ describe('XML Parser', () => {
           root: root,
         });
 
-        expect(ast).toMatchObject(expected);
+        expect(ast).toEqual(expected);
       });
     });
 
-    // TODO: review and fix the StatesMachineXML.ts implementation
-    it.skip('throw error to due to wrong tag closing', () => {
+    it('throw error to due to wrong tag closing', () => {
       const source = `<tag-a></tag-b>`;
+
       expect(() => parser.parse(source)).toThrow(
-        /^CloseTag: Unexpected tag production. Wrong closing tag, it was expected $/
+        /^CloseTag: Unexpected tag production. Wrong closing tag, it was expected /
       );
     });
   });
@@ -143,7 +142,7 @@ describe('XML Parser', () => {
   });
 
   describe('tag with children', () => {
-    it.skip('single son', () => {
+    it('single son', () => {
       const source = `
         <message>
           <p>Hello World!</p>
@@ -151,9 +150,6 @@ describe('XML Parser', () => {
       `;
 
       const ast = parser.parse(source);
-
-      // TODO: remove
-      console.log(`ast: `, ast);
 
       const prolog = nodeFactory.Prolog({
         doctype: DocumentType.XML,
@@ -174,13 +170,10 @@ describe('XML Parser', () => {
         root: root,
       });
 
-      // TODO: remove
-      console.log(`expected:`, expected);
-
       expect(ast).toEqual(expected);
     });
 
-    it.skip('text tag', () => {
+    it('text tag', () => {
       const source = `
         <tag-1>
           Hello World! <tag-2/>
@@ -188,9 +181,6 @@ describe('XML Parser', () => {
       `;
 
       const ast = parser.parse(source);
-
-      // TODO: remove
-      console.log(`ast: `, ast);
 
       const prolog = nodeFactory.Prolog({
         doctype: DocumentType.XML,
@@ -211,13 +201,10 @@ describe('XML Parser', () => {
         root: root,
       });
 
-      // TODO: remove
-      console.log(`expected:`, expected);
-
       expect(ast).toEqual(expected);
     });
 
-    it.skip('tag text', () => {
+    it('tag text', () => {
       const source = `
         <tag-1>
           <tag-2/> Hello World!
@@ -225,9 +212,6 @@ describe('XML Parser', () => {
       `;
 
       const ast = parser.parse(source);
-
-      // TODO: remove
-      console.log(`ast: `, ast);
 
       const prolog = nodeFactory.Prolog({
         doctype: DocumentType.XML,
@@ -239,7 +223,8 @@ describe('XML Parser', () => {
           nodeFactory.Element({
             name: 'tag-2',
           }),
-          nodeFactory.Text(' Hello World!'),
+          nodeFactory.Text(`Hello World!
+        `),
         ],
       });
 
@@ -248,13 +233,10 @@ describe('XML Parser', () => {
         root: root,
       });
 
-      // TODO: remove
-      console.log(`expected:`, expected);
-
       expect(ast).toEqual(expected);
     });
 
-    it.skip('text tag text', () => {
+    it('text tag text', () => {
       const source = `
         <tag-1>
           Hello <tag-2/> World!
@@ -262,9 +244,6 @@ describe('XML Parser', () => {
       `;
 
       const ast = parser.parse(source);
-
-      // TODO: remove
-      console.log(`ast: `, ast);
 
       const prolog = nodeFactory.Prolog({
         doctype: DocumentType.XML,
@@ -277,7 +256,8 @@ describe('XML Parser', () => {
           nodeFactory.Element({
             name: 'tag-2',
           }),
-          nodeFactory.Text(' World!'),
+          nodeFactory.Text(`World!
+        `),
         ],
       });
 
@@ -286,24 +266,17 @@ describe('XML Parser', () => {
         root: root,
       });
 
-      // TODO: remove
-      console.log(`expected:`, expected);
-
       expect(ast).toEqual(expected);
     });
 
-    // TODO: should I have a describe with multiple tests cases?
-    it.skip('two level deep', () => {
+    it('two level deep', () => {
       const source = `
         <tag-1>
-          <tag-2>Hello World!</tag-2>
+          <tag-2 attr1="value 1">Hello World!</tag-2>
         </tag-1>
       `;
 
       const ast = parser.parse(source);
-
-      // TODO: remove
-      console.log(`ast: `, ast);
 
       const prolog = nodeFactory.Prolog({
         doctype: DocumentType.XML,
@@ -314,6 +287,9 @@ describe('XML Parser', () => {
         children: [
           nodeFactory.Element({
             name: 'tag-2',
+            attributes: {
+              attr1: 'value 1',
+            },
             children: [nodeFactory.Text('Hello World!')],
           }),
         ],
@@ -324,26 +300,19 @@ describe('XML Parser', () => {
         root: root,
       });
 
-      // TODO: remove
-      console.log(`expected:`, expected);
-
       expect(ast).toEqual(expected);
     });
 
-    // TODO: should I have a describe with multiple tests cases?
-    it.skip('three level deep', () => {
+    it('three level deep', () => {
       const source = `
-        <tag-1>
-          <tag-2>
-            <tag-3>Hello World!</tag-3>
+        <tag-1 has-children>
+          <tag-2 attr="value of tag-2">
+            <tag-3 attr="value of tag-3" isMessage is-present>Hello World!</tag-3>
           </tag-2>
         </tag-1>
       `;
 
       const ast = parser.parse(source);
-
-      // TODO: remove
-      console.log(`ast: `, ast);
 
       const prolog = nodeFactory.Prolog({
         doctype: DocumentType.XML,
@@ -351,12 +320,23 @@ describe('XML Parser', () => {
 
       const root = nodeFactory.Element({
         name: 'tag-1',
+        attributes: {
+          'has-children': undefined,
+        },
         children: [
           nodeFactory.Element({
             name: 'tag-2',
+            attributes: {
+              attr: 'value of tag-2',
+            },
             children: [
               nodeFactory.Element({
                 name: 'tag-3',
+                attributes: {
+                  attr: 'value of tag-3',
+                  isMessage: undefined,
+                  'is-present': undefined,
+                },
                 children: [nodeFactory.Text('Hello World!')],
               }),
             ],
@@ -368,9 +348,6 @@ describe('XML Parser', () => {
         prolog,
         root: root,
       });
-
-      // TODO: remove
-      console.log(`expected:`, expected);
 
       expect(ast).toEqual(expected);
     });
