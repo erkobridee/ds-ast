@@ -84,9 +84,9 @@ npm run dev
 
 ##### Basic XML
 
-- [StatesMachineXML.ts](src/parser/states-machine/StatesMachineXML.ts) 🏗️ - TODO: implement 🚧
+- [StatesMachineXML.ts](src/parser/states-machine/StatesMachineXML.ts)
 
-  - [ParserXML.spec.ts](src/parser/__tests__/ParserXML.spec.ts) 🏗️ - TODO: implement 🚧
+  - [ParserXML.spec.ts](src/parser/__tests__/ParserXML.spec.ts)
 
 - <details>
   <summary>See the EBNF Diagram - Basic XML States Machine</summary>

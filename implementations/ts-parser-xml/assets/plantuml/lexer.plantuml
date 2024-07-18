@@ -37,7 +37,7 @@ SPECIAL_CLOSE = "?>" ;
 
 STRING = ? regexp ? (* RegExp( /^("[^"]*")|('[^']*')/ ) - anything in between "" or '' *) ;
 
-NAME = "RegExp( /^\w+:?[\w-]+/ )" ;
+NAME = "RegExp( /^(?:\w[\w-]*:)?\w[\w-]*/ )" ;
 
 TEXT = "RegExp( /^[^<]+/ )" ;
 
