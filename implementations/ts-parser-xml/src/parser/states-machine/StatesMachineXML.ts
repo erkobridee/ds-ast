@@ -21,7 +21,7 @@ export class StatesMachineXML extends AbstractStatesMachineImpl {
   /**
    * Element
    *  : OpenTag AutoCloseTag
-   *  | OpenTag ElementChildren* CloseTag
+   *  | OpenTag Content* CloseTag
    *  ;
    */
   protected Element(skipFirstToken = false): INodeElement {
@@ -49,7 +49,7 @@ export class StatesMachineXML extends AbstractStatesMachineImpl {
       case '>':
         this.eatToken('>', this.TokenSpecs.TagContent);
 
-        element.children = this.ElementChildren();
+        element.children = this.Content();
 
         return element;
     }
@@ -60,11 +60,11 @@ export class StatesMachineXML extends AbstractStatesMachineImpl {
   }
 
   /**
-   *  ElementChildren
+   *  Content
    *   : ( TEXT | Element )*
    *   ;
    */
-  protected ElementChildren(): TElementChildren[] | undefined {
+  protected Content(): TElementChildren[] | undefined {
     let elements: TElementChildren[] | undefined;
 
     const pushElement = (element: TElementChildren) => {
