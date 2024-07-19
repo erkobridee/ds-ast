@@ -299,6 +299,8 @@ npm run dev
 
 ### Utils
 
+- [Optimizing Javascript for fun and for profit | romgrk](https://romgrk.com/posts/optimizing-javascript) ( 2024-03-21 )
+
 - [Unicode Explorer](https://unicode-explorer.com/)
 
   - [Unicode blocks | Unicode Explorer](https://unicode-explorer.com/blocks)
