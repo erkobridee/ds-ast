@@ -275,6 +275,8 @@ npm run dev
 
   - [xml](https://github.com/antlr/grammars-v4/tree/master/xml) - [lexer](https://github.com/antlr/grammars-v4/blob/master/xml/XMLLexer.g4) | [parser](https://github.com/antlr/grammars-v4/blob/master/xml/XMLParser.g4)
 
+  - [html](https://github.com/antlr/grammars-v4/tree/master/html) - [lexer](https://github.com/antlr/grammars-v4/blob/master/html/HTMLLexer.g4) | [parser](https://github.com/antlr/grammars-v4/blob/master/html/HTMLParser.g4)
+
 ### EBNF
 
 - [EBNF for XML 1.0 | Jelks' Home Page](https://www.jelks.nu/XML/xmlebnf.html)
